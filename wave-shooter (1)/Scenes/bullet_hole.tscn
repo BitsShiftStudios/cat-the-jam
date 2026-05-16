@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cjaf3jbf7unhv"]
+
+[ext_resource type="Texture2D" uid="uid://crekk72shi5nu" path="res://Assets/Decals/t_bullet_hole_albedo.png" id="1_1hqtt"]
+[ext_resource type="Script" uid="uid://o0mgpc65tdbs" path="res://Script/bullet_hole.gd" id="1_ashi8"]
+[ext_resource type="Texture2D" uid="uid://cj4452e2v5li4" path="res://Assets/Decals/t_bullet_hole_normal.png" id="2_kwvv0"]
+[ext_resource type="Texture2D" uid="uid://c8hj54hfe7hhp" path="res://Assets/Decals/t_bullet_hole_orm.png" id="3_ashi8"]
+[ext_resource type="BoxMesh" uid="uid://payixygjfpma" path="res://Materials/bullet_hit_spark.tres" id="4_kwvv0"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1hqtt"]
+lifetime_randomness = 1.0
+emission_shape_scale = Vector3(0.2, 0.2, 0.2)
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+gravity = Vector3(0, 0, 0)
+
+[node name="bullet_hole" type="Node3D" unique_id=956278425]
+script = ExtResource("1_ashi8")
+
+[node name="hole" type="Decal" parent="." unique_id=1750957143]
+size = Vector3(0.2, 0.2, 0.2)
+texture_albedo = ExtResource("1_1hqtt")
+texture_normal = ExtResource("2_kwvv0")
+texture_orm = ExtResource("3_ashi8")
+emission_energy = 0.0
+upper_fade = 1.7084345e-05
+lower_fade = 1.1271461e-05
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=871688847]
+emitting = false
+amount = 20
+interp_to_end = 0.11
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_1hqtt")
+draw_pass_1 = ExtResource("4_kwvv0")
+
+[connection signal="finished" from="GPUParticles3D" to="." method="_on_gpu_particles_3d_finished"]
