@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://bulstycgcn6hi"]
+
+[ext_resource type="Script" uid="uid://dv8w15v6ov5ue" path="res://scripts/pplayer.gd" id="1_68cow"]
+[ext_resource type="PackedScene" path="res://scenes/ak47.tscn" id="3_i3pqv"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4flbx"]
+height = 2.0168457
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_4flbx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sh265"]
+albedo_color = Color(1, 0.16862746, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sh265"]
+material = SubResource("StandardMaterial3D_sh265")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4flbx"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_onrkg"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_onrkg"]
+radius = 0.3
+
+[node name="Player" type="CharacterBody3D" unique_id=1194290532]
+script = ExtResource("1_68cow")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1624436844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_4flbx")
+
+[node name="Neck" type="Node3D" parent="." unique_id=1203759309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -0.15254328)
+
+[node name="Head" type="Node3D" parent="Neck" unique_id=425822321]
+
+[node name="WeaponPivot" type="Node3D" parent="Neck/Head" unique_id=772080770]
+
+[node name="ak47" parent="Neck/Head/WeaponPivot" unique_id=684825964 instance=ExtResource("3_i3pqv")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.23437977, -0.19566953, -0.43566355)
+
+[node name="CameraShaker" type="Node3D" parent="Neck/Head" unique_id=1621711414]
+
+[node name="Camera3D" type="Camera3D" parent="Neck/Head/CameraShaker" unique_id=18790858]
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=65410501]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 1.724071, -0.10644144)
+shape = SubResource("SphereShape3D_4flbx")
+target_position = Vector3(0, 0, 0)
+
+[node name="Taban" type="Node3D" parent="." unique_id=1253194052]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Taban" unique_id=87338839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_sh265")
+
+[node name="Face" type="MeshInstance3D" parent="Taban/MeshInstance3D" unique_id=480642792]
+transform = Transform3D(0.6096668, 0, 0, 0, -2.4579042e-10, 0.3586046, 0, -0.0056230295, -1.5675106e-08, 0, 0.81623495, -0.34980923)
+visible = false
+mesh = SubResource("CylinderMesh_4flbx")
+
+[node name="testface" type="MeshInstance3D" parent="." unique_id=1385096735]
+transform = Transform3D(1, 0, 0, 0, 0.021504322, 0, 0, 0, 0.29105031, 0, 1.7, -0.36)
+visible = false
+mesh = SubResource("CylinderMesh_onrkg")
+
+[node name="ControlUpperHead" type="ShapeCast3D" parent="." unique_id=1057592214]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2931392, 0)
+shape = SubResource("SphereShape3D_onrkg")
+target_position = Vector3(0, 0.5, 0)
+
+[node name="hud" parent="." unique_id=1457628736 instance=ExtResource("3_i3pqv")]
+visible = false

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d2dd25ag2mfww"]
 
-[ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://bulstycgcn6hi" path="res://scenes/pplayer.tscn" id="2_0wfyh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
 
@@ -16,9 +16,9 @@ ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_o5qli"]
+size = Vector3(10.003967, 1, 10.299164)
 
 [node name="Node" type="Node" unique_id=1621457691]
-script = ExtResource("1_ig7tw")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=131513011]
 _spawnable_scenes = PackedStringArray("uid://fwq04t21d3fq")
@@ -31,10 +31,15 @@ transform = Transform3D(1, 0, 0, 0, 0.32908088, 0.9443017, 0, -0.9443017, 0.3290
 environment = SubResource("Environment_jyhfs")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=1692681716]
-transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, -3.0663342, 0.19353294)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.0663342, 0.19353294)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=1740120106]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
 mesh = SubResource("BoxMesh_o5qli")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1441991057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020599365, 0, -0.03074646)
 shape = SubResource("BoxShape3D_o5qli")
+
+[node name="Player" parent="." unique_id=1194290532 instance=ExtResource("2_0wfyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0277643, -2.3031507, 0)
