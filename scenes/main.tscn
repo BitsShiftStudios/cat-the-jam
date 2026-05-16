@@ -1,8 +1,6 @@
 [gd_scene format=3 uid="uid://d2dd25ag2mfww"]
 
-[ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://NetworkManager.gd" id="1_ig7tw"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
+[ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
 
@@ -15,6 +13,8 @@ sky = SubResource("Sky_sugp2")
 ambient_light_source = 3
 ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_o5qli"]
 
 [node name="Node" type="Node" unique_id=1621457691]
@@ -23,27 +23,6 @@ script = ExtResource("1_ig7tw")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=131513011]
 _spawnable_scenes = PackedStringArray("uid://fwq04t21d3fq")
 spawn_path = NodePath("..")
-
-[node name="Cube2" type="StaticBody3D" parent="." unique_id=2117207972]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7188053, 0, -1.1465113)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube2" unique_id=1954301274]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0065837, -2.8188815)
-mesh = SubResource("BoxMesh_o5qli")
-
-[node name="Cube3" type="StaticBody3D" parent="." unique_id=591276001]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7188053, 0, 7.46834)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube3" unique_id=1950644330]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0065837, -2.8188815)
-mesh = SubResource("BoxMesh_o5qli")
-
-[node name="Cube4" type="StaticBody3D" parent="." unique_id=1186699241]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2766252, 0, 7.46834)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube4" unique_id=1489717432]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0065837, -2.8188815)
-mesh = SubResource("BoxMesh_o5qli")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1698718137]
 transform = Transform3D(1, 0, 0, 0, 0.32908088, 0.9443017, 0, -0.9443017, 0.32908088, 0, 4.2523947, 1.4819224)
