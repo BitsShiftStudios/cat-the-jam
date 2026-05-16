@@ -2,7 +2,7 @@ extends Node
 
 @export var player_scene: PackedScene = preload("res://scenes/Player.tscn")
 
-const PORT = 8080
+const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
 
 func _ready():
@@ -24,7 +24,7 @@ func start_server():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = "ws://localhost:" + str(PORT) 
+	var target_url = "ws://10.11.25.4:" + str(PORT)
 	print("Connecting to server at: ", target_url)
 	
 	var error = peer.create_client(target_url)
