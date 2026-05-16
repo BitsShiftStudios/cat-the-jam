@@ -47,7 +47,25 @@ var wave_rate = 0.0
 
 var mouse_capture = 1
 
+func _enter_tree():
+	var player_id = get_parent().name.to_int()
+	print("Player ID: ", player_id)
+	set_multiplayer_authority(player_id)
+	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
+	
+	if not is_multiplayer_authority():
+		$Neck/Head/CameraShaker/Camera3D.current = false
+		set_process_input(false)
+		set_physics_process(false)
+	else:
+		## Kamera default olarak false
+		## Bunu true yapmamız lazım
+		$Neck/Head/CameraShaker/Camera3D.current = true
+
 func _ready():
+	if not is_multiplayer_authority():
+		return
+
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
 	test_face = $testface.position
@@ -61,9 +79,10 @@ func _ready():
 	$ShapeCast3D.add_exception(self)	# Cast'in içinde olduğu node daki hiç bir nesneye sinyal almamaya yarıyor
 	$ControlUpperHead.add_exception(self)
 	
-	
-	
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -156,6 +175,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func take_player_status(input_dir):
+	if not is_multiplayer_authority():
+		return
+
 	if not is_on_floor():
 		player_status = 3
 	elif SPEED == SPEED_RUN:
@@ -168,6 +190,9 @@ func take_player_status(input_dir):
 		player_status = 0
 
 func character_position(check, delta):
+	if not is_multiplayer_authority():
+		return
+
 	if check:
 		$Neck.position.y = lerp($Neck.position.y, neck_crouched_position_y, 15.0 * delta)
 		$testface.position.y = lerp($testface.position.y, test_face_c_pos_y, 15.0 * delta)
@@ -187,6 +212,9 @@ func character_position(check, delta):
 		
 		
 func leaning_chracter(pressed_key_name, delta):
+	if not is_multiplayer_authority():
+		return
+
 	if pressed_key_name == "leaning_right":
 		$ShapeCast3D.target_position.x = 5.0
 		$ShapeCast3D.force_shapecast_update()
@@ -211,6 +239,9 @@ func leaning_chracter(pressed_key_name, delta):
 		$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, 0.0, 10.0 * delta)
 
 func _input(event):
+	if not is_multiplayer_authority():
+		return
+
 	# Mouse in viewport coordinates.
 	if event is InputEventMouseButton:
 		pass

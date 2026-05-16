@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://d2dd25ag2mfww"]
 
+[ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bulstycgcn6hi" path="res://scenes/pplayer.tscn" id="2_0wfyh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
@@ -19,9 +20,11 @@ ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 size = Vector3(10.003967, 1, 10.299164)
 
 [node name="Node" type="Node" unique_id=1621457691]
+script = ExtResource("1_ig7tw")
+player_scene = ExtResource("2_0wfyh")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=131513011]
-_spawnable_scenes = PackedStringArray("uid://fwq04t21d3fq")
+_spawnable_scenes = PackedStringArray("uid://bulstycgcn6hi")
 spawn_path = NodePath("..")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1698718137]
@@ -41,5 +44,5 @@ mesh = SubResource("BoxMesh_o5qli")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020599365, 0, -0.03074646)
 shape = SubResource("BoxShape3D_o5qli")
 
-[node name="Player" parent="." unique_id=1194290532 instance=ExtResource("2_0wfyh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0277643, -2.3031507, 0)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1588857458]
+transform = Transform3D(1, 0, 0, 0, 0.81376064, 0.5812001, 0, -0.5812001, 0.81376064, 0, 2.5077765, 8.452658)
