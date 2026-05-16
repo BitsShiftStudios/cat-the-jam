@@ -6,11 +6,7 @@ const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
 
 func _ready():
-	if OS.get_cmdline_args().has("--server"):
-		get_window().title = "Server" 
-		start_server()
-	else:
-		start_client()
+	start_client()
 
 func start_server():
 	print("Starting WebSocket Server on port: ", PORT)
