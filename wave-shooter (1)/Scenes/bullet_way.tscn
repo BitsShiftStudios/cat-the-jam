@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://cxxon0g1st0hl"]
-
-[ext_resource type="Script" uid="uid://bocqdibnp7yq2" path="res://Script/bullet_way.gd" id="1_mqo6g"]
-
-[node name="Bullet_way" type="RayCast3D" unique_id=1649717833]
-target_position = Vector3(0, 0, 0)
-script = ExtResource("1_mqo6g")
