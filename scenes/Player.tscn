@@ -17,7 +17,7 @@ properties/1/replication_mode = 1
 [node name="Node3D" type="Node3D" unique_id=1901470865]
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=2125130089]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1135273, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.809, 0)
 script = ExtResource("1_p0vlq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1540903715]
@@ -27,7 +27,8 @@ shape = SubResource("CapsuleShape3D_5q5h1")
 mesh = SubResource("CapsuleMesh_p0vlq")
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1059152515]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4912004e-08, 0.66876215, -0.44720098)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.4912004e-08, 1.4815626, 4.101383)
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=467881602]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Player" unique_id=467881602]
+root_path = NodePath("../..")
 replication_config = SubResource("SceneReplicationConfig_p0vlq")

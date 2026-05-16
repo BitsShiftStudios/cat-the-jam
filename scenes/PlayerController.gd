@@ -1,12 +1,13 @@
 extends CharacterBody3D
 
-
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-
-func _enter_tree():
-	var player_id = name.to_int()
+		
+func _ready() -> void:
+	var player_id = get_parent().name.to_int()
+	print("Player ID: ", player_id)
 	set_multiplayer_authority(player_id)
+	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
 	
 	if not is_multiplayer_authority():
 		$Camera3D.current = false
@@ -14,6 +15,9 @@ func _enter_tree():
 		set_physics_process(false)
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta

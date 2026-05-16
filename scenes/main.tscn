@@ -24,13 +24,6 @@ script = ExtResource("1_ig7tw")
 _spawnable_scenes = PackedStringArray("uid://fwq04t21d3fq")
 spawn_path = NodePath("..")
 
-[node name="Cube" type="StaticBody3D" parent="." unique_id=1000320082]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.1465113)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cube" unique_id=54293460]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0065837, -2.8188815)
-mesh = SubResource("BoxMesh_o5qli")
-
 [node name="Cube2" type="StaticBody3D" parent="." unique_id=2117207972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.7188053, 0, -1.1465113)
 
@@ -66,3 +59,7 @@ mesh = SubResource("BoxMesh_o5qli")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1441991057]
 shape = SubResource("BoxShape3D_o5qli")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=563781486]
+transform = Transform3D(1, 0, 0, 0, 0.8451219, 0.5345736, 0, -0.5345736, 0.8451219, -0.09729862, 4.678946, 10.722572)
+visible = false
