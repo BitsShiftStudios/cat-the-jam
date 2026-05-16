@@ -1,5 +1,7 @@
 extends Node
 
+@export var player_scene: PackedScene = preload("res://scenes/Player.tscn")
+
 const PORT = 8080
 var peer = WebSocketMultiplayerPeer.new()
 
@@ -37,7 +39,12 @@ func start_client():
 
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
-	# This is where your code will call a function to spawn the player's 3D avatar
+	
+	var player_instance = player_scene.instantiate()
+	player_instance.name = str(id) # Name must be the network ID
+	player_instance.set_multiplayer_authority(id) # Assign control to that specific client
+	
+	add_child(player_instance)
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
