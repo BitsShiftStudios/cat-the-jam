@@ -11,7 +11,7 @@ extends Node3D
 @export var crouch_bullet_spread_increase_rate = 0.1
 @export var jump_bullet_spread_increase_rate = 1.9
 
-@onready var decal = preload("res://scenes/bullet_hole.tscn")
+@onready var bullet_hole_scene = preload("res://scenes/bullet_hole.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func fire_base_weapon(weapon_range, delta, camera):
@@ -23,24 +23,29 @@ func fire_base_weapon(weapon_range, delta, camera):
 		var target_collider = result.collider
 		var target_normal = result.normal
 		var target_position = result.position
-		var hole = decal.instantiate()
-		var hole_node = hole.get_node("hole")
-		#var particle = hole.get_node("GPUParticles3D")
 		
-		
-		hole.scale = Vector3(0.5, 0.5, 0.5)
-		target_collider.add_child(hole)
-		hole.global_position = target_position
-#		particle.global_position = target_position
-		hole.look_at(target_position + target_normal, Vector3.DOWN)
-		hole.rotate_object_local(Vector3.RIGHT, deg_to_rad(-90))
-		
+		spawn_bullet_hole(target_collider, target_position, target_normal)
+		rpc("sync_bullet_hole", target_collider.get_path(), target_position, target_normal)
 		
 
-func set_bullet_spread(bullet_spread_increase_rate):
-	if default_max_bullet_spread_rate > default_bullet_spread_rate:
-		default_bullet_spread_rate += bullet_spread_increase_rate
-
+@rpc("any_peer", "call_remote", "reliable")
+func sync_bullet_hole(collider_path: NodePath, target_pos: Vector3, target_norm: Vector3):
+	var target_collider = get_node_or_null(collider_path)
+	if target_collider != null:
+		spawn_bullet_hole(target_collider, target_pos, target_norm)
+func spawn_bullet_hole(target_collider: Node, target_position: Vector3, target_normal: Vector3):
+	var hole = bullet_hole_scene.instantiate()
+	hole.scale = Vector3(0.02, 0.02, 0.02)
+	target_collider.add_child(hole)
+	var safe_spawn_position = target_position + (target_normal * 0.02)
+	hole.global_position = safe_spawn_position
+	hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
+	
+	# Yönünü ayarla (look_at normal pozisyonuna bakar, yani dışarıya)
+	#hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
+	#hole.rotate_object_local(Vector3.RIGHT, deg_to_rad(-90))
+	
+	
 func create_raycast(camera, weapon_range) -> Dictionary:
 	var viewport_center = get_viewport().get_visible_rect().size / 2.0
 	var ray_origin = camera.project_ray_origin(viewport_center)
@@ -55,6 +60,10 @@ func create_raycast(camera, weapon_range) -> Dictionary:
 	var space_status = get_world_3d().direct_space_state
 	var result = space_status.intersect_ray(query)
 	return result
+
+func set_bullet_spread(bullet_spread_increase_rate):
+	if default_max_bullet_spread_rate > default_bullet_spread_rate:
+		default_bullet_spread_rate += bullet_spread_increase_rate
 
 func restore_bullet_spread(delta):
 	if default_bullet_spread_rate != 0.0:
