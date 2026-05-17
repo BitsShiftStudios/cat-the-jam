@@ -27,7 +27,7 @@ func start_server():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = "ws://10.11.25.4:" + str(PORT)
+	var target_url = "ws://10.11.25.6:" + str(PORT)
 	print("Connecting to server at: ", target_url)
 	
 	var error = peer.create_client(target_url)

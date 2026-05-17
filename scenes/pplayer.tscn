@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bulstycgcn6hi"]
 
 [ext_resource type="Script" uid="uid://dv8w15v6ov5ue" path="res://scripts/pplayer.gd" id="1_68cow"]
+[ext_resource type="PackedScene" uid="uid://b0esovs5jpbm0" path="res://scenes/m4a4.tscn" id="3_fnagx"]
 [ext_resource type="PackedScene" uid="uid://bgv6jde4xlryv" path="res://scenes/ak47.tscn" id="3_i3pqv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4flbx"]
@@ -59,6 +60,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -0.15254328)
 
 [node name="ak47" parent="Player/Neck/Head/WeaponPivot" unique_id=684825964 instance=ExtResource("3_i3pqv")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.23437977, -0.19566953, -0.43566355)
+weapon_damage = 1
+
+[node name="m4a4" parent="Player/Neck/Head/WeaponPivot" unique_id=164708223 instance=ExtResource("3_fnagx")]
+transform = Transform3D(0, 0, 0.19999999, 0, 0.2, 0, -0.19999999, 0, 0, 0.234, -0.30141354, -0.18651798)
+gun_fire_speed = 2.0
 
 [node name="CameraShaker" type="Node3D" parent="Player/Neck/Head" unique_id=1621711414]
 
@@ -96,3 +102,29 @@ visible = false
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Player" unique_id=1633348701]
 root_path = NodePath("../..")
 replication_config = SubResource("SceneReplicationConfig_68cow")
+
+[node name="BuyMenu" type="CanvasLayer" parent="Player" unique_id=1358843680]
+
+[node name="ColorRect" type="ColorRect" parent="Player/BuyMenu" unique_id=2015209314]
+offset_left = 495.0
+offset_top = 253.0
+offset_right = 1124.0
+offset_bottom = 731.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player/BuyMenu/ColorRect" unique_id=311410917]
+layout_mode = 0
+offset_left = 245.0
+offset_top = 90.0
+offset_right = 365.0
+offset_bottom = 406.0
+
+[node name="Ak47" type="Button" parent="Player/BuyMenu/ColorRect/VBoxContainer" unique_id=1930181682]
+layout_mode = 2
+text = "AK47"
+
+[node name="M4A4" type="Button" parent="Player/BuyMenu/ColorRect/VBoxContainer" unique_id=1558105901]
+layout_mode = 2
+text = "M4A4"
+
+[connection signal="pressed" from="Player/BuyMenu/ColorRect/VBoxContainer/Ak47" to="Player" method="_on_ak_47_pressed"]
+[connection signal="pressed" from="Player/BuyMenu/ColorRect/VBoxContainer/M4A4" to="Player" method="_on_m_4a_4_pressed"]

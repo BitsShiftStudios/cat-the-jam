@@ -22,10 +22,19 @@ var SPEED
 #Speed
 
 
+@onready var buy_menu = $BuyMenu
+var current_weapon : base_weapon
+
 ##Fire System
 @onready var camera = $Neck/Head/CameraShaker/Camera3D
+
+
 @onready var ak47 = $Neck/Head/WeaponPivot/ak47
+@onready var m4a4 = $Neck/Head/WeaponPivot/m4a4
+
+
 @onready var hud_node = $hud
+var is_trying_to_fire = false
 ## 0 == IDLE
 ## 1 == WALKING
 ## 2 == RUNNING
@@ -69,9 +78,18 @@ func _enter_tree():
 		$Neck/Head/CameraShaker/Camera3D.current = true
 	
 func _ready():
-	if not is_multiplayer_authority():
-		return
-
+	
+	if is_multiplayer_authority():
+		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun
+		buy_menu.visible = false
+	else:
+		# DÜŞMAN KARAKTERİ: Kendi ekranımızda düşmanın arayüzünü tamamen yok edelim
+		if buy_menu != null:
+			buy_menu.queue_free()
+	
+	switch_weapon(1)
+	print(current_weapon)
+	
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
 	test_face = $testface.position
@@ -158,7 +176,11 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	if !match_controller.match_active:
-		return
+		return	
+	if Input.is_action_just_pressed("buy_menu"):
+		toggle_buy_menu()
+	if buy_menu.visible == true:
+		return	
 
 	# Add the gravity.
 	if not is_on_floor():
@@ -215,9 +237,15 @@ func _physics_process(delta: float) -> void:
 	## Chracter Speed - status
 	
 	##Fire Gun
+	if current_weapon.is_automatic:
+		is_trying_to_fire = Input.is_action_pressed("fire")
+	else:
+		is_trying_to_fire = Input.is_action_just_pressed("fire")
 	
-	if Input.is_action_pressed("fire"):
-		if ak47.fire(delta, hud_node, camera, player_status):
+	
+	
+	if is_trying_to_fire:
+		if current_weapon.fire(delta, hud_node, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
 		else:
@@ -230,7 +258,7 @@ func _physics_process(delta: float) -> void:
 	
 	##Reload
 	if Input.is_action_just_pressed("reload"):
-		ak47.reload()
+		current_weapon.reload()
 	##Reload
 		
 	#Camera Shake
@@ -250,6 +278,25 @@ func _physics_process(delta: float) -> void:
 	## Character Control Mechanics
 	take_player_status(input_dir)
 	move_and_slide()
+
+
+func switch_weapon(weapon_index: int):
+	var weapon_pivot = $Neck/Head/WeaponPivot
+	if weapon_index < 0 or weapon_index >= weapon_pivot.get_child_count():
+		return
+	for child in weapon_pivot.get_children():
+		child.visible = false
+	var selected_weapon = weapon_pivot.get_child(weapon_index)
+	selected_weapon.visible = true
+	current_weapon = selected_weapon
+
+func toggle_buy_menu():
+	buy_menu.visible = !buy_menu.visible
+	
+	if buy_menu.visible:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func take_player_status(input_dir):
 	if not is_multiplayer_authority():
@@ -315,8 +362,11 @@ func leaning_chracter(pressed_key_name, delta):
 		$Neck.position.x = lerp($Neck.position.x, 0.0, 17.0 * delta)
 		$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, 0.0, 10.0 * delta)
 
+
 func _input(event):
-	if not is_multiplayer_authority():
+	if not is_multiplayer_authority() or buy_menu.visible == true:
+		return
+	if !match_controller.match_active:
 		return
 	if !match_controller.match_active:
 		return
@@ -333,3 +383,13 @@ func _input(event):
 		if $Neck/Head.rotation_degrees.x <= -90 and event.relative.y < 0:
 			$Neck/Head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 	# Print the size of the viewport.
+
+
+func _on_ak_47_pressed() -> void:
+	switch_weapon(0)
+	print(current_weapon)
+
+
+func _on_m_4a_4_pressed() -> void:
+	switch_weapon(1)
+	print(current_weapon)

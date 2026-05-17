@@ -8,6 +8,7 @@ extends base_weapon
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 
+
 func _process(delta):
 	# Sarsıntıyı otomatık olarak move toward ile düzelten fonksiyon
 	restore_bullet_spread(delta)
@@ -24,7 +25,7 @@ func _process(delta):
 func fire(delta, hud_node, camera, player_status) -> int:
 	if fire_timer >= gun_fire_speed and total_ammo_in_magazine > 0:
 		total_ammo_in_magazine -= 1
-		$AudioStreamPlayer3D.play()
+		#$AudioStreamPlayer3D.play()
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0

@@ -3,6 +3,16 @@ extends Node3D
 
 @export var muzzle_flash : Sprite3D
 
+@export_category("Gun Options")
+@export var gun_fire_speed : float 
+@export var weapon_range : float
+@export var weapon_damage : int
+@export var is_automatic : bool
+
+@export_category("Gun Ammo Settings")
+@export var total_ammo_ui : int
+@export var total_ammo_in_magazine_ui : int
+
 @export_category("Gun Bullet Spread Values")
 @export var default_bullet_spread_rate = 0.0
 @export var default_bullet_spread_increase_rate = 0.5
@@ -19,11 +29,11 @@ func fire_at_player(target_collider) -> void:
 		var target_network_id = name.to_int()
 		var owner_player = get_owner().get_child(0)	
 		if owner_player:
-			owner_player.request_damage_from_player(target_network_id, 20)
+			owner_player.request_damage_from_player(target_network_id, weapon_damage)
 
 # Called when the node enters the scene tree for the first time.
 func fire_base_weapon(weapon_range, delta, camera):
-	muzzle_flash.fire_muzzle_flash()
+#w	muzzle_flash.fire_muzzle_flash()
 	var result = create_raycast(camera, weapon_range)
 	if !result:
 		pass
