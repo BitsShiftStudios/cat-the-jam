@@ -87,10 +87,35 @@ func _ready():
 	game_ui.update_health_display()
 	
 func add_health(amount: int) -> void:
+	if not multiplayer.is_server():
+		return
+
 	health += amount
+	
+	rpc_id(get_multiplayer_authority(), "update_health_local", health)
+
+	if health <= 0:
+		print(name, ": öldüm")
+		
+func request_damage_from_player(target_network_id: int, damage: int):
+	rpc_id(1, "damage_request", target_network_id, damage)
+
+@rpc("any_peer", "reliable")
+func damage_request(victim_id: int, damage_amount: int):
+	if not multiplayer.is_server():
+		return	
+	
+	var name = str(victim_id)
+	var victim_node = get_parent().get_parent().get_node_or_null(name).get_child(0)
+	
+	if victim_node:
+		victim_node.add_health(-damage_amount)
+		
+@rpc("any_peer", "reliable")
+func update_health_local(new_health_value: int):
+	health = new_health_value
 	game_ui.update_health_value(health)
 	game_ui.update_health_display()
-
 	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():

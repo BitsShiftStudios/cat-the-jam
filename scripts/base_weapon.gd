@@ -13,6 +13,14 @@ extends Node3D
 
 @onready var bullet_hole_scene = preload("res://scenes/bullet_hole.tscn")
 
+func fire_at_player(target_collider) -> void:
+	var name = target_collider.get_parent().name
+	if name.is_valid_int():
+		var target_network_id = name.to_int()
+		var owner_player = get_owner().get_child(0)	
+		if owner_player:
+			owner_player.request_damage_from_player(target_network_id, 20)
+
 # Called when the node enters the scene tree for the first time.
 func fire_base_weapon(weapon_range, delta, camera):
 	muzzle_flash.fire_muzzle_flash()
@@ -27,6 +35,7 @@ func fire_base_weapon(weapon_range, delta, camera):
 		spawn_bullet_hole(target_collider, target_position, target_normal)
 		rpc("sync_bullet_hole", target_collider.get_path(), target_position, target_normal)
 		
+		fire_at_player(target_collider)
 
 @rpc("any_peer", "call_remote", "reliable")
 func sync_bullet_hole(collider_path: NodePath, target_pos: Vector3, target_norm: Vector3):

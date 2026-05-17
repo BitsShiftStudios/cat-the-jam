@@ -21,6 +21,7 @@ func update_timer_display() -> void:
 		timer_label.text = "%02d:%02d" % [minutes, seconds]
 
 func update_health_value(health: int) -> void:
+	print("Can güncellendi: ", get_multiplayer_authority())
 	self.health = health
 
 func update_health_display() -> void:
