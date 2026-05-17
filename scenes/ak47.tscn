@@ -129,11 +129,12 @@ properties/2/replication_mode = 1
 
 [node name="ak47" type="Node3D" unique_id=684825964 node_paths=PackedStringArray("muzzle_flash")]
 script = ExtResource("1_y6vsc")
-ak47_fire_speed = 0.1
+muzzle_flash = NodePath("MuzzleFlash")
+gun_fire_speed = 0.1
+weapon_range = 1000.0
+is_automatic = true
 total_ammo_ui = 180
 total_ammo_in_magazine_ui = 30
-weapon_range = 1000.0
-muzzle_flash = NodePath("MuzzleFlash")
 crouch_bullet_spread_increase_rate = 0.3
 
 [node name="AssaultRIfle_01_Cube_002" type="MeshInstance3D" parent="." unique_id=650958384]
