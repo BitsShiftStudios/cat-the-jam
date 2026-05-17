@@ -60,7 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -0.15254328)
 
 [node name="ak47" parent="Player/Neck/Head/WeaponPivot" unique_id=684825964 instance=ExtResource("3_i3pqv")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.23437977, -0.19566953, -0.43566355)
-weapon_damage = 1
+weapon_damage = 30
 
 [node name="m4a4" parent="Player/Neck/Head/WeaponPivot" unique_id=164708223 instance=ExtResource("3_fnagx")]
 transform = Transform3D(0, 0, 0.19999999, 0, 0.2, 0, -0.19999999, 0, 0, 0.234, -0.30141354, -0.18651798)
