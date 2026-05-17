@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bulstycgcn6hi" path="res://scenes/pplayer.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/Map.tscn" id="3_sugp2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
 
@@ -14,11 +15,6 @@ sky = SubResource("Sky_sugp2")
 ambient_light_source = 3
 ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_o5qli"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_o5qli"]
-size = Vector3(10.003967, 1, 10.299164)
-
 [node name="Node" type="Node" unique_id=1621457691]
 script = ExtResource("1_ig7tw")
 player_scene = ExtResource("2_0wfyh")
@@ -28,21 +24,12 @@ _spawnable_scenes = PackedStringArray("uid://bulstycgcn6hi")
 spawn_path = NodePath("..")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1698718137]
-transform = Transform3D(1, 0, 0, 0, 0.32908088, 0.9443017, 0, -0.9443017, 0.32908088, 0, 4.2523947, 1.4819224)
+transform = Transform3D(1, 0, 0, 0, 0.542896, 0.83979994, 0, -0.83979994, 0.542896, 0, 4.2523947, 1.4819224)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1384166870]
 environment = SubResource("Environment_jyhfs")
 
-[node name="Ground" type="StaticBody3D" parent="." unique_id=1692681716]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.0663342, 0.19353294)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=1740120106]
-transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
-mesh = SubResource("BoxMesh_o5qli")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1441991057]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020599365, 0, -0.03074646)
-shape = SubResource("BoxShape3D_o5qli")
-
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1588857458]
 transform = Transform3D(1, 0, 0, 0, 0.81376064, 0.5812001, 0, -0.5812001, 0.81376064, 0, 2.5077765, 8.452658)
+
+[node name="Map" parent="." unique_id=1135779736 instance=ExtResource("3_sugp2")]

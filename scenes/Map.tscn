@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://02k6isac736i"]
+
+[ext_resource type="Material" uid="uid://j0vsx5ehurrq" path="res://assets/materials/Ground.tres" id="1_5hauk"]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" unique_id=517935479]
+use_collision = true
+
+[node name="Ground" type="CSGBox3D" parent="." unique_id=1325701704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04792738, 0)
+material_override = ExtResource("1_5hauk")
+size = Vector3(25, 1, 50)
+material = ExtResource("1_5hauk")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1054702828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5185394, 2.433999, 0.07397461)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=206193883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.3049593, 2.433999, -5.351329)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="." unique_id=978735857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.201151, 2.433999, -15.824934)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=2113005721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.201151, 2.433999, 4.984274)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="." unique_id=1532601252]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2465606, 2.433999, 16.820597)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="." unique_id=1903545571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6768003, 2.433999, 21.560604)
+size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="." unique_id=733684976]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6768003, 2.433999, 8.643036)
+size = Vector3(4.08313, 3.8380127, 0.25)
