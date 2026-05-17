@@ -7,6 +7,10 @@ extends CharacterBody3D
 @export var LEANING_POSITION_OFFSET = 0.4
 @export var LEANING_ROTATION_DEGREES = 6.0
 
+#Health system
+@onready var game_ui = $/root/Node/GameUI
+@export var health:int = 100
+
 #Speed
 @export_group("Speed settings")
 var SPEED
@@ -61,7 +65,7 @@ func _enter_tree():
 		## Kamera default olarak false
 		## Bunu true yapmamız lazım
 		$Neck/Head/CameraShaker/Camera3D.current = true
-
+	
 func _ready():
 	if not is_multiplayer_authority():
 		return
@@ -78,6 +82,15 @@ func _ready():
 	
 	$ShapeCast3D.add_exception(self)	# Cast'in içinde olduğu node daki hiç bir nesneye sinyal almamaya yarıyor
 	$ControlUpperHead.add_exception(self)
+	
+	game_ui.update_health_value(health)
+	game_ui.update_health_display()
+	
+func add_health(amount: int) -> void:
+	health += amount
+	game_ui.update_health_value(health)
+	game_ui.update_health_display()
+
 	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():

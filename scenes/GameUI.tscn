@@ -9,6 +9,9 @@ font_color = Color(0.15823665, 0.8396851, 2.695322e-06, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_jkspe"]
 font_size = 32
 
+[sub_resource type="LabelSettings" id="LabelSettings_1twlr"]
+font_size = 64
+
 [node name="GameUI" type="CanvasLayer" unique_id=2105203079]
 script = ExtResource("1_jkspe")
 
@@ -46,3 +49,34 @@ grow_horizontal = 2
 layout_mode = 2
 text = "00:00"
 label_settings = SubResource("LabelSettings_jkspe")
+
+[node name="HealthContainer" type="CenterContainer" parent="Control" unique_id=1927763903]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -103.0
+offset_right = 185.0
+grow_vertical = 0
+
+[node name="HealthLabel" type="Label" parent="Control/HealthContainer" unique_id=528891934]
+layout_mode = 2
+text = "100"
+label_settings = SubResource("LabelSettings_1twlr")
+horizontal_alignment = 1
+
+[node name="AmmoContainer" type="CenterContainer" parent="Control" unique_id=1942993404]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 209.0
+offset_top = -103.0
+offset_right = 407.0
+grow_vertical = 0
+
+[node name="AmmoLabel" type="Label" parent="Control/AmmoContainer" unique_id=1925664381]
+layout_mode = 2
+text = "30/180"
+label_settings = SubResource("LabelSettings_1twlr")
+horizontal_alignment = 1
