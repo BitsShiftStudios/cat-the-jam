@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://duqrl1qp4k6im"]
 
 [ext_resource type="Script" uid="uid://dc2k03er8w4k0" path="res://scripts/GameUI.gd" id="1_jkspe"]
+[ext_resource type="Script" uid="uid://bkjp4e3qau3e2" path="res://scripts/ScoreboardPanel.gd" id="2_1twlr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n352"]
 font_size = 24
@@ -80,3 +81,20 @@ layout_mode = 2
 text = "30/180"
 label_settings = SubResource("LabelSettings_1twlr")
 horizontal_alignment = 1
+
+[node name="ScoreboardPanel" type="PanelContainer" parent="Control" unique_id=325417023 groups=["score_ui"]]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 343.0
+offset_top = 204.0
+offset_right = -343.0
+offset_bottom = -204.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_1twlr")
+
+[node name="RowsContainer" type="VBoxContainer" parent="Control/ScoreboardPanel" unique_id=1988332576]
+layout_mode = 2

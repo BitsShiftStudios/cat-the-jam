@@ -32,8 +32,8 @@ func record_kill_death(killer_id: int, victim_id: int):
 	if scoreboard_data.has(victim_id):
 		scoreboard_data[victim_id]["deaths"] += 1
 		
-	for id in scoreboard_data.keys():
-		print(id, " K-D: ", scoreboard_data[id]["kills"], "-", scoreboard_data[id]["deaths"])
+	#for id in scoreboard_data.keys():
+		#print(id, " K-D: ", scoreboard_data[id]["kills"], "-", scoreboard_data[id]["deaths"])
 		
 	_broadcast_scoreboard()
 
