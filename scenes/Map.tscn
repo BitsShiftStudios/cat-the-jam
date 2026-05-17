@@ -38,3 +38,32 @@ size = Vector3(4.08313, 3.8380127, 0.25)
 [node name="CSGBox3D7" type="CSGBox3D" parent="." unique_id=733684976]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6768003, 2.433999, 8.643036)
 size = Vector3(4.08313, 3.8380127, 0.25)
+
+[node name="SpawnPoints" type="Node" parent="." unique_id=1994494275 groups=["spawn_containers"]]
+
+[node name="Marker3D" type="Marker3D" parent="SpawnPoints" unique_id=693946174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.532386, 0, -22.867615)
+
+[node name="Marker3D2" type="Marker3D" parent="SpawnPoints" unique_id=1104548081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.640102, 0, -22.867615)
+
+[node name="Marker3D3" type="Marker3D" parent="SpawnPoints" unique_id=1088887266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2205787, 0, -22.867615)
+
+[node name="Marker3D4" type="Marker3D" parent="SpawnPoints" unique_id=416554066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2205787, 0, -7.4980183)
+
+[node name="Marker3D5" type="Marker3D" parent="SpawnPoints" unique_id=1276352679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2205787, 0, 13.525135)
+
+[node name="Marker3D6" type="Marker3D" parent="SpawnPoints" unique_id=2055670031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.023991, 0, 13.525135)
+
+[node name="Marker3D7" type="Marker3D" parent="SpawnPoints" unique_id=336411530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.023991, 0, 8.359457)
+
+[node name="Marker3D8" type="Marker3D" parent="SpawnPoints" unique_id=1146156468]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.023991, 0, 23.08932)
+
+[node name="Marker3D9" type="Marker3D" parent="SpawnPoints" unique_id=1943396249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.797855, 0, 22.3425)

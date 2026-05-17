@@ -6,6 +6,8 @@ const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
 
 func _ready():
+	$MultiplayerSpawner.spawn_function = _on_player_spawn
+	
 	if OS.get_cmdline_args().has("--server"):
 		get_window().title = "Server" 
 		start_server()
@@ -34,13 +36,34 @@ func start_client():
 		
 	multiplayer.multiplayer_peer = peer
 
+func get_spawn_point() -> Vector3:
+	var groups = get_tree().get_nodes_in_group("spawn_containers")
+	
+	if (groups.size() > 0):
+		var spawn_container = groups[0]
+		var spawn_points = spawn_container.get_children()
+		
+		if spawn_points.size() > 0:
+			var rand = randi() % spawn_points.size()
+			print("Rand: ", rand)
+			var random_spawn = spawn_points[rand]
+			return random_spawn.global_position
+			
+	return Vector3(0, 3, 0)
+
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
 	
-	var player_instance = player_scene.instantiate()
-	player_instance.name = str(id)
-	player_instance.set_multiplayer_authority(id)
-	add_child(player_instance)
+	var spawn_pos = get_spawn_point() 
+	$MultiplayerSpawner.spawn({"id": id, "pos": spawn_pos})
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
+	
+func _on_player_spawn(data: Dictionary) -> Node:
+	var player_instance = player_scene.instantiate()
+	player_instance.name = str(data["id"])
+	player_instance.global_position = data["pos"]
+	player_instance.set_multiplayer_authority(data["id"])
+	
+	return player_instance

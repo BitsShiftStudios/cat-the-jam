@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bulstycgcn6hi"]
 
 [ext_resource type="Script" uid="uid://dv8w15v6ov5ue" path="res://scripts/pplayer.gd" id="1_68cow"]
-[ext_resource type="PackedScene" path="res://scenes/ak47.tscn" id="3_i3pqv"]
+[ext_resource type="PackedScene" uid="uid://bgv6jde4xlryv" path="res://scenes/ak47.tscn" id="3_i3pqv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4flbx"]
 height = 2.0168457
