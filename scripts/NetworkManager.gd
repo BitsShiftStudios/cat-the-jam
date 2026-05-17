@@ -1,6 +1,7 @@
 extends Node
 
 @export var player_scene: PackedScene = preload("res://scenes/Player.tscn")
+@onready var match_controller = $MatchController
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
@@ -52,12 +53,14 @@ func get_spawn_point() -> Vector3:
 
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
+	match_controller.register_new_player(id, "Test")
 	
 	var spawn_pos = get_spawn_point() 
 	$MultiplayerSpawner.spawn({"id": id, "pos": spawn_pos})
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
+	match_controller.remove_player(id)
 	
 func _on_player_spawn(data: Dictionary) -> Node:
 	var player_instance = player_scene.instantiate()

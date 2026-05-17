@@ -48,6 +48,7 @@ replication_config = SubResource("SceneReplicationConfig_sugp2")
 [node name="Timer" type="Timer" parent="." unique_id=345636905]
 autostart = true
 script = ExtResource("4_jyhfs")
+default_match_time = 69
 
 [node name="GameUI" parent="." unique_id=2105203079 instance=ExtResource("5_tbgi4")]
 
