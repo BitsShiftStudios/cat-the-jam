@@ -1,6 +1,7 @@
 extends Node
 
 @export var player_scene: PackedScene = preload("res://scenes/Player.tscn")
+@export var match_time_left:int = 300
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
