@@ -9,6 +9,10 @@
 pip3 install requests websockets --break-system-packages
 ```
 
+## Build Dosyaları
+`www/` klasörü Godot'tan web export alınarak oluşturulur.
+`serverBuild/` klasörü Godot'tan Linux export alınarak oluşturulur.You said: www ve serverBuild klsörü de setup oluştursun varsa oluşturmasın
+
 ## 42 API Ayarları
 1. https://profile.intra.42.fr/oauth/applications adresine git
 2. Yeni uygulama oluştur
