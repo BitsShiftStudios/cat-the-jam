@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/Map.tscn" id="3_sugp2"]
 [ext_resource type="Script" uid="uid://cnb5ojw7xdko5" path="res://scripts/timer.gd" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duqrl1qp4k6im" path="res://scenes/GameUI.tscn" id="5_tbgi4"]
+[ext_resource type="Script" uid="uid://n63h6tkodc4m" path="res://scripts/match_controller.gd" id="6_tefeu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
 
@@ -18,7 +19,7 @@ ambient_light_source = 3
 ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sugp2"]
-properties/0/path = NodePath(".:match_time_left")
+properties/0/path = NodePath("Timer:match_time_left")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
@@ -49,5 +50,8 @@ autostart = true
 script = ExtResource("4_jyhfs")
 
 [node name="GameUI" parent="." unique_id=2105203079 instance=ExtResource("5_tbgi4")]
+
+[node name="MatchController" type="Node" parent="." unique_id=67322274]
+script = ExtResource("6_tefeu")
 
 [connection signal="timeout" from="Timer" to="Timer" method="_on_timer_timeout"]

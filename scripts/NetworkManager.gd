@@ -1,7 +1,6 @@
 extends Node
 
 @export var player_scene: PackedScene = preload("res://scenes/Player.tscn")
-@export var match_time_left:int = 300
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
@@ -46,7 +45,6 @@ func get_spawn_point() -> Vector3:
 		
 		if spawn_points.size() > 0:
 			var rand = randi() % spawn_points.size()
-			print("Rand: ", rand)
 			var random_spawn = spawn_points[rand]
 			return random_spawn.global_position
 			
@@ -64,7 +62,7 @@ func _on_player_disconnected(id: int):
 func _on_player_spawn(data: Dictionary) -> Node:
 	var player_instance = player_scene.instantiate()
 	player_instance.name = str(data["id"])
-	player_instance.global_position = data["pos"]
+	player_instance.position = data["pos"]
 	player_instance.set_multiplayer_authority(data["id"])
 	
 	return player_instance

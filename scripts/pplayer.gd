@@ -9,6 +9,7 @@ extends CharacterBody3D
 
 #Health system
 @onready var game_ui = $/root/Node/GameUI
+@onready var match_controller = $/root/Node/MatchController
 @export var health:int = 100
 
 #Speed
@@ -75,10 +76,8 @@ func _ready():
 	test_face = $testface.position
 	test_face_c_pos_y = test_face.y - 0.7
 	
-	
 	SPEED = SPEED_NORMAL
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
 	
 	$ShapeCast3D.add_exception(self)	# Cast'in içinde olduğu node daki hiç bir nesneye sinyal almamaya yarıyor
 	$ControlUpperHead.add_exception(self)
@@ -86,16 +85,48 @@ func _ready():
 	game_ui.update_health_value(health)
 	game_ui.update_health_display()
 	
-func add_health(amount: int) -> void:
+func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
 	health += amount
-	
-	rpc_id(get_multiplayer_authority(), "update_health_local", health)
+	var our_id = get_multiplayer_authority()
+	rpc_id(our_id, "update_health_local", health)
 
 	if health <= 0:
-		print(name, ": öldüm")
+		match_controller.record_kill_death(attacker_id, our_id)		
+		trigger_server_respawn()
+	
+func get_spawn_point() -> Vector3:
+	var groups = get_tree().get_nodes_in_group("spawn_containers")
+	
+	if (groups.size() > 0):
+		var spawn_container = groups[0]
+		var spawn_points = spawn_container.get_children()
+		
+		if spawn_points.size() > 0:
+			var rand = randi() % spawn_points.size()
+			var random_spawn = spawn_points[rand]
+			return random_spawn.global_position
+			
+	return Vector3(0, 3, 0)
+	
+func trigger_server_respawn() -> void:
+	if not multiplayer.is_server():
+		return
+		
+	health = 100
+	
+	var owner_id = get_multiplayer_authority()
+	rpc_id(owner_id, "update_health_local", health)
+	var new_spawn_pos = get_spawn_point()
+	rpc_id(owner_id, "teleport_client_to_spawn", new_spawn_pos)
+
+@rpc("any_peer", "reliable")
+func teleport_client_to_spawn(target_global_position: Vector3) -> void:
+	velocity = Vector3.ZERO
+	global_position = target_global_position
+	reset_physics_interpolation() 
 		
 func request_damage_from_player(target_network_id: int, damage: int):
 	rpc_id(1, "damage_request", target_network_id, damage)
@@ -106,10 +137,11 @@ func damage_request(victim_id: int, damage_amount: int):
 		return	
 	
 	var name = str(victim_id)
+	var attacker_id = multiplayer.get_remote_sender_id()
 	var victim_node = get_parent().get_parent().get_node_or_null(name).get_child(0)
 	
 	if victim_node:
-		victim_node.add_health(-damage_amount)
+		victim_node.add_health(-damage_amount, attacker_id)
 		
 @rpc("any_peer", "reliable")
 func update_health_local(new_health_value: int):

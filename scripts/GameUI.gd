@@ -26,3 +26,9 @@ func update_health_value(health: int) -> void:
 func update_health_display() -> void:
 	if health_label:
 		health_label.text = "%d" % health
+		
+func show_game_over():
+	pass
+	
+func hide_game_over():
+	pass
