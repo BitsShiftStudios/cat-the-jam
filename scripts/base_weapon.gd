@@ -25,13 +25,13 @@ func fire_base_weapon(weapon_range, delta, camera):
 		var target_position = result.position
 		var hole = decal.instantiate()
 		var hole_node = hole.get_node("hole")
-		var particle = hole.get_node("GPUParticles3D")
+		#var particle = hole.get_node("GPUParticles3D")
 		
 		
 		hole.scale = Vector3(0.5, 0.5, 0.5)
 		target_collider.add_child(hole)
 		hole.global_position = target_position
-		particle.global_position = target_position
+#		particle.global_position = target_position
 		hole.look_at(target_position + target_normal, Vector3.DOWN)
 		hole.rotate_object_local(Vector3.RIGHT, deg_to_rad(-90))
 		
