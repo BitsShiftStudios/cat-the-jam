@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://bgv6jde4xlryv"]
 
-[ext_resource type="Script" path="res://scripts/ak_47.gd" id="1_y6vsc"]
+[ext_resource type="Script" uid="uid://c106xedut7hai" path="res://scripts/ak_47.gd" id="1_y6vsc"]
 [ext_resource type="Texture2D" uid="uid://dfqfyk7tn61j0" path="res://assets/decals/WFX_T_MF FrontRear RIFLE1 A8.png" id="2_n1kmc"]
-[ext_resource type="Script" path="res://scripts/muzzle_flash.gd" id="3_ehutc"]
+[ext_resource type="Script" uid="uid://drbl2he4qqtxs" path="res://scripts/muzzle_flash.gd" id="3_ehutc"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="4_m7ad5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m2p3a"]
@@ -116,6 +116,17 @@ vertex_color_use_as_albedo = true
 albedo_color = Color(1.9749014, 1.3184516, 0, 1)
 albedo_texture = ExtResource("2_n1kmc")
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qvlqd"]
+properties/0/path = NodePath("MuzzleFlash:visible")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("MuzzleFlash:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("MuzzleFlash:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="ak47" type="Node3D" unique_id=684825964 node_paths=PackedStringArray("muzzle_flash")]
 script = ExtResource("1_y6vsc")
 ak47_fire_speed = 0.1
@@ -138,3 +149,6 @@ script = ExtResource("3_ehutc")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=768155769]
 stream = ExtResource("4_m7ad5")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=857847343]
+replication_config = SubResource("SceneReplicationConfig_qvlqd")
