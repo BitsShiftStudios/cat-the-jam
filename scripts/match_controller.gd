@@ -4,6 +4,7 @@ extends Node
 @onready var game_ui = $/root/Node/GameUI
 
 @export var end_screen_duration:float = 10.0
+@export var match_active:bool = true
 			
 var scoreboard_data: Dictionary = {}
 
@@ -47,11 +48,19 @@ func update_client_scoreboard(server_data: Dictionary):
 	var score_ui = get_tree().get_first_node_in_group("score_ui")
 	if score_ui:
 		score_ui.refresh_display(scoreboard_data)
+		
+func _get_winner() -> String:
+	var winner_id = -1
+	for id in scoreboard_data.keys():
+		if (winner_id == -1 || 
+			scoreboard_data[id]["kills"] > scoreboard_data[winner_id]["kills"]):
+			winner_id = id
+	return scoreboard_data[winner_id]["name"]
 
 # Round management
 func end_match():
-	rpc("show_match_finished_screen")
-	
+	rpc("show_match_finished_screen", _get_winner())
+	match_active = false
 	await get_tree().create_timer(end_screen_duration).timeout
 	reset_match()
 	
@@ -65,12 +74,13 @@ func reset_match():
 	get_tree().call_group("players", "trigger_server_respawn")
 	rpc("hide_match_finished_screen")
 	match_timer.start_timer()
+	match_active = true
 	
 # End screen
 @rpc("any_peer", "call_local", "reliable")
-func show_match_finished_screen():
+func show_match_finished_screen(winner_name: String):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	game_ui.show_game_over()
+	game_ui.show_game_over(winner_name)
 
 @rpc("any_peer", "call_local", "reliable")
 func hide_match_finished_screen():

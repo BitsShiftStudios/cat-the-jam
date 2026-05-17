@@ -57,6 +57,7 @@ func _enter_tree():
 	print("Player ID: ", player_id)
 	set_multiplayer_authority(player_id)
 	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
+	add_to_group("players")
 	
 	if not is_multiplayer_authority():
 		$Neck/Head/CameraShaker/Camera3D.current = false
@@ -88,6 +89,8 @@ func _ready():
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
 		return
+	if !match_controller.match_active:
+		return
 
 	health += amount
 	var our_id = get_multiplayer_authority()
@@ -113,7 +116,7 @@ func get_spawn_point() -> Vector3:
 	
 func trigger_server_respawn() -> void:
 	if not multiplayer.is_server():
-		return
+		return		
 		
 	health = 100
 	
@@ -134,7 +137,9 @@ func request_damage_from_player(target_network_id: int, damage: int):
 @rpc("any_peer", "reliable")
 func damage_request(victim_id: int, damage_amount: int):
 	if not multiplayer.is_server():
-		return	
+		return
+	if !match_controller.match_active:
+		return
 	
 	var name = str(victim_id)
 	var attacker_id = multiplayer.get_remote_sender_id()
@@ -151,6 +156,8 @@ func update_health_local(new_health_value: int):
 	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
+		return
+	if !match_controller.match_active:
 		return
 
 	# Add the gravity.
@@ -310,6 +317,8 @@ func leaning_chracter(pressed_key_name, delta):
 
 func _input(event):
 	if not is_multiplayer_authority():
+		return
+	if !match_controller.match_active:
 		return
 
 	# Mouse in viewport coordinates.

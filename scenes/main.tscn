@@ -22,6 +22,9 @@ ambient_light_color = Color(0.7107411, 0.71074116, 0.7107411, 1)
 properties/0/path = NodePath("Timer:match_time_left")
 properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath("MatchController:match_active")
+properties/1/spawn = true
+properties/1/replication_mode = 1
 
 [node name="Node" type="Node" unique_id=1621457691]
 script = ExtResource("1_ig7tw")
@@ -48,7 +51,7 @@ replication_config = SubResource("SceneReplicationConfig_sugp2")
 [node name="Timer" type="Timer" parent="." unique_id=345636905]
 autostart = true
 script = ExtResource("4_jyhfs")
-default_match_time = 20
+default_match_time = 5
 
 [node name="GameUI" parent="." unique_id=2105203079 instance=ExtResource("5_tbgi4")]
 

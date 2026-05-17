@@ -13,6 +13,15 @@ font_size = 32
 [sub_resource type="LabelSettings" id="LabelSettings_1twlr"]
 font_size = 64
 
+[sub_resource type="LabelSettings" id="LabelSettings_4s3j0"]
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_rs3te"]
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_7ro0d"]
+font_size = 24
+
 [node name="GameUI" type="CanvasLayer" unique_id=2105203079]
 script = ExtResource("1_jkspe")
 
@@ -82,7 +91,53 @@ text = "30/180"
 label_settings = SubResource("LabelSettings_1twlr")
 horizontal_alignment = 1
 
+[node name="EndScreenPanel" type="PanelContainer" parent="Control" unique_id=2059468899]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 343.0
+offset_top = 355.0
+offset_right = -343.0
+offset_bottom = -355.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RowsContainer" type="VBoxContainer" parent="Control/EndScreenPanel" unique_id=610938052]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=1383887344]
+layout_mode = 2
+text = "MATCH OVER"
+label_settings = SubResource("LabelSettings_4s3j0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WinnerLabel" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=1367781106]
+layout_mode = 2
+text = "Winner: XXX"
+label_settings = SubResource("LabelSettings_rs3te")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="empty" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=3045610]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_rs3te")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScreenSeconds" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=763412310]
+layout_mode = 2
+text = "Restarting in 10 seconds"
+label_settings = SubResource("LabelSettings_7ro0d")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="ScoreboardPanel" type="PanelContainer" parent="Control" unique_id=325417023 groups=["score_ui"]]
+visible = false
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = 15
