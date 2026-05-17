@@ -59,7 +59,10 @@ func _get_winner() -> String:
 
 # Round management
 func end_match():
-	rpc("show_match_finished_screen", _get_winner())
+	if not multiplayer.is_server():
+		return
+
+	rpc("show_match_finished_screen", _get_winner(), end_screen_duration)
 	match_active = false
 	await get_tree().create_timer(end_screen_duration).timeout
 	reset_match()
@@ -78,9 +81,9 @@ func reset_match():
 	
 # End screen
 @rpc("any_peer", "call_local", "reliable")
-func show_match_finished_screen(winner_name: String):
+func show_match_finished_screen(winner_name: String, duration: int):
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	game_ui.show_game_over(winner_name)
+	game_ui.show_game_over(winner_name, duration)
 
 @rpc("any_peer", "call_local", "reliable")
 func hide_match_finished_screen():
