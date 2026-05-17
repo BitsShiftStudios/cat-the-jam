@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://b53e4oegrn80g"]
+
+[ext_resource type="Script" uid="uid://dioi4n1f25mno" path="res://button.gd" id="1_0e48y"]
+[ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://http_request.gd" id="2_epypp"]
+
+[node name="Node2D" type="Node2D" unique_id=1739191017]
+
+[node name="Button" type="Button" parent="." unique_id=1019956404]
+offset_left = 487.0
+offset_top = 404.0
+offset_right = 674.0
+offset_bottom = 494.0
+text = "login"
+script = ExtResource("1_0e48y")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1821933812]
+script = ExtResource("2_epypp")
+
+[node name="Debug" type="Label" parent="HTTPRequest" unique_id=2048388076]
+offset_left = 780.0
+offset_top = 177.0
+offset_right = 1147.0
+offset_bottom = 372.0
+text = "deneme"
+
+[node name="Label" type="Label" parent="HTTPRequest" unique_id=544532378]
+offset_left = 79.0
+offset_top = 104.0
+offset_right = 145.0
+offset_bottom = 127.0
+theme_override_font_sizes/font_size = 60
+text = "DENEME"
+
+[connection signal="pressed" from="Button" to="HTTPRequest" method="_on_button_pressed"]
+[connection signal="request_completed" from="HTTPRequest" to="HTTPRequest" method="_on_request_completed"]
