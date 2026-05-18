@@ -62,6 +62,10 @@ var leaning_right: bool = false
 
 var collider : Object
 
+var snip_aim = false
+@onready var def_camera_fov = camera.fov
+
+
 var neck_org_position : Vector3
 var test_face : Vector3
 var test_face_c_pos_y
@@ -106,7 +110,7 @@ func _ready():
 			buy_menu.queue_free()
 	
 	switch_weapon(0)
-	print(current_weapon)
+	#print(current_weapon)
 	
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
@@ -161,10 +165,10 @@ func tilt_torso() -> void:
 func process_enemy_animations() -> void:
 	#print("Status: ", player_status)
 	match player_status:
-		0: # idle
+		0: # idles
 			change_animation("idle")
 		1: ## walk
-			change_animation("ct walk forward/walk")
+			change_animation("mixamo_com_005")
 		#2:
 			#change_animation("player_run/animation")
 		3: ## jump
@@ -194,7 +198,7 @@ func add_health(amount: int, attacker_id: int) -> void:
 	if health <= 0:
 		match_controller.record_kill_death(attacker_id, our_id)		
 		trigger_server_respawn()
-	
+
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
 	
@@ -211,7 +215,7 @@ func get_spawn_point() -> Vector3:
 	
 func trigger_server_respawn() -> void:
 	if not multiplayer.is_server():
-		return		
+		return
 		
 	health = 100
 	
@@ -257,6 +261,8 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("buy_menu"):
 		toggle_buy_menu()
 	if buy_menu.visible == true:
+		snip_aim = false
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
 		return
 
 	# Add the gravity.
@@ -277,6 +283,26 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 			
 	## Character Control Mechanics
+
+	#print(snip_aim)
+
+	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
+		snip_aim = !snip_aim
+	if snip_aim == true:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, 30.0, 15.0 * delta)
+	if snip_aim == false:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
+		
+	
+	#if Input.is_action_just_pressed("aim"):
+		#if not snip_aim:
+			#if current_weapon.name == "snip":
+				#camera.fov -= 50.0
+			#snip_aim = true
+		#else:
+			#snip_aim = false
+			#camera.fov = def_camera_fov
+	
 	
 	if Input.is_action_just_pressed("puase_game"):
 		if mouse_capture == 1:
@@ -288,13 +314,12 @@ func _physics_process(delta: float) -> void:
 	
 	## Character Leaning -----------
 	if Input.is_action_pressed("leaning_right"):
-		player_status = 6
 		leaning_chracter("leaning_right", delta)
 	elif Input.is_action_pressed("leaning_left"):
 		leaning_chracter("leaning_left", delta)
 	else:
-		change_animation("idle")
 		leaning_chracter("default", delta)
+		#leaning_chracter("default", delta)
 	## Character Leaning -----------
 	
 		
@@ -475,16 +500,14 @@ func _input(event):
 	# Print the size of the viewport.
 
 
-func _on_ak_47_pressed() -> void:
-	switch_weapon(0)
-	print(current_weapon)
-
-
 func _on_m_4a_4_pressed() -> void:
 	switch_weapon(1)
-	print(current_weapon)
+	toggle_buy_menu()
 
+func _on_ak_47_pressed() -> void:
+	switch_weapon(0)
+	toggle_buy_menu()
 
-func _on_awp_pressed() -> void:
+func _on_snip_pressed() -> void:
 	switch_weapon(2)
-	print(current_weapon)
+	toggle_buy_menu()

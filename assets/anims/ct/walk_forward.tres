@@ -1,4 +1,4 @@
-[gd_resource type="Animation" format=3 uid="uid://cp3d8dmp36ea1"]
+[gd_resource type="Animation" format=3 uid="uid://bhev41rqtsokm"]
 
 [resource]
 resource_name = "walk"
@@ -6,7 +6,7 @@ length = 0.76666665
 loop_mode = 1
 tracks/0/type = "position_3d"
 tracks/0/imported = true
-tracks/0/enabled = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("ct_t_pose/Skeleton3D:mixamorig_Hips")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true

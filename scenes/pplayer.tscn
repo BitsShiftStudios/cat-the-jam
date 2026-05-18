@@ -11,6 +11,7 @@
 [ext_resource type="AnimationLibrary" uid="uid://bkr0m2mutk2vc" path="res://assets/models/ct/anim/ct lean left.glb" id="7_nkja2"]
 [ext_resource type="AnimationLibrary" uid="uid://b3w2pskndlmqm" path="res://assets/models/ct/anim/ct lean right .glb" id="8_o2n2x"]
 [ext_resource type="PackedScene" uid="uid://b5dawhuxdi7wu" path="res://scenes/snip.tscn" id="11_o2n2x"]
+[ext_resource type="Texture2D" uid="uid://1uya8gd54f3q" path="res://assets/ui/silah_menu.png" id="12_85qsw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ltcww"]
 resource_name = "zırh.001"
@@ -6599,9 +6600,6 @@ properties/7/replication_mode = 1
 properties/8/path = NodePath("Player/Neck/Head/WeaponPivot/snip:visible")
 properties/8/spawn = true
 properties/8/replication_mode = 1
-properties/6/path = NodePath("Player:equipped_skinpack")
-properties/6/spawn = true
-properties/6/replication_mode = 1
 
 [node name="Node3D" type="Node3D" unique_id=737232604]
 
@@ -6996,31 +6994,67 @@ replication_config = SubResource("SceneReplicationConfig_68cow")
 
 [node name="BuyMenu" type="CanvasLayer" parent="Player" unique_id=1358843680]
 
-[node name="ColorRect" type="ColorRect" parent="Player/BuyMenu" unique_id=2015209314]
-offset_left = 495.0
-offset_top = 253.0
-offset_right = 1124.0
-offset_bottom = 731.0
+[node name="BackGround" type="TextureRect" parent="Player/BuyMenu" unique_id=1039994402]
+offset_left = 204.0
+offset_top = 114.0
+offset_right = 1609.0
+offset_bottom = 894.0
+texture = ExtResource("12_85qsw")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Player/BuyMenu/ColorRect" unique_id=311410917]
+[node name="MarginContainer" type="MarginContainer" parent="Player/BuyMenu/BackGround" unique_id=722636176]
 layout_mode = 0
-offset_left = 245.0
-offset_top = 90.0
-offset_right = 365.0
-offset_bottom = 406.0
+offset_top = 122.0
+offset_right = 1383.0
+offset_bottom = 329.0
 
-[node name="Ak47" type="Button" parent="Player/BuyMenu/ColorRect/VBoxContainer" unique_id=1930181682]
+[node name="HBoxContainer" type="HBoxContainer" parent="Player/BuyMenu/BackGround/MarginContainer" unique_id=1225923092]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-text = "AK47"
+theme_override_constants/separation = 15
 
-[node name="M4A4" type="Button" parent="Player/BuyMenu/ColorRect/VBoxContainer" unique_id=1558105901]
+[node name="M4A4" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer" unique_id=209964497]
+custom_minimum_size = Vector2(410, 0)
 layout_mode = 2
-text = "M4A4"
 
-[node name="AWP" type="Button" parent="Player/BuyMenu/ColorRect/VBoxContainer" unique_id=341040938]
+[node name="AK47" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer" unique_id=2032074077]
+custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
-text = "AWP"
 
-[connection signal="pressed" from="Player/BuyMenu/ColorRect/VBoxContainer/Ak47" to="Player" method="_on_ak_47_pressed"]
-[connection signal="pressed" from="Player/BuyMenu/ColorRect/VBoxContainer/M4A4" to="Player" method="_on_m_4a_4_pressed"]
-[connection signal="pressed" from="Player/BuyMenu/ColorRect/VBoxContainer/AWP" to="Player" method="_on_awp_pressed"]
+[node name="SNIP" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer" unique_id=392514430]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="Player/BuyMenu/BackGround" unique_id=1715873494]
+layout_mode = 0
+offset_top = 434.0
+offset_right = 1384.0
+offset_bottom = 716.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Player/BuyMenu/BackGround/MarginContainer2" unique_id=1291491286]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="empty" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer2/HBoxContainer" unique_id=1930896100]
+custom_minimum_size = Vector2(410, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "YAKINDA ..."
+
+[node name="empty2" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer2/HBoxContainer" unique_id=478515157]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "YAKINDA ..."
+
+[node name="empty3" type="Button" parent="Player/BuyMenu/BackGround/MarginContainer2/HBoxContainer" unique_id=1147282933]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "YAKINDA ..."
+
+[connection signal="pressed" from="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer/M4A4" to="Player" method="_on_m_4a_4_pressed"]
+[connection signal="pressed" from="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer/AK47" to="Player" method="_on_ak_47_pressed"]
+[connection signal="pressed" from="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer/SNIP" to="Player" method="_on_snip_pressed"]

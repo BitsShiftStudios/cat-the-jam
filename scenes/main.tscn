@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/Map.tscn" id="3_sugp2"]
 [ext_resource type="Script" uid="uid://cnb5ojw7xdko5" path="res://scripts/timer.gd" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duqrl1qp4k6im" path="res://scenes/GameUI.tscn" id="5_tbgi4"]
-[ext_resource type="Script" uid="uid://n63h6tkodc4m" path="res://scripts/match_controller.gd" id="6_tefeu"]
+[ext_resource type="Script" path="res://scripts/match_controller.gd" id="6_tefeu"]
 [ext_resource type="AudioStream" uid="uid://noatd8kybe7w" path="res://assets/sound/bg_music.mp3" id="7_o6xl0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
