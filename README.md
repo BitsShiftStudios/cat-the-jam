@@ -68,5 +68,7 @@ python3 start.py
 https://SUNUCU_IP:9090
 Sertifika uyarısı çıkarsa "Gelişmiş → Yine de devam et" de.
 
+!UYARI: Firefox'ta çalışmayabilir, Google Chrome önerilir
+
 ## Oynamak İçin
 Tarayıcıdan `https://SUNUCU_IP:9090` adresine git ve 42 hesabınla giriş yap.
