@@ -8,8 +8,12 @@ extends CharacterBody3D
 @export var LEANING_ROTATION_DEGREES = 6.0
 
 # Animation
+@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
 @onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
+@onready var skeleton: Skeleton3D = $"Node3D/ct idle/ct_t_pose/Skeleton3D"
+
+var spine_bone_id: int = -1
 
 #Health system
 @onready var game_ui = $/root/Node/GameUI
@@ -44,7 +48,7 @@ var is_trying_to_fire = false
 ## 2 == RUNNING
 ## 3 == JUMPING
 ## 4 == CROUCHING
-var player_status = 0
+@export var player_status: int = 0
 
 ##Fire System
 
@@ -82,7 +86,9 @@ func _enter_tree():
 		$Neck/Head/CameraShaker/Camera3D.current = true
 	
 func _ready():
-	
+	if is_multiplayer_authority():
+		$"Node3D/ct idle".hide()
+
 	if is_multiplayer_authority():
 		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun
 		buy_menu.visible = false
@@ -111,6 +117,39 @@ func _ready():
 	# Animation
 	left_hand_ik.start()
 	right_hand_ik.start()
+	if skeleton:
+		spine_bone_id = skeleton.find_bone("mixamorig_Spine")
+	
+func _process(delta: float) -> void:
+	if is_multiplayer_authority():
+		return
+	if skeleton and spine_bone_id != -1:
+		tilt_torso()
+	if anim_player:
+		process_enemy_animations()
+	
+func tilt_torso() -> void:
+	var target_rotation = Quaternion(Vector3(1, 0, 0), $Neck/Head.rotation_degrees.x / -90.0)
+	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
+
+func process_enemy_animations() -> void:
+	match player_status:
+		0: # idle
+			change_animation("idle")
+		1: ## walk
+			change_animation("mixamo_com_005")
+		#2:
+			#change_animation("player_run/animation")
+		3: ## jump
+			change_animation("jump")
+		4: ## crouch
+			change_animation("player_crouch/animation")
+
+func change_animation(target_anim: String) -> void:
+	if anim_player.has_animation(target_anim):
+		if anim_player.current_animation != target_anim:
+			anim_player.play(target_anim, 0.2)
+			print("Play: ", target_anim)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
