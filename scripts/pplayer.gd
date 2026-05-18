@@ -10,6 +10,9 @@ extends CharacterBody3D
 # Animation
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
 @onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
+@onready var skeleton: Skeleton3D = $"Node3D/ct idle/ct_t_pose/Skeleton3D"
+
+var spine_bone_id: int = -1
 
 #Health system
 @onready var game_ui = $/root/Node/GameUI
@@ -111,6 +114,18 @@ func _ready():
 	# Animation
 	left_hand_ik.start()
 	right_hand_ik.start()
+	if skeleton:
+		spine_bone_id = skeleton.find_bone("mixamorig_Spine")
+	
+func _process(delta: float) -> void:
+	if is_multiplayer_authority():
+		return
+	if skeleton and spine_bone_id != -1:
+		tilt_torso()
+	
+func tilt_torso() -> void:
+	var target_rotation = Quaternion(Vector3(1, 0, 0), $Neck/Head.rotation_degrees.x / -90.0)
+	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
