@@ -159,7 +159,6 @@ func change_animation(target_anim: String) -> void:
 	if anim_player.has_animation(target_anim):
 		if anim_player.current_animation != target_anim:
 			anim_player.play(target_anim, 0.2)
-			print("Play: ", target_anim)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
