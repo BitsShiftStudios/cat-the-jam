@@ -7,6 +7,9 @@ extends CharacterBody3D
 @export var LEANING_POSITION_OFFSET = 0.4
 @export var LEANING_ROTATION_DEGREES = 6.0
 
+# SKIN
+@export var equipped_skinpack: String = "default"
+
 # Animation
 @onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
@@ -124,6 +127,25 @@ func _ready():
 	right_hand_ik.start()
 	if skeleton:
 		spine_bone_id = skeleton.find_bone("mixamorig_Spine")
+		
+	# Skins
+	if (get_multiplayer_authority() % 2 == 1):
+		equipped_skinpack = "gold"
+	apply_weapon_skin()
+		
+func apply_weapon_skin() -> void:
+	var ak47_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/ak47/AssaultRIfle_01_Cube_002
+	var m4a4_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/m4a4/AssaultRifle2_1
+
+	match equipped_skinpack:
+		"gold":
+			var m4a1_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			var ak47_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			m4a4_mesh.set_surface_override_material(0, m4a1_mat)
+			ak47_mesh.set_surface_override_material(0, ak47_mat)
+		_:
+			ak47_mesh.set_surface_override_material(0, null)
+			m4a4_mesh.set_surface_override_material(0, null)
 	
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
