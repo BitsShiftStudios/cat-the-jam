@@ -5,15 +5,23 @@ extends Node
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
+var players = {}
 
 func _ready():
 	$MultiplayerSpawner.spawn_function = _on_player_spawn
 	
 	if OS.get_cmdline_args().has("--server"):
-		get_window().title = "Server" 
+		get_window().title = "Server"
 		start_server()
 	else:
+		#multiplayer.peer_connected.connect(_on_player_connected)
+		#multiplayer.peer_disconnected.connect(_on_player_disconnected)
+		multiplayer.connected_to_server.connect(_on_connected_to_server)
 		start_client()
+
+func _process(_delta):
+	if multiplayer.multiplayer_peer != null:
+		peer.poll()
 
 func start_server():
 	print("Starting WebSocket Server on port: ", PORT)
@@ -21,21 +29,23 @@ func start_server():
 	if error != OK:
 		print("Failed to start server: ", error)
 		return
-	
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = "ws://localhost:" + str(PORT)
-	print("Connecting to server at: ", target_url)
-	
-	var error = peer.create_client(target_url)
+	var target_url = ("wss://" + PlayerData.server_ip + ":3132")
+	print("Bağlanıyor: ", target_url)
+	var tls = TLSOptions.client_unsafe()
+	var error = peer.create_client(target_url, tls)
 	if error != OK:
-		print("Failed to initialize client: ", error)
+		print("Bağlantı hatası: ", error)
 		return
-		
 	multiplayer.multiplayer_peer = peer
+
+func _on_connected_to_server():
+	print("Sunucuya baglandi!")
+	send_player_info.rpc_id(1, PlayerData.login, PlayerData.level, PlayerData.location)
 
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
@@ -53,7 +63,6 @@ func get_spawn_point() -> Vector3:
 
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
-	match_controller.register_new_player(id, "Test")
 	
 	var spawn_pos = get_spawn_point() 
 	$MultiplayerSpawner.spawn({"id": id, "pos": spawn_pos})
@@ -61,6 +70,9 @@ func _on_player_connected(id: int):
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
 	match_controller.remove_player(id)
+	players.erase(id)
+	if has_node(str(id)):
+		get_node(str(id)).queue_free()
 	
 func _on_player_spawn(data: Dictionary) -> Node:
 	var player_instance = player_scene.instantiate()
@@ -69,3 +81,18 @@ func _on_player_spawn(data: Dictionary) -> Node:
 	player_instance.set_multiplayer_authority(data["id"])
 	
 	return player_instance
+	
+@rpc("any_peer", "call_remote", "reliable")
+func send_player_info(login: String, level: float, location: String):
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	players[sender_id] = {"login": login, "level": level, "location": location}
+	print("Oyuncu kaydedildi: ", login, " | Level: ", level, " | Location: ", location)
+	match_controller.register_new_player(sender_id, players[sender_id]["login"])
+	receive_player_info.rpc(sender_id, login, level, location)
+
+@rpc("authority", "call_remote", "reliable")
+func receive_player_info(peer_id: int, login: String, level: float, location: String):
+	players[peer_id] = {"login": login, "level": level, "location": location}
+	print("Yeni oyuncu: ", login)
