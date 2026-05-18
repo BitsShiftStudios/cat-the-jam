@@ -10,10 +10,19 @@ func _ready():
 	$MultiplayerSpawner.spawn_function = _on_player_spawn
 	
 	if OS.get_cmdline_args().has("--server"):
-		get_window().title = "Server" 
+		$Label3D.text = "Server"
+		get_window().title = "Server"
 		start_server()
 	else:
+		$Label3D.text = "Client - " + PlayerData.login
+		multiplayer.peer_connected.connect(_on_player_connected)
+		multiplayer.peer_disconnected.connect(_on_player_disconnected)
+		multiplayer.connected_to_server.connect(_on_connected_to_server)
 		start_client()
+
+func _process(_delta):
+	if multiplayer.multiplayer_peer != null:
+		peer.poll()
 
 func start_server():
 	print("Starting WebSocket Server on port: ", PORT)
@@ -21,21 +30,23 @@ func start_server():
 	if error != OK:
 		print("Failed to start server: ", error)
 		return
-	
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = "ws://localhost:" + str(PORT)
-	print("Connecting to server at: ", target_url)
-	
-	var error = peer.create_client(target_url)
+	var target_url = "wss://10.11.24.6:3132"
+	print("Bağlanıyor: ", target_url)
+	var tls = TLSOptions.client_unsafe()
+	var error = peer.create_client(target_url, tls)
 	if error != OK:
-		print("Failed to initialize client: ", error)
+		print("Bağlantı hatası: ", error)
 		return
-		
 	multiplayer.multiplayer_peer = peer
+
+func _on_connected_to_server():
+	print("Sunucuya baglandi!")
+	$Label3D.text = "Baglandi: " + PlayerData.login
 
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
