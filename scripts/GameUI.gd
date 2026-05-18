@@ -1,5 +1,6 @@
 extends CanvasLayer
 
+@onready var ammo_label = $Control/AmmoContainer/AmmoLabel
 @onready var timer_label = $Control/TopCenterContainer/TimerLabel
 @onready var health_label = $Control/HealthContainer/HealthLabel
 @onready var end_screen_panel = $Control/EndScreenPanel
@@ -39,6 +40,10 @@ func update_health_display() -> void:
 	if health_label:
 		health_label.text = "%d" % health
 		
+func update_ammo_display(mag: int, total: int) -> void:
+	if ammo_label:
+		ammo_label.text = "%d / %d" % [mag, total]
+		
 func show_game_over(winner_name: String, duration: int):
 	winner_text_label.text = "Winner: %s" % winner_name
 	end_screen_panel.show()
@@ -48,3 +53,4 @@ func show_game_over(winner_name: String, duration: int):
 func hide_game_over():
 	end_screen_panel.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	

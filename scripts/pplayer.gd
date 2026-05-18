@@ -369,6 +369,7 @@ func switch_weapon(weapon_index: int):
 	var selected_weapon = weapon_pivot.get_child(weapon_index)
 	selected_weapon.visible = true
 	current_weapon = selected_weapon
+	current_weapon.reload()
 
 func toggle_buy_menu():
 	buy_menu.visible = !buy_menu.visible
