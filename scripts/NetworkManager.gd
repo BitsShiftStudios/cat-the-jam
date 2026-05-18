@@ -5,6 +5,7 @@ extends Node
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
+var players = {}
 
 func _ready():
 	$MultiplayerSpawner.spawn_function = _on_player_spawn
@@ -13,8 +14,8 @@ func _ready():
 		get_window().title = "Server"
 		start_server()
 	else:
-		multiplayer.peer_connected.connect(_on_player_connected)
-		multiplayer.peer_disconnected.connect(_on_player_disconnected)
+		#multiplayer.peer_connected.connect(_on_player_connected)
+		#multiplayer.peer_disconnected.connect(_on_player_disconnected)
 		multiplayer.connected_to_server.connect(_on_connected_to_server)
 		start_client()
 
@@ -44,7 +45,7 @@ func start_client():
 
 func _on_connected_to_server():
 	print("Sunucuya baglandi!")
-	$Label3D.text = "Baglandi: " + PlayerData.login
+	send_player_info.rpc_id(1, PlayerData.login, PlayerData.level, PlayerData.location)
 
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
@@ -62,7 +63,6 @@ func get_spawn_point() -> Vector3:
 
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
-	match_controller.register_new_player(id, "Test")
 	
 	var spawn_pos = get_spawn_point() 
 	$MultiplayerSpawner.spawn({"id": id, "pos": spawn_pos})
@@ -70,6 +70,9 @@ func _on_player_connected(id: int):
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
 	match_controller.remove_player(id)
+	players.erase(id)
+	if has_node(str(id)):
+		get_node(str(id)).queue_free()
 	
 func _on_player_spawn(data: Dictionary) -> Node:
 	var player_instance = player_scene.instantiate()
@@ -78,3 +81,18 @@ func _on_player_spawn(data: Dictionary) -> Node:
 	player_instance.set_multiplayer_authority(data["id"])
 	
 	return player_instance
+	
+@rpc("any_peer", "call_remote", "reliable")
+func send_player_info(login: String, level: float, location: String):
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	players[sender_id] = {"login": login, "level": level, "location": location}
+	print("Oyuncu kaydedildi: ", login, " | Level: ", level, " | Location: ", location)
+	match_controller.register_new_player(sender_id, players[sender_id]["login"])
+	receive_player_info.rpc(sender_id, login, level, location)
+
+@rpc("authority", "call_remote", "reliable")
+func receive_player_info(peer_id: int, login: String, level: float, location: String):
+	players[peer_id] = {"login": login, "level": level, "location": location}
+	print("Yeni oyuncu: ", login)

@@ -16,7 +16,14 @@ func register_new_player(id: int, username: String):
 		"kills": 0,
 		"deaths": 0
 	}
+	print("Register: ", scoreboard_data[id] )
 	_broadcast_scoreboard()
+	
+#func update_player_name(id: int, name: String):
+	#if not multiplayer.is_server(): return
+	#scoreboard_data[id]["name"] = name
+#
+	#_broadcast_scoreboard()
 
 func remove_player(id: int):
 	if not multiplayer.is_server(): return

@@ -6,6 +6,7 @@ var level       : float  = 0.0
 var score       : int    = 0
 var wins        : int    = 0
 var location    : String = ""
+var server_ip    : String = ""
 
 func load_from_query():
 	if not OS.has_feature("web"):
@@ -17,6 +18,7 @@ func load_from_query():
 	login    = params.get("login", "")
 	level    = params.get("level", "0").replace("_", ".").to_float()
 	location = params.get("location", "offline")
+	server_ip = params.get("serverip", "")
 
 func parse_query(query: String) -> Dictionary:
 	var params = {}
