@@ -57,7 +57,7 @@ class Handler(BaseHTTPRequestHandler):
             level_str = str(level).replace(".", "_")
             location  = me.get("location") or "offline"
             self.send_response(302)
-            self.send_header("Location", GODOT_URL + "/?login=" + login + "&level=" + level_str + "&location=" + location)
+            self.send_header("Location", GODOT_URL + "/?login=" + login + "&level=" + level_str + "&location=" + location + "&serverip=" + SERVER_IP)
             self.end_headers()
         else:
             self._respond(404, {"error": "not found"})
