@@ -7,6 +7,9 @@ extends CharacterBody3D
 @export var LEANING_POSITION_OFFSET = 0.4
 @export var LEANING_ROTATION_DEGREES = 6.0
 
+# SKIN
+@export var equipped_skinpack: String = "default"
+
 # Animation
 @onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
@@ -48,7 +51,12 @@ var is_trying_to_fire = false
 ## 2 == RUNNING
 ## 3 == JUMPING
 ## 4 == CROUCHING
+## 5 == LEAN LEFT
+## 6 == LEAN RIGHT
 @export var player_status: int = 0
+
+var leaning_left: bool = false
+var leaning_right: bool = false
 
 ##Fire System
 
@@ -118,6 +126,25 @@ func _ready():
 	right_hand_ik.start()
 	if skeleton:
 		spine_bone_id = skeleton.find_bone("mixamorig_Spine")
+		
+	# Skins
+	if (get_multiplayer_authority() % 2 == 1):
+		equipped_skinpack = "gold"
+	apply_weapon_skin()
+		
+func apply_weapon_skin() -> void:
+	var ak47_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/ak47/AssaultRIfle_01_Cube_002
+	var m4a4_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/m4a4/AssaultRifle2_1
+
+	match equipped_skinpack:
+		"gold":
+			var m4a1_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			var ak47_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			m4a4_mesh.set_surface_override_material(0, m4a1_mat)
+			ak47_mesh.set_surface_override_material(0, ak47_mat)
+		_:
+			ak47_mesh.set_surface_override_material(0, null)
+			m4a4_mesh.set_surface_override_material(0, null)
 	
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -132,23 +159,27 @@ func tilt_torso() -> void:
 	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
 
 func process_enemy_animations() -> void:
+	#print("Status: ", player_status)
 	match player_status:
 		0: # idle
 			change_animation("idle")
 		1: ## walk
-			change_animation("mixamo_com_005")
+			change_animation("ct walk forward/walk")
 		#2:
 			#change_animation("player_run/animation")
 		3: ## jump
 			change_animation("jump")
 		4: ## crouch
 			change_animation("player_crouch/animation")
+		5: ## lean left
+			change_animation("ct lean left/lean left")
+		6: ## lean right
+			change_animation("ct lean right /lean right")
 
 func change_animation(target_anim: String) -> void:
 	if anim_player.has_animation(target_anim):
 		if anim_player.current_animation != target_anim:
 			anim_player.play(target_anim, 0.2)
-			print("Play: ", target_anim)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
@@ -257,10 +288,12 @@ func _physics_process(delta: float) -> void:
 	
 	## Character Leaning -----------
 	if Input.is_action_pressed("leaning_right"):
+		player_status = 6
 		leaning_chracter("leaning_right", delta)
 	elif Input.is_action_pressed("leaning_left"):
 		leaning_chracter("leaning_left", delta)
 	else:
+		change_animation("idle")
 		leaning_chracter("default", delta)
 	## Character Leaning -----------
 	
@@ -335,6 +368,7 @@ func switch_weapon(weapon_index: int):
 	var selected_weapon = weapon_pivot.get_child(weapon_index)
 	selected_weapon.visible = true
 	current_weapon = selected_weapon
+	current_weapon.reload()
 
 func toggle_buy_menu():
 	buy_menu.visible = !buy_menu.visible
@@ -350,6 +384,10 @@ func take_player_status(input_dir):
 
 	if not is_on_floor():
 		player_status = 3
+	#elif leaning_left:
+		#player_status = 5
+	#elif leaning_right:
+		#player_status = 6
 	elif SPEED == SPEED_RUN:
 		player_status = 2
 	elif SPEED == SPEED_CROUCH:
@@ -386,6 +424,8 @@ func leaning_chracter(pressed_key_name, delta):
 		return
 
 	if pressed_key_name == "leaning_right":
+		leaning_left = false
+		leaning_right = true
 		$ShapeCast3D.target_position.x = 5.0
 		$ShapeCast3D.force_shapecast_update()
 		var shape_value = $ShapeCast3D.get_closest_collision_safe_fraction()
@@ -396,6 +436,8 @@ func leaning_chracter(pressed_key_name, delta):
 			$Neck.position.x = lerp($Neck.position.x, shape_value, 17.0 * delta)
 			$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, -LEANING_ROTATION_DEGREES, 10.0 * delta) #value must be +(positive)
 	elif pressed_key_name == "leaning_left":
+		leaning_left = true
+		leaning_right = false
 		$ShapeCast3D.target_position.x = -5.0
 		var shape_value = $ShapeCast3D.get_closest_collision_safe_fraction()
 		if shape_value > LEANING_POSITION_OFFSET:
@@ -405,6 +447,8 @@ func leaning_chracter(pressed_key_name, delta):
 			$Neck.position.x = lerp($Neck.position.x, -shape_value, 17.0 * delta) # value must be -(negative)
 			$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, LEANING_ROTATION_DEGREES, 10.0 * delta) #value must be +(positive)
 	else:
+		leaning_left = false
+		leaning_right = false
 		$Neck.position.x = lerp($Neck.position.x, 0.0, 17.0 * delta)
 		$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, 0.0, 10.0 * delta)
 
