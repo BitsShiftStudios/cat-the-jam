@@ -53,12 +53,15 @@ func sync_bullet_hole(collider_path: NodePath, target_pos: Vector3, target_norm:
 	if target_collider != null:
 		spawn_bullet_hole(target_collider, target_pos, target_norm)
 func spawn_bullet_hole(target_collider: Node, target_position: Vector3, target_normal: Vector3):
-	var hole = bullet_hole_scene.instantiate()
-	hole.scale = Vector3(0.02, 0.02, 0.02)
-	target_collider.add_child(hole)
-	var safe_spawn_position = target_position + (target_normal * 0.02)
-	hole.global_position = safe_spawn_position
-	hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
+	if target_collider.name == "Player":
+		return
+	else:
+		var hole = bullet_hole_scene.instantiate()
+		hole.scale = Vector3(0.02, 0.02, 0.02)
+		target_collider.add_child(hole)
+		var safe_spawn_position = target_position + (target_normal * 0.02)
+		hole.global_position = safe_spawn_position
+		hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
 	
 	# Yönünü ayarla (look_at normal pozisyonuna bakar, yani dışarıya)
 	#hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)

@@ -224,12 +224,22 @@ func trigger_server_respawn() -> void:
 	var new_spawn_pos = get_spawn_point()
 	rpc_id(owner_id, "teleport_client_to_spawn", new_spawn_pos)
 
+
 @rpc("any_peer", "reliable")
 func teleport_client_to_spawn(target_global_position: Vector3) -> void:
 	velocity = Vector3.ZERO
 	global_position = target_global_position
 	reset_physics_interpolation() 
-		
+	refill_all_weapons()
+
+func refill_all_weapons():
+	var weapon_pivot = $Neck/Head/WeaponPivot
+	
+	for weapon in weapon_pivot.get_children():
+		if weapon.has_method("bullet_reset"):
+			weapon.bullet_reset()
+			
+
 func request_damage_from_player(target_network_id: int, damage: int):
 	rpc_id(1, "damage_request", target_network_id, damage)
 
@@ -486,7 +496,7 @@ func _input(event):
 	if !match_controller.match_active:
 		return
 
-	# Mouse in viewport coordinates.
+
 	if event is InputEventMouseButton:
 		pass
 	elif event is InputEventMouseMotion:
@@ -498,6 +508,14 @@ func _input(event):
 		if $Neck/Head.rotation_degrees.x <= -90 and event.relative.y < 0:
 			$Neck/Head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 	# Print the size of the viewport.
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+	# ESC tuşuna (ui_cancel) basılırsa fareyi serbest bırak ve görünür yap
+	if event.is_action_pressed("ui_cancel"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	# Mouse in viewport coordinates.
 
 
 func _on_m_4a_4_pressed() -> void:

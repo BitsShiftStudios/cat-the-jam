@@ -29,7 +29,6 @@ func fire(delta, hud_node, camera, player_status) -> int:
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0
-		print(name)
 		game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 		#hud_node.change_current_ammo_info(total_ammo, total_ammo_in_magazine)
 		return 1
@@ -50,6 +49,12 @@ func reload():
 	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
 ## 
+
+func bullet_reset():
+	total_ammo = total_ammo_ui
+	total_ammo_in_magazine = total_ammo_in_magazine_ui
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
+	
 func bullet_spread(player_status):
 	if player_status == 0: #Idle
 		set_bullet_spread(default_bullet_spread_increase_rate)

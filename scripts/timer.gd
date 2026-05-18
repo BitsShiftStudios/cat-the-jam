@@ -9,7 +9,6 @@ var match_time_left:int
 func _ready():
 	match_time_left = default_match_time
 	game_ui.update_timer_value(match_time_left)
-
 func _on_timer_timeout() -> void:
 	if multiplayer.is_server():
 		if match_time_left > 0:
