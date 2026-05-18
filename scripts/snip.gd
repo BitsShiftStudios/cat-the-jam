@@ -4,6 +4,7 @@ extends base_weapon
 
 @onready var total_ammo = total_ammo_ui
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
+@onready var game_ui = $/root/Node/GameUI
 
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
@@ -28,6 +29,7 @@ func fire(delta, hud_node, camera, player_status) -> int:
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0
+		game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 		#hud_node.change_current_ammo_info(total_ammo, total_ammo_in_magazine)
 		return 1
 	else:
@@ -43,6 +45,7 @@ func reload():
 	else:
 		total_ammo_in_magazine += total_ammo
 		total_ammo = 0
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
 ## 
 func bullet_spread(player_status):
