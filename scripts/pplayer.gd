@@ -7,6 +7,10 @@ extends CharacterBody3D
 @export var LEANING_POSITION_OFFSET = 0.4
 @export var LEANING_ROTATION_DEGREES = 6.0
 
+# Animation
+@onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
+@onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
+
 #Health system
 @onready var game_ui = $/root/Node/GameUI
 @onready var match_controller = $/root/Node/MatchController
@@ -103,6 +107,10 @@ func _ready():
 	
 	game_ui.update_health_value(health)
 	game_ui.update_health_display()
+	
+	# Animation
+	left_hand_ik.start()
+	right_hand_ik.start()
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():

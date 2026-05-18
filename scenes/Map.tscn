@@ -212,13 +212,7 @@ shadow_mesh = SubResource("ArrayMesh_0hsim")
 [node name="SpawnPoints" type="Node" parent="." unique_id=1994494275 groups=["spawn_containers"]]
 
 [node name="Marker3D" type="Marker3D" parent="SpawnPoints" unique_id=693946174]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 8.532386, 1.0375125, -20.315731)
-
-[node name="Marker3D2" type="Marker3D" parent="SpawnPoints" unique_id=1326148747]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 11.693825, 1.0375125, -13.589107)
-
-[node name="Marker3D3" type="Marker3D" parent="SpawnPoints" unique_id=423321198]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 14.708682, 1.0375125, -7.1743646)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 7.041068, 0.9149194, -14.820572)
 
 [node name="Lightbar" type="MeshInstance3D" parent="." unique_id=1091223939]
 transform = Transform3D(0.4128405, 0, -0.9108034, 0, 1, 0, 0.9108034, 0, 0.4128405, -0.23367572, -0.0010314956, -6.30585)
