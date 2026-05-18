@@ -33,7 +33,7 @@ func fire_at_player(target_collider) -> void:
 
 # Called when the node enters the scene tree for the first time.
 func fire_base_weapon(weapon_range, delta, camera):
-#w	muzzle_flash.fire_muzzle_flash()
+	muzzle_flash.fire_muzzle_flash()
 	var result = create_raycast(camera, weapon_range)
 	if !result:
 		pass

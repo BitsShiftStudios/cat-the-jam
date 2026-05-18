@@ -22,11 +22,11 @@ var spine_bone_id: int = -1
 
 #Speed
 @export_group("Speed settings")
-var SPEED
 @export var SPEED_NORMAL = 5.0
 @export var SPEED_RUN = 8.0
 @export var SPEED_LEANING = 3.0
 @export var SPEED_CROUCH = 3.0
+var SPEED = SPEED_NORMAL
 #Speed
 
 
@@ -97,7 +97,7 @@ func _ready():
 		if buy_menu != null:
 			buy_menu.queue_free()
 	
-	switch_weapon(1)
+	switch_weapon(0)
 	print(current_weapon)
 	
 	neck_org_position = $Neck.position
@@ -105,7 +105,6 @@ func _ready():
 	test_face = $testface.position
 	test_face_c_pos_y = test_face.y - 0.7
 	
-	SPEED = SPEED_NORMAL
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	$ShapeCast3D.add_exception(self)	# Cast'in içinde olduğu node daki hiç bir nesneye sinyal almamaya yarıyor
@@ -223,11 +222,11 @@ func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	if !match_controller.match_active:
-		return	
+		return
 	if Input.is_action_just_pressed("buy_menu"):
 		toggle_buy_menu()
 	if buy_menu.visible == true:
-		return	
+		return
 
 	# Add the gravity.
 	if not is_on_floor():
@@ -439,4 +438,9 @@ func _on_ak_47_pressed() -> void:
 
 func _on_m_4a_4_pressed() -> void:
 	switch_weapon(1)
+	print(current_weapon)
+
+
+func _on_awp_pressed() -> void:
+	switch_weapon(2)
 	print(current_weapon)

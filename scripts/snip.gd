@@ -8,7 +8,6 @@ extends base_weapon
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 
-
 func _process(delta):
 	# Sarsıntıyı otomatık olarak move toward ile düzelten fonksiyon
 	restore_bullet_spread(delta)
