@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://du4emamaj0ovc"]
+[gd_scene format=3 uid="uid://cvkogv5m3pt2n"]
 
-[ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://scripts/http_request.gd" id="1_1hxp7"]
+[ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://scripts/http_request.gd" id="1_sqba0"]
 
 [node name="Login" type="Node2D" unique_id=1604028718]
 
@@ -12,7 +12,7 @@ offset_bottom = 353.0
 text = "Login"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=500684268]
-script = ExtResource("1_1hxp7")
+script = ExtResource("1_sqba0")
 
 [node name="Label" type="Label" parent="." unique_id=1055111749]
 offset_left = 371.0

@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="cat-the-jam"
-run/main_scene="uid://d2dd25ag2mfww"
+run/main_scene="uid://cvkogv5m3pt2n"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+PlayerData="*uid://dh2qq581bke33"
 
 [display]
 
@@ -31,10 +35,6 @@ import/blender/enabled=false
 
 spawn_containers=""
 score_ui=""
-
-[autoload]
-
-PlayerData="*uid://dh2qq581bke33"
 
 [input]
 

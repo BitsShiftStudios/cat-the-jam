@@ -10,11 +10,9 @@ func _ready():
 	$MultiplayerSpawner.spawn_function = _on_player_spawn
 	
 	if OS.get_cmdline_args().has("--server"):
-		$Label3D.text = "Server"
 		get_window().title = "Server"
 		start_server()
 	else:
-		$Label3D.text = "Client - " + PlayerData.login
 		multiplayer.peer_connected.connect(_on_player_connected)
 		multiplayer.peer_disconnected.connect(_on_player_disconnected)
 		multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -35,7 +33,7 @@ func start_server():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = "wss://10.11.24.6:3132"
+	var target_url = ("wss://" + PlayerData.server_ip + ":3132")
 	print("Bağlanıyor: ", target_url)
 	var tls = TLSOptions.client_unsafe()
 	var error = peer.create_client(target_url, tls)
