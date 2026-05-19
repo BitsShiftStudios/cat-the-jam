@@ -2,24 +2,29 @@
 
 [ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://scripts/http_request.gd" id="1_1hxp7"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hxp7"]
+bg_color = Color(0, 0.7294118, 0.7372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brlkh"]
+bg_color = Color(0, 0.7294118, 0.7372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpj6k"]
+bg_color = Color(0, 0.7294118, 0.7372549, 1)
+
 [node name="Login" type="Node2D" unique_id=1604028718]
 
 [node name="Button" type="Button" parent="." unique_id=1039149663]
-offset_left = 407.0
-offset_top = 271.0
-offset_right = 580.0
-offset_bottom = 353.0
-text = "Login"
+offset_left = 700.0
+offset_top = 498.0
+offset_right = 1100.0
+offset_bottom = 598.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_1hxp7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_brlkh")
+theme_override_styles/focus = SubResource("StyleBoxFlat_gpj6k")
+text = "Log in with 42"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=500684268]
 script = ExtResource("1_1hxp7")
-
-[node name="Label" type="Label" parent="." unique_id=1055111749]
-offset_left = 371.0
-offset_top = 56.0
-offset_right = 846.0
-offset_bottom = 217.0
-theme_override_font_sizes/font_size = 51
-text = "deneme"
 
 [connection signal="pressed" from="Button" to="HTTPRequest" method="_on_button_pressed"]

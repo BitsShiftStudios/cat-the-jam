@@ -8,7 +8,7 @@ func _ready():
 		if "login=" in query:
 			PlayerData.load_from_query()
 			JavaScriptBridge.eval("window.history.replaceState({}, '', '/')")
-			get_tree().change_scene_to_file("res://scenes/main.tscn")
+			get_tree().change_scene_to_file.call_deferred("res://scenes/main.tscn")
 
 func _on_button_pressed():
 	var server_ip = ""

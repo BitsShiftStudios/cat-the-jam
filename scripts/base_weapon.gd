@@ -61,7 +61,11 @@ func spawn_bullet_hole(target_collider: Node, target_position: Vector3, target_n
 		target_collider.add_child(hole)
 		var safe_spawn_position = target_position + (target_normal * 0.02)
 		hole.global_position = safe_spawn_position
-		hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
+		#hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)
+		var down = Vector3.DOWN
+		if target_normal.is_equal_approx(Vector3.UP) or target_normal.is_equal_approx(Vector3.DOWN):
+			down = Vector3.FORWARD
+		hole.look_at(safe_spawn_position + target_normal, down)
 	
 	# Yönünü ayarla (look_at normal pozisyonuna bakar, yani dışarıya)
 	#hole.look_at(safe_spawn_position + target_normal, Vector3.DOWN)

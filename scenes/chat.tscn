@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cltxcly2qnf8l"]
 
-[ext_resource type="Script" uid="uid://3f285g6ww72s" path="res://scenes/chat.gd" id="1_4o336"]
+[ext_resource type="Script" uid="uid://3f285g6ww72s" path="res://scripts/chat.gd" id="1_4o336"]
 
 [node name="Chat" type="Control" unique_id=1576507069]
 layout_mode = 3
