@@ -6590,16 +6590,19 @@ properties/4/spawn = true
 properties/4/replication_mode = 1
 properties/5/path = NodePath("Player:player_status")
 properties/5/spawn = true
-properties/5/replication_mode = 1
+properties/5/replication_mode = 2
 properties/6/path = NodePath("Player/Neck/Head/WeaponPivot/ak47:visible")
 properties/6/spawn = true
-properties/6/replication_mode = 1
+properties/6/replication_mode = 2
 properties/7/path = NodePath("Player/Neck/Head/WeaponPivot/m4a4:visible")
 properties/7/spawn = true
-properties/7/replication_mode = 1
+properties/7/replication_mode = 2
 properties/8/path = NodePath("Player/Neck/Head/WeaponPivot/snip:visible")
 properties/8/spawn = true
-properties/8/replication_mode = 1
+properties/8/replication_mode = 2
+properties/9/path = NodePath("Player/Label3D:text")
+properties/9/spawn = true
+properties/9/replication_mode = 2
 
 [node name="Node3D" type="Node3D" unique_id=737232604]
 
@@ -7054,6 +7057,11 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
 theme_override_font_sizes/font_size = 60
 text = "YAKINDA ..."
+
+[node name="Label3D" type="Label3D" parent="Player" unique_id=1711285734]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.193737, -0.32383466)
+billboard = 2
+text = "Player"
 
 [connection signal="pressed" from="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer/M4A4" to="Player" method="_on_m_4a_4_pressed"]
 [connection signal="pressed" from="Player/BuyMenu/BackGround/MarginContainer/HBoxContainer/AK47" to="Player" method="_on_ak_47_pressed"]

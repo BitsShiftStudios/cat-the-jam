@@ -98,8 +98,18 @@ func _enter_tree():
 		$Neck/Head/CameraShaker/Camera3D.current = true
 	
 func _ready():
+	await get_tree().process_frame 
+
 	if is_multiplayer_authority():
 		$"Node3D/ct idle".hide()
+	$Label3D.text = PlayerData["login"]
+	
+	# Eğer bu karakter benim kontrolümdeyse (Local Player)
+	if is_multiplayer_authority():
+		$Label3D.hide() # Veya $Label3D.visible = false
+	else:
+		# Bu karakter ağdaki başka biriyse yazıyı açık tut
+		$Label3D.show()
 
 	if is_multiplayer_authority():
 		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun

@@ -46,7 +46,7 @@ func start_client():
 
 func _on_connected_to_server():
 	print("Sunucuya baglandi!")
-	send_player_info.rpc_id(1, PlayerData.login, PlayerData.level, PlayerData.location)
+	send_player_info.rpc_id(1, PlayerData.login, PlayerData.level, PlayerData.location, PlayerData.color)
 
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
@@ -62,15 +62,23 @@ func get_spawn_point() -> Vector3:
 			
 	return Vector3(0, 3, 0)
 
+
 func _on_player_connected(id: int):
 	print("Player connected to server! ID assigned: ", id)
-	
 	var spawn_pos = get_spawn_point() 
 	$MultiplayerSpawner.spawn({"id": id, "pos": spawn_pos})
+
+@rpc("authority", "call_local", "reliable")
+func broadcast_system_message(msg_text: String):
+	# Artık kendi içimizde değil, doğrudan Global postacıya bağırıyoruz!
+	SystemMessage.system_message_received.emit(msg_text)
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
 	match_controller.remove_player(id)
+	if players.has(id):
+		var p_name = players[id]["login"]
+		broadcast_system_message.rpc(p_name + " oyundan ayrıldı.")
 	players.erase(id)
 	if has_node(str(id)):
 		get_node(str(id)).queue_free()
@@ -84,16 +92,17 @@ func _on_player_spawn(data: Dictionary) -> Node:
 	return player_instance
 	
 @rpc("any_peer", "call_remote", "reliable")
-func send_player_info(login: String, level: float, location: String):
+func send_player_info(login: String, level: float, location: String, color: String):
 	if not multiplayer.is_server():
 		return
 	var sender_id = multiplayer.get_remote_sender_id()
-	players[sender_id] = {"login": login, "level": level, "location": location}
+	players[sender_id] = {"login": login, "level": level, "location": location, "color" : color}
 	print("Oyuncu kaydedildi: ", login, " | Level: ", level, " | Location: ", location)
 	match_controller.register_new_player(sender_id, players[sender_id]["login"])
-	receive_player_info.rpc(sender_id, login, level, location)
+	receive_player_info.rpc(sender_id, login, level, location, color)
+	broadcast_system_message.rpc(login + " oyuna katıldı!")
 
 @rpc("authority", "call_remote", "reliable")
-func receive_player_info(peer_id: int, login: String, level: float, location: String):
-	players[peer_id] = {"login": login, "level": level, "location": location}
+func receive_player_info(peer_id: int, login: String, level: float, location: String, color: String):
+	players[peer_id] = {"login": login, "level": level, "location": location, "color": color}
 	print("Yeni oyuncu: ", login)

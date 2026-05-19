@@ -27,6 +27,8 @@ script = ExtResource("1_4o336")
 [node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/VBoxContainer" unique_id=689955528]
 layout_mode = 2
 size_flags_vertical = 3
+bbcode_enabled = true
+scroll_active = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=201409733]
 layout_mode = 2

@@ -6,6 +6,7 @@ var level       : float  = 0.0
 var score       : int    = 0
 var wins        : int    = 0
 var location    : String = ""
+var color    	: String = "FFFFFF"
 var server_ip    : String = ""
 var is_chatting : bool = false
 
@@ -20,6 +21,7 @@ func load_from_query():
 	level    = params.get("level", "0").replace("_", ".").to_float()
 	location = params.get("location", "offline")
 	server_ip = params.get("serverip", "")
+	color     = params.get("color", "")
 
 func parse_query(query: String) -> Dictionary:
 	var params = {}

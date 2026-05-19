@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="cat-the-jam"
-run/main_scene="uid://du4emamaj0ovc"
+run/main_scene="uid://d2dd25ag2mfww"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+run/main_scene.web="uid://du4emamaj0ovc"
 
 [autoload]
 
 PlayerData="*uid://dh2qq581bke33"
+SystemMessage="*uid://dnnpumplhi8wg"
 
 [display]
 
