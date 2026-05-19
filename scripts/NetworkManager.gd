@@ -14,8 +14,6 @@ func _ready():
 		get_window().title = "Server"
 		start_server()
 	else:
-		#multiplayer.peer_connected.connect(_on_player_connected)
-		#multiplayer.peer_disconnected.connect(_on_player_disconnected)
 		multiplayer.connected_to_server.connect(_on_connected_to_server)
 		start_client()
 
@@ -34,7 +32,10 @@ func start_server():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
-	var target_url = ("wss://" + PlayerData.server_ip + ":3132")
+	var ip = PlayerData.server_ip
+	if ip == "":
+		ip = str(JavaScriptBridge.eval("window.location.hostname"))
+	var target_url = ("wss://" + ip + ":3132")
 	print("Bağlanıyor: ", target_url)
 	var tls = TLSOptions.client_unsafe()
 	var error = peer.create_client(target_url, tls)

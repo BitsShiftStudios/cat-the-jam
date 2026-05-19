@@ -268,6 +268,9 @@ func _physics_process(delta: float) -> void:
 		return
 	if !match_controller.match_active:
 		return
+	if PlayerData.is_chatting:
+		return
+
 	if Input.is_action_just_pressed("buy_menu"):
 		toggle_buy_menu()
 	if buy_menu.visible == true:

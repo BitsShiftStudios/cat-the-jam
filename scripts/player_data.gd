@@ -7,6 +7,7 @@ var score       : int    = 0
 var wins        : int    = 0
 var location    : String = ""
 var server_ip    : String = ""
+var is_chatting : bool = false
 
 func load_from_query():
 	if not OS.has_feature("web"):

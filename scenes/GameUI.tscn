@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dc2k03er8w4k0" path="res://scripts/GameUI.gd" id="1_jkspe"]
 [ext_resource type="Script" uid="uid://bkjp4e3qau3e2" path="res://scripts/ScoreboardPanel.gd" id="2_1twlr"]
+[ext_resource type="PackedScene" uid="uid://cltxcly2qnf8l" path="res://scenes/chat.tscn" id="3_4s3j0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_2n352"]
 font_size = 24
@@ -158,3 +159,10 @@ script = ExtResource("2_1twlr")
 
 [node name="RowsContainer" type="VBoxContainer" parent="Control/ScoreboardPanel" unique_id=1988332576]
 layout_mode = 2
+
+[node name="Chat" parent="Control" unique_id=1576507069 instance=ExtResource("3_4s3j0")]
+layout_mode = 1
+offset_left = -1.0
+offset_top = -4.0
+offset_right = -1.0
+offset_bottom = -4.0
