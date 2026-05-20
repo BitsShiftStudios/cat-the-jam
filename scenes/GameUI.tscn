@@ -1,0 +1,168 @@
+[gd_scene format=3 uid="uid://duqrl1qp4k6im"]
+
+[ext_resource type="Script" uid="uid://dc2k03er8w4k0" path="res://scripts/GameUI.gd" id="1_jkspe"]
+[ext_resource type="Script" uid="uid://bkjp4e3qau3e2" path="res://scripts/ScoreboardPanel.gd" id="2_1twlr"]
+[ext_resource type="PackedScene" uid="uid://cltxcly2qnf8l" path="res://scenes/chat.tscn" id="3_4s3j0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2n352"]
+font_size = 24
+font_color = Color(0.15823665, 0.8396851, 2.695322e-06, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jkspe"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_1twlr"]
+font_size = 64
+font_color = Color(0.9998773, 0.33191806, 0.2662355, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_56cg4"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_4s3j0"]
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_rs3te"]
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_7ro0d"]
+font_size = 24
+
+[node name="GameUI" type="CanvasLayer" unique_id=2105203079]
+script = ExtResource("1_jkspe")
+
+[node name="Control" type="Control" parent="." unique_id=1530537353]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=1558778728]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Crosshar" type="Label" parent="Control/CenterContainer" unique_id=544279098]
+layout_mode = 2
+text = "+"
+label_settings = SubResource("LabelSettings_2n352")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopCenterContainer" type="CenterContainer" parent="Control" unique_id=1414047011]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 81.0
+grow_horizontal = 2
+
+[node name="TimerLabel" type="Label" parent="Control/TopCenterContainer" unique_id=1691104162]
+layout_mode = 2
+text = "00:00"
+label_settings = SubResource("LabelSettings_jkspe")
+
+[node name="HealthContainer" type="CenterContainer" parent="Control" unique_id=1927763903]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -103.0
+offset_right = 185.0
+grow_vertical = 0
+
+[node name="HealthLabel" type="Label" parent="Control/HealthContainer" unique_id=528891934]
+layout_mode = 2
+text = "100"
+label_settings = SubResource("LabelSettings_1twlr")
+horizontal_alignment = 1
+
+[node name="AmmoContainer" type="CenterContainer" parent="Control" unique_id=1942993404]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 130.0
+offset_top = -91.0
+offset_right = 328.0
+offset_bottom = 12.0
+grow_vertical = 0
+
+[node name="AmmoLabel" type="Label" parent="Control/AmmoContainer" unique_id=1925664381]
+layout_mode = 2
+text = "30 / 180"
+label_settings = SubResource("LabelSettings_56cg4")
+horizontal_alignment = 1
+
+[node name="EndScreenPanel" type="PanelContainer" parent="Control" unique_id=2059468899]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 343.0
+offset_top = 355.0
+offset_right = -343.0
+offset_bottom = -355.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RowsContainer" type="VBoxContainer" parent="Control/EndScreenPanel" unique_id=610938052]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=1383887344]
+layout_mode = 2
+text = "MATCH OVER"
+label_settings = SubResource("LabelSettings_4s3j0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WinnerLabel" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=1367781106]
+layout_mode = 2
+text = "Winner: XXX"
+label_settings = SubResource("LabelSettings_rs3te")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="empty" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=3045610]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_rs3te")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScreenSeconds" type="Label" parent="Control/EndScreenPanel/RowsContainer" unique_id=763412310]
+layout_mode = 2
+text = "Restarting in 10 seconds"
+label_settings = SubResource("LabelSettings_7ro0d")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreboardPanel" type="PanelContainer" parent="Control" unique_id=325417023 groups=["score_ui"]]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 600.0
+offset_top = 336.0
+offset_right = -600.0
+offset_bottom = -336.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_1twlr")
+
+[node name="RowsContainer" type="VBoxContainer" parent="Control/ScoreboardPanel" unique_id=1988332576]
+layout_mode = 2
+
+[node name="Chat" parent="Control" unique_id=1576507069 instance=ExtResource("3_4s3j0")]
+layout_mode = 1
+offset_left = -1.0
+offset_top = -4.0
+offset_right = -1.0
+offset_bottom = -4.0

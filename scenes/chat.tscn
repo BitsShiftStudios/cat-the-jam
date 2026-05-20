@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cltxcly2qnf8l"]
+
+[ext_resource type="Script" uid="uid://3f285g6ww72s" path="res://scripts/chat.gd" id="1_4o336"]
+
+[node name="Chat" type="Control" unique_id=1576507069]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1270466421]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=397898832]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = 565.0
+offset_right = -1213.0
+offset_bottom = -115.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4o336")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/VBoxContainer" unique_id=689955528]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_active = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=201409733]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=73214278]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="focus_entered" from="CanvasLayer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/VBoxContainer" method="_on_line_edit_focus_entered"]
+[connection signal="focus_exited" from="CanvasLayer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/VBoxContainer" method="_on_line_edit_focus_exited"]

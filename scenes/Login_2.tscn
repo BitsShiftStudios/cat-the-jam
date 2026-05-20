@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cvkogv5m3pt2n"]
+
+[ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://scripts/http_request.gd" id="1_sqba0"]
+
+[node name="Login" type="Node2D" unique_id=1604028718]
+
+[node name="Button" type="Button" parent="." unique_id=1039149663]
+offset_left = 407.0
+offset_top = 271.0
+offset_right = 580.0
+offset_bottom = 353.0
+text = "Login"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=500684268]
+script = ExtResource("1_sqba0")
+
+[node name="Label" type="Label" parent="." unique_id=1055111749]
+offset_left = 371.0
+offset_top = 56.0
+offset_right = 846.0
+offset_bottom = 217.0
+theme_override_font_sizes/font_size = 51
+text = "deneme"
+
+[connection signal="pressed" from="Button" to="HTTPRequest" method="_on_button_pressed"]

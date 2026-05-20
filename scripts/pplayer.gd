@@ -7,30 +7,64 @@ extends CharacterBody3D
 @export var LEANING_POSITION_OFFSET = 0.4
 @export var LEANING_ROTATION_DEGREES = 6.0
 
+# SKIN
+@export var equipped_skinpack: String = "default"
+
+# Animation
+@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
+@onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
+@onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
+@onready var skeleton: Skeleton3D = $"Node3D/ct idle/ct_t_pose/Skeleton3D"
+
+var spine_bone_id: int = -1
+
+#Health system
+@onready var game_ui = $/root/Node/GameUI
+@onready var match_controller = $/root/Node/MatchController
+@export var health:int = 100
+
 #Speed
 @export_group("Speed settings")
-var SPEED
 @export var SPEED_NORMAL = 5.0
 @export var SPEED_RUN = 8.0
 @export var SPEED_LEANING = 3.0
 @export var SPEED_CROUCH = 3.0
+var SPEED = SPEED_NORMAL
 #Speed
 
 
+@onready var buy_menu = $BuyMenu
+var current_weapon : base_weapon
+
 ##Fire System
 @onready var camera = $Neck/Head/CameraShaker/Camera3D
+
+
 @onready var ak47 = $Neck/Head/WeaponPivot/ak47
+@onready var m4a4 = $Neck/Head/WeaponPivot/m4a4
+
+
 @onready var hud_node = $hud
+var is_trying_to_fire = false
 ## 0 == IDLE
 ## 1 == WALKING
 ## 2 == RUNNING
 ## 3 == JUMPING
 ## 4 == CROUCHING
-var player_status = 0
+## 5 == LEAN LEFT
+## 6 == LEAN RIGHT
+@export var player_status: int = 0
+
+var leaning_left: bool = false
+var leaning_right: bool = false
 
 ##Fire System
 
 var collider : Object
+
+var snip_aim = false
+@onready var def_camera_fov = camera.fov
+
 
 var neck_org_position : Vector3
 var test_face : Vector3
@@ -52,6 +86,7 @@ func _enter_tree():
 	print("Player ID: ", player_id)
 	set_multiplayer_authority(player_id)
 	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
+	add_to_group("players")
 	
 	if not is_multiplayer_authority():
 		$Neck/Head/CameraShaker/Camera3D.current = false
@@ -61,26 +96,196 @@ func _enter_tree():
 		## Kamera default olarak false
 		## Bunu true yapmamız lazım
 		$Neck/Head/CameraShaker/Camera3D.current = true
-
+	
 func _ready():
-	if not is_multiplayer_authority():
-		return
+	await get_tree().process_frame 
 
+	if is_multiplayer_authority():
+		$"Node3D/ct idle".hide()
+	$Label3D.text = PlayerData["login"]
+	
+	# Eğer bu karakter benim kontrolümdeyse (Local Player)
+	if is_multiplayer_authority():
+		$Label3D.hide() # Veya $Label3D.visible = false
+	else:
+		# Bu karakter ağdaki başka biriyse yazıyı açık tut
+		$Label3D.show()
+
+	if is_multiplayer_authority():
+		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun
+		buy_menu.visible = false
+	else:
+		# DÜŞMAN KARAKTERİ: Kendi ekranımızda düşmanın arayüzünü tamamen yok edelim
+		if buy_menu != null:
+			buy_menu.queue_free()
+	
+	switch_weapon(0)
+	#print(current_weapon)
+	
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
 	test_face = $testface.position
 	test_face_c_pos_y = test_face.y - 0.7
 	
-	
-	SPEED = SPEED_NORMAL
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
 	
 	$ShapeCast3D.add_exception(self)	# Cast'in içinde olduğu node daki hiç bir nesneye sinyal almamaya yarıyor
 	$ControlUpperHead.add_exception(self)
 	
+	game_ui.update_health_value(health)
+	game_ui.update_health_display()
+	
+	# Animation
+	left_hand_ik.start()
+	right_hand_ik.start()
+	if skeleton:
+		spine_bone_id = skeleton.find_bone("mixamorig_Spine")
+		
+	# Skins
+	if (get_multiplayer_authority() % 2 == 1):
+		equipped_skinpack = "gold"
+	apply_weapon_skin()
+		
+func apply_weapon_skin() -> void:
+	var ak47_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/ak47/AssaultRIfle_01_Cube_002
+	var m4a4_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/m4a4/AssaultRifle2_1
+
+	match equipped_skinpack:
+		"gold":
+			var m4a1_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			var ak47_mat = preload("res://assets/materials/guns/M4A1/M4A1_gold.tres")
+			m4a4_mesh.set_surface_override_material(0, m4a1_mat)
+			ak47_mesh.set_surface_override_material(0, ak47_mat)
+		_:
+			ak47_mesh.set_surface_override_material(0, null)
+			m4a4_mesh.set_surface_override_material(0, null)
+	
+func _process(delta: float) -> void:
+	if is_multiplayer_authority():
+		return
+	if skeleton and spine_bone_id != -1:
+		tilt_torso()
+	if anim_player:
+		process_enemy_animations()
+	
+func tilt_torso() -> void:
+	var target_rotation = Quaternion(Vector3(1, 0, 0), $Neck/Head.rotation_degrees.x / -90.0)
+	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
+
+func process_enemy_animations() -> void:
+	#print("Status: ", player_status)
+	match player_status:
+		0: # idles
+			change_animation("idle")
+		1: ## walk
+			change_animation("mixamo_com_005")
+		#2:
+			#change_animation("player_run/animation")
+		3: ## jump
+			change_animation("jump")
+		4: ## crouch
+			change_animation("player_crouch/animation")
+		5: ## lean left
+			change_animation("ct lean left/lean left")
+		6: ## lean right
+			change_animation("ct lean right /lean right")
+
+func change_animation(target_anim: String) -> void:
+	if anim_player.has_animation(target_anim):
+		if anim_player.current_animation != target_anim:
+			anim_player.play(target_anim, 0.2)
+	
+func add_health(amount: int, attacker_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if !match_controller.match_active:
+		return
+
+	health += amount
+	var our_id = get_multiplayer_authority()
+	rpc_id(our_id, "update_health_local", health)
+
+	if health <= 0:
+		match_controller.record_kill_death(attacker_id, our_id)		
+		trigger_server_respawn()
+
+func get_spawn_point() -> Vector3:
+	var groups = get_tree().get_nodes_in_group("spawn_containers")
+	
+	if (groups.size() > 0):
+		var spawn_container = groups[0]
+		var spawn_points = spawn_container.get_children()
+		
+		if spawn_points.size() > 0:
+			var rand = randi() % spawn_points.size()
+			var random_spawn = spawn_points[rand]
+			return random_spawn.global_position
+			
+	return Vector3(0, 3, 0)
+	
+func trigger_server_respawn() -> void:
+	if not multiplayer.is_server():
+		return
+		
+	health = 100
+	
+	var owner_id = get_multiplayer_authority()
+	rpc_id(owner_id, "update_health_local", health)
+	var new_spawn_pos = get_spawn_point()
+	rpc_id(owner_id, "teleport_client_to_spawn", new_spawn_pos)
+
+
+@rpc("any_peer", "reliable")
+func teleport_client_to_spawn(target_global_position: Vector3) -> void:
+	velocity = Vector3.ZERO
+	global_position = target_global_position
+	reset_physics_interpolation() 
+	refill_all_weapons()
+
+func refill_all_weapons():
+	var weapon_pivot = $Neck/Head/WeaponPivot
+	
+	for weapon in weapon_pivot.get_children():
+		if weapon.has_method("bullet_reset"):
+			weapon.bullet_reset()
+			
+
+func request_damage_from_player(target_network_id: int, damage: int):
+	rpc_id(1, "damage_request", target_network_id, damage)
+
+@rpc("any_peer", "reliable")
+func damage_request(victim_id: int, damage_amount: int):
+	if not multiplayer.is_server():
+		return
+	if !match_controller.match_active:
+		return
+	
+	var name = str(victim_id)
+	var attacker_id = multiplayer.get_remote_sender_id()
+	var victim_node = get_parent().get_parent().get_node_or_null(name).get_child(0)
+	
+	if victim_node:
+		victim_node.add_health(-damage_amount, attacker_id)
+		
+@rpc("any_peer", "reliable")
+func update_health_local(new_health_value: int):
+	health = new_health_value
+	game_ui.update_health_value(health)
+	game_ui.update_health_display()
+	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
+		return
+	if !match_controller.match_active:
+		return
+	if PlayerData.is_chatting:
+		return
+
+	if Input.is_action_just_pressed("buy_menu"):
+		toggle_buy_menu()
+	if buy_menu.visible == true:
+		snip_aim = false
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
 		return
 
 	# Add the gravity.
@@ -101,6 +306,26 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 			
 	## Character Control Mechanics
+
+	#print(snip_aim)
+
+	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
+		snip_aim = !snip_aim
+	if snip_aim == true:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, 30.0, 15.0 * delta)
+	if snip_aim == false:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
+		
+	
+	#if Input.is_action_just_pressed("aim"):
+		#if not snip_aim:
+			#if current_weapon.name == "snip":
+				#camera.fov -= 50.0
+			#snip_aim = true
+		#else:
+			#snip_aim = false
+			#camera.fov = def_camera_fov
+	
 	
 	if Input.is_action_just_pressed("puase_game"):
 		if mouse_capture == 1:
@@ -117,6 +342,7 @@ func _physics_process(delta: float) -> void:
 		leaning_chracter("leaning_left", delta)
 	else:
 		leaning_chracter("default", delta)
+		#leaning_chracter("default", delta)
 	## Character Leaning -----------
 	
 		
@@ -138,9 +364,15 @@ func _physics_process(delta: float) -> void:
 	## Chracter Speed - status
 	
 	##Fire Gun
+	if current_weapon.is_automatic:
+		is_trying_to_fire = Input.is_action_pressed("fire")
+	else:
+		is_trying_to_fire = Input.is_action_just_pressed("fire")
 	
-	if Input.is_action_pressed("fire"):
-		if ak47.fire(delta, hud_node, camera, player_status):
+	
+	
+	if is_trying_to_fire:
+		if current_weapon.fire(delta, hud_node, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
 		else:
@@ -153,7 +385,7 @@ func _physics_process(delta: float) -> void:
 	
 	##Reload
 	if Input.is_action_just_pressed("reload"):
-		ak47.reload()
+		current_weapon.reload()
 	##Reload
 		
 	#Camera Shake
@@ -174,12 +406,36 @@ func _physics_process(delta: float) -> void:
 	take_player_status(input_dir)
 	move_and_slide()
 
+
+func switch_weapon(weapon_index: int):
+	var weapon_pivot = $Neck/Head/WeaponPivot
+	if weapon_index < 0 or weapon_index >= weapon_pivot.get_child_count():
+		return
+	for child in weapon_pivot.get_children():
+		child.visible = false
+	var selected_weapon = weapon_pivot.get_child(weapon_index)
+	selected_weapon.visible = true
+	current_weapon = selected_weapon
+	current_weapon.reload()
+
+func toggle_buy_menu():
+	buy_menu.visible = !buy_menu.visible
+	
+	if buy_menu.visible:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 func take_player_status(input_dir):
 	if not is_multiplayer_authority():
 		return
 
 	if not is_on_floor():
 		player_status = 3
+	#elif leaning_left:
+		#player_status = 5
+	#elif leaning_right:
+		#player_status = 6
 	elif SPEED == SPEED_RUN:
 		player_status = 2
 	elif SPEED == SPEED_CROUCH:
@@ -216,6 +472,8 @@ func leaning_chracter(pressed_key_name, delta):
 		return
 
 	if pressed_key_name == "leaning_right":
+		leaning_left = false
+		leaning_right = true
 		$ShapeCast3D.target_position.x = 5.0
 		$ShapeCast3D.force_shapecast_update()
 		var shape_value = $ShapeCast3D.get_closest_collision_safe_fraction()
@@ -226,6 +484,8 @@ func leaning_chracter(pressed_key_name, delta):
 			$Neck.position.x = lerp($Neck.position.x, shape_value, 17.0 * delta)
 			$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, -LEANING_ROTATION_DEGREES, 10.0 * delta) #value must be +(positive)
 	elif pressed_key_name == "leaning_left":
+		leaning_left = true
+		leaning_right = false
 		$ShapeCast3D.target_position.x = -5.0
 		var shape_value = $ShapeCast3D.get_closest_collision_safe_fraction()
 		if shape_value > LEANING_POSITION_OFFSET:
@@ -235,14 +495,21 @@ func leaning_chracter(pressed_key_name, delta):
 			$Neck.position.x = lerp($Neck.position.x, -shape_value, 17.0 * delta) # value must be -(negative)
 			$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, LEANING_ROTATION_DEGREES, 10.0 * delta) #value must be +(positive)
 	else:
+		leaning_left = false
+		leaning_right = false
 		$Neck.position.x = lerp($Neck.position.x, 0.0, 17.0 * delta)
 		$Neck.rotation_degrees.z = lerp($Neck.rotation_degrees.z, 0.0, 10.0 * delta)
 
+
 func _input(event):
-	if not is_multiplayer_authority():
+	if not is_multiplayer_authority() or buy_menu.visible == true:
+		return
+	if !match_controller.match_active:
+		return
+	if !match_controller.match_active:
 		return
 
-	# Mouse in viewport coordinates.
+
 	if event is InputEventMouseButton:
 		pass
 	elif event is InputEventMouseMotion:
@@ -254,3 +521,24 @@ func _input(event):
 		if $Neck/Head.rotation_degrees.x <= -90 and event.relative.y < 0:
 			$Neck/Head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 	# Print the size of the viewport.
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+	# ESC tuşuna (ui_cancel) basılırsa fareyi serbest bırak ve görünür yap
+	if event.is_action_pressed("ui_cancel"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	# Mouse in viewport coordinates.
+
+
+func _on_m_4a_4_pressed() -> void:
+	switch_weapon(1)
+	toggle_buy_menu()
+
+func _on_ak_47_pressed() -> void:
+	switch_weapon(0)
+	toggle_buy_menu()
+
+func _on_snip_pressed() -> void:
+	switch_weapon(2)
+	toggle_buy_menu()

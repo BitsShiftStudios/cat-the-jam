@@ -1,14 +1,12 @@
 extends base_weapon
 
-@export var ak47_fire_speed : float 
-@export var total_ammo_ui : int
-@export var total_ammo_in_magazine_ui : int
-@export var weapon_range : float
-
+#Base_weapon Tüm silahlar için gerekli şeyleri getiriyor.
 
 @onready var total_ammo = total_ammo_ui
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
+@onready var game_ui = $/root/Node/GameUI
 
+# Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 
 func _process(delta):
@@ -17,7 +15,7 @@ func _process(delta):
 	
 	
 	# Silah sürekli olarak kendi mermi bekleme süresini doldurur
-	if fire_timer <= ak47_fire_speed:
+	if fire_timer <= gun_fire_speed:
 		fire_timer += delta
 		
 		
@@ -25,12 +23,13 @@ func _process(delta):
 ## If returns 1, Gun fired
 ## if returns 0, gun was not fired 
 func fire(delta, hud_node, camera, player_status) -> int:
-	if fire_timer >= ak47_fire_speed and total_ammo_in_magazine > 0:
+	if fire_timer >= gun_fire_speed and total_ammo_in_magazine > 0:
 		total_ammo_in_magazine -= 1
 		$AudioStreamPlayer3D.play()
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0
+		game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 		#hud_node.change_current_ammo_info(total_ammo, total_ammo_in_magazine)
 		return 1
 	else:
@@ -46,8 +45,16 @@ func reload():
 	else:
 		total_ammo_in_magazine += total_ammo
 		total_ammo = 0
+	
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
 ## 
+
+func bullet_reset():
+	total_ammo = total_ammo_ui
+	total_ammo_in_magazine = total_ammo_in_magazine_ui
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
+	
 func bullet_spread(player_status):
 	if player_status == 0: #Idle
 		set_bullet_spread(default_bullet_spread_increase_rate)
