@@ -47,6 +47,7 @@ class Handler(BaseHTTPRequestHandler):
             me = requests.get("https://api.intra.42.fr/v2/me", headers={
                 "Authorization": "Bearer " + token
             }).json()
+            user_id      = me.get("id")
             login        = me.get("login", "bilinmiyor")
             cursus_users = me.get("cursus_users", [])
             level        = 0.0
@@ -56,8 +57,18 @@ class Handler(BaseHTTPRequestHandler):
                     break
             level_str = str(level).replace(".", "_")
             location  = me.get("location") or "offline"
+            coalition_color = "FFFFFF" # Varsayılan renk (Koalisyonu yoksa beyaz)
+            if user_id:
+                coalitions_req = requests.get(f"https://api.intra.42.fr/v2/users/{user_id}/coalitions", headers={
+                    "Authorization": "Bearer " + token
+                })
+                if coalitions_req.status_code == 200:
+                    coalitions_data = coalitions_req.json()
+                    if len(coalitions_data) > 0:
+                        # Rengi alıp başındaki '#' işaretini siliyoruz ki URL bozulmasın
+                        coalition_color = coalitions_data[0].get("color", "#FFFFFF").replace("#", "")
             self.send_response(302)
-            self.send_header("Location", GODOT_URL + "/?login=" + login + "&level=" + level_str + "&location=" + location + "&serverip=" + SERVER_IP)
+            self.send_header("Location", GODOT_URL + "/?login=" + login + "&level=" + level_str + "&location=" + location + "&color=" + coalition_color + "&serverip=" + SERVER_IP) 
             self.end_headers()
         else:
             self._respond(404, {"error": "not found"})
