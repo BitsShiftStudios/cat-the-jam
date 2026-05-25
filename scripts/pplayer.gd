@@ -11,7 +11,7 @@ extends CharacterBody3D
 @export var equipped_skinpack: String = "default"
 
 # Animation
-@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
+#@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
 @onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
 @onready var skeleton: Skeleton3D = $"Node3D/ct idle/ct_t_pose/Skeleton3D"
@@ -100,8 +100,8 @@ func _enter_tree():
 func _ready():
 	await get_tree().process_frame 
 
-	if is_multiplayer_authority():
-		$"Node3D/ct idle".hide()
+	#if is_multiplayer_authority():
+		#$"Node3D/ct idle".hide()
 	$Label3D.text = PlayerData["login"]
 	
 	# Eğer bu karakter benim kontrolümdeyse (Local Player)
@@ -163,37 +163,6 @@ func apply_weapon_skin() -> void:
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
 		return
-	if skeleton and spine_bone_id != -1:
-		tilt_torso()
-	if anim_player:
-		process_enemy_animations()
-	
-func tilt_torso() -> void:
-	var target_rotation = Quaternion(Vector3(1, 0, 0), $Neck/Head.rotation_degrees.x / -90.0)
-	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
-
-func process_enemy_animations() -> void:
-	#print("Status: ", player_status)
-	match player_status:
-		0: # idles
-			change_animation("idle")
-		1: ## walk
-			change_animation("mixamo_com_005")
-		#2:
-			#change_animation("player_run/animation")
-		3: ## jump
-			change_animation("jump")
-		4: ## crouch
-			change_animation("player_crouch/animation")
-		5: ## lean left
-			change_animation("ct lean left/lean left")
-		6: ## lean right
-			change_animation("ct lean right /lean right")
-
-func change_animation(target_anim: String) -> void:
-	if anim_player.has_animation(target_anim):
-		if anim_player.current_animation != target_anim:
-			anim_player.play(target_anim, 0.2)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
@@ -307,7 +276,6 @@ func _physics_process(delta: float) -> void:
 			
 	## Character Control Mechanics
 
-	#print(snip_aim)
 
 	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
 		snip_aim = !snip_aim
@@ -315,16 +283,6 @@ func _physics_process(delta: float) -> void:
 		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, 30.0, 15.0 * delta)
 	if snip_aim == false:
 		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
-		
-	
-	#if Input.is_action_just_pressed("aim"):
-		#if not snip_aim:
-			#if current_weapon.name == "snip":
-				#camera.fov -= 50.0
-			#snip_aim = true
-		#else:
-			#snip_aim = false
-			#camera.fov = def_camera_fov
 	
 	
 	if Input.is_action_just_pressed("puase_game"):
@@ -405,7 +363,6 @@ func _physics_process(delta: float) -> void:
 	## Character Control Mechanics
 	take_player_status(input_dir)
 	move_and_slide()
-
 
 func switch_weapon(weapon_index: int):
 	var weapon_pivot = $Neck/Head/WeaponPivot
