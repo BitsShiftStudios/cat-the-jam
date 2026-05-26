@@ -98,6 +98,8 @@ func _enter_tree():
 		$Neck/Head/CameraShaker/Camera3D.current = true
 	
 func _ready():
+	$"Node3D/ct idle/ct_t_pose/AnimationTree".active = true
+	
 	await get_tree().process_frame 
 
 	#if is_multiplayer_authority():
@@ -249,6 +251,17 @@ func _physics_process(delta: float) -> void:
 		return
 	if PlayerData.is_chatting:
 		return
+	
+	
+	##Animation_Tree
+	var local_velocity = global_transform.basis.inverse() * velocity
+	var blend_pos = Vector2(local_velocity.x, -local_velocity.z)
+	$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Movement/blend_position", blend_pos)
+	if Input.is_action_just_pressed("leaning_left"):
+		$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Blend2/blend_amount", 2.5)
+	elif Input.is_action_just_released("leaning_left"):
+		$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Blend2/blend_amount", 0.0)
+	##Animation_Tree
 
 	if Input.is_action_just_pressed("buy_menu"):
 		toggle_buy_menu()
