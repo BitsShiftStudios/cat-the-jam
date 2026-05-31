@@ -4,8 +4,9 @@ extends CharacterBody3D
 
 @export var JUMP_VELOCITY = 4.5
 
-@export var LEANING_POSITION_OFFSET = 0.4
+@export var LEANING_POSITION_OFFSET = 0.2
 @export var LEANING_ROTATION_DEGREES = 6.0
+var leaning_check = false
 
 # SKIN
 @export var equipped_skinpack: String = "default"
@@ -93,15 +94,13 @@ func _enter_tree():
 		set_process_input(false)
 		set_physics_process(false)
 	else:
-		## Kamera default olarak false
+		## Kamera default olarak falsex
 		## Bunu true yapmamız lazım
 		$Neck/Head/CameraShaker/Camera3D.current = true
 	
 func _ready():
 	$"Node3D/ct idle/ct_t_pose/AnimationTree".active = true
-	
 	await get_tree().process_frame 
-
 	if is_multiplayer_authority():
 		$"Node3D/ct idle".hide()
 	$Label3D.text = PlayerData["login"]
@@ -156,15 +155,28 @@ func _physics_process(delta: float) -> void:
 	if PlayerData.is_chatting:
 		return
 	
+	#region LEANING_MECHANIC
+	## Character Leaning -----------
+	if Input.is_action_pressed("leaning_right") and not Input.is_action_pressed("leaning_left"):
+		leaning_check = true
+		leaning_chracter("leaning_right", delta)
+		play_leaning_animation("leaning_right")
+	elif Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
+		leaning_check = true
+		leaning_chracter("leaning_left", delta)
+		play_leaning_animation("leaning_left")
+	elif not Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
+		leaning_check = false
+		leaning_chracter("default", delta)
+		play_leaning_animation("default")
+	## Character Leaning -----------
+	#endregion
 	
 	#region ANIMATION_TREE
 	var local_velocity = global_transform.basis.inverse() * velocity
 	var blend_pos = Vector2(local_velocity.x, -local_velocity.z)
-	$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Movement/blend_position", blend_pos)
-	if Input.is_action_just_pressed("leaning_left"):
-		$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Blend2/blend_amount", 0.7)
-	elif Input.is_action_just_released("leaning_left"):
-		$"Node3D/ct idle/ct_t_pose/AnimationTree".set("parameters/Blend2/blend_amount", 0.0)
+	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
+	animation_tree_node.set("parameters/Movement/blend_position", blend_pos)
 	#endregion ANIMATION_TREE
 
 	#region GUN_MENU
@@ -215,19 +227,6 @@ func _physics_process(delta: float) -> void:
 		else:
 			mouse_capture = 1
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	#endregion
-	
-	
-	#region LEANING_MECHANIC
-	## Character Leaning -----------
-	if Input.is_action_pressed("leaning_right"):
-		leaning_chracter("leaning_right", delta)
-	elif Input.is_action_pressed("leaning_left"):
-		leaning_chracter("leaning_left", delta)
-	else:
-		leaning_chracter("default", delta)
-		#leaning_chracter("default", delta)
-	## Character Leaning -----------
 	#endregion
 	
 	#region CHRACTER_CROUCH_CONTROLLER
@@ -302,7 +301,19 @@ func _physics_process(delta: float) -> void:
 	take_player_status(input_dir)
 	move_and_slide()
 	
-	
+
+func play_leaning_animation(animation_name):
+	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
+	if animation_name == "leaning_left":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.5)
+		animation_tree_node.set("parameters/Leaning/blend_position", -1.0)
+	elif animation_name == "leaning_right":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.5)
+		animation_tree_node.set("parameters/Leaning/blend_position", 1.0)
+	elif animation_name == "default":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.0)
+		animation_tree_node.set("parameters/Leaning/blend_position", 0.0)
+
 func apply_weapon_skin() -> void:
 	var ak47_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/ak47/AssaultRIfle_01_Cube_002
 	var m4a4_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/m4a4/AssaultRifle2_1
