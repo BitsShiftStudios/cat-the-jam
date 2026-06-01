@@ -24,12 +24,32 @@ extends Node3D
 @onready var bullet_hole_scene = preload("res://scenes/bullet_hole.tscn")
 
 func fire_at_player(target_collider) -> void:
-	var name = target_collider.get_parent().name
-	if name.is_valid_int():
-		var target_network_id = name.to_int()
-		var owner_player = get_owner().get_child(0)	
-		if owner_player:
+	var current_node = target_collider
+	var target_network_id = 0
+	while current_node != null:
+		var node_name = current_node.name
+		if node_name.is_valid_int():
+			target_network_id = node_name.to_int()
+			break
+		current_node =  current_node.get_parent()
+		
+	var owner_player = self
+	var found_owner: Node = null
+	
+	while owner_player != null:
+		if owner_player.has_method("request_damage_from_player"):
+			found_owner = owner_player
+			break
+		owner_player = owner_player.get_parent()
+	if target_network_id > 0:
+		if owner_player and owner_player.has_method("request_damage_from_player"):
 			owner_player.request_damage_from_player(target_network_id, weapon_damage)
+			
+	#if name.is_valid_int():
+		#var target_network_id = name.to_int()
+		#var owner_player = get_owner().get_child(0)
+		#if owner_player:
+			#owner_player.request_damage_from_player(target_network_id, weapon_damage)
 
 # Called when the node enters the scene tree for the first time.
 func fire_base_weapon(weapon_range, delta, camera):
@@ -41,7 +61,6 @@ func fire_base_weapon(weapon_range, delta, camera):
 		var target_collider = result.collider
 		var target_normal = result.normal
 		var target_position = result.position
-		
 		spawn_bullet_hole(target_collider, target_position, target_normal)
 		rpc("sync_bullet_hole", target_collider.get_path(), target_position, target_normal)
 		
@@ -82,6 +101,10 @@ func create_raycast(camera, weapon_range) -> Dictionary:
 	ray_normal = ray_normal.rotated(camera.global_transform.basis.y, deg_to_rad(spread_y))
 	var ray_end = ray_origin + (ray_normal * weapon_range)
 	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+	
+	query.collision_mask = 17
+	query.collide_with_areas = true
+	
 	#query.exclude = [self.get_rid()]
 	var space_status = get_world_3d().direct_space_state
 	var result = space_status.intersect_ray(query)

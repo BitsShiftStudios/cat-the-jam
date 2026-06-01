@@ -44,8 +44,6 @@ var current_weapon : base_weapon
 @onready var ak47 = $Neck/Head/WeaponPivot/ak47
 @onready var m4a4 = $Neck/Head/WeaponPivot/m4a4
 
-
-@onready var hud_node = $hud
 var is_trying_to_fire = false
 ## 0 == IDLE
 ## 1 == WALKING
@@ -82,6 +80,24 @@ var wave_rate = 0.0
 
 var mouse_capture = 1
 
+#region HURTBOX_VARIABLE
+@onready var head_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/HeadAttachment/HeadHurtbox"
+@onready var upper_boddy_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/UpperBodyAttachment/BodyHurtbox"
+@onready var lower_boddy_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LowerBodyAttachment/LowerBodyHurtbox"
+@onready var left_arm_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftArmAttachment/LeftArmHurtbox"
+@onready var left_fore_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftForeArmAttachment/LeftForeArmHurtbox"
+@onready var left_hand_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandAttachment/LeftHandHurtbox"
+@onready var right_arm_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightArmAttachment/RightArmHurtbox"
+@onready var right_fore_arm_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightForeArmAttachment/RightForeArmHurtbox"
+@onready var right_hand_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandAttachment/RightHandHurtbox"
+@onready var left_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftLegAttachment/LeftLegHurtbox"
+@onready var left_upper_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftUpLegAttachment/LeftUpLegHurtbox"
+@onready var left_foot_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftFootAttachment/LeftFootHurtbox"
+@onready var right_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightLegAttachment/RightLegHurtbox"
+@onready var right_upper_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightUpLegAttachment/RightUpLegHurtbox"
+@onready var right_foot_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightFootAttachment/RightFootHurtbox"
+#endregion
+
 func _enter_tree():
 	var player_id = get_parent().name.to_int()
 	print("Player ID: ", player_id)
@@ -97,35 +113,72 @@ func _enter_tree():
 		## Kamera default olarak falsex
 		## Bunu true yapmamız lazım
 		$Neck/Head/CameraShaker/Camera3D.current = true
-	
+		
 func _ready():
 	$"Node3D/ct idle/ct_t_pose/AnimationTree".active = true
 	await get_tree().process_frame 
 	if is_multiplayer_authority():
+		collision_layer = 2
+		
+		head_hurtbox.collision_layer = 8
+		upper_boddy_hurtbox.collision_layer = 8 
+		lower_boddy_hurtbox.collision_layer = 8 
+		
+		left_arm_hurtbox.collision_layer = 8 
+		left_fore_hurtbox.collision_layer = 8 
+		left_hand_hurtbox.collision_layer = 8 
+		
+		right_arm_hurtbox.collision_layer = 8 
+		right_hand_hurtbox.collision_layer = 8 
+		right_fore_arm_hurtbox.collision_layer = 8
+		
+		left_leg_hurtbox.collision_layer = 8 
+		left_upper_leg_hurtbox.collision_layer = 8
+		left_foot_hurtbox.collision_layer = 8 
+		
+		right_leg_hurtbox.collision_layer = 8 
+		right_upper_leg_hurtbox.collision_layer = 8
+		right_foot_hurtbox.collision_layer = 8
+		
+		collision_mask = 1 + 4
+		
 		$"Node3D/ct idle".hide()
-	$Label3D.text = PlayerData["login"]
-	
-	# Eğer bu karakter benim kontrolümdeyse (Local Player)
-	if is_multiplayer_authority():
 		$Label3D.hide() # Veya $Label3D.visible = false
-	else:
-		# Bu karakter ağdaki başka biriyse yazıyı açık tut
-		$Label3D.show()
-
-	if is_multiplayer_authority():
-		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun
 		buy_menu.visible = false
 	else:
-		# DÜŞMAN KARAKTERİ: Kendi ekranımızda düşmanın arayüzünü tamamen yok edelim
+		collision_layer = 4
+		
+		head_hurtbox.collision_layer = 16
+		upper_boddy_hurtbox.collision_layer = 16 
+		lower_boddy_hurtbox.collision_layer = 16
+		
+		left_arm_hurtbox.collision_layer = 16
+		left_fore_hurtbox.collision_layer = 16 
+		left_hand_hurtbox.collision_layer = 16
+		
+		right_arm_hurtbox.collision_layer = 16
+		right_hand_hurtbox.collision_layer = 16 
+		right_fore_arm_hurtbox.collision_layer = 16
+		
+		left_leg_hurtbox.collision_layer = 16
+		left_upper_leg_hurtbox.collision_layer = 16
+		left_foot_hurtbox.collision_layer = 16
+		
+		right_leg_hurtbox.collision_layer = 16
+		right_upper_leg_hurtbox.collision_layer = 16
+		right_foot_hurtbox.collision_layer = 16
+		
+		collision_mask = 1 + 2
+		# Bu karakter ağdaki başka biriyse yazıyı açık tut
+		$Label3D.show()
 		if buy_menu != null:
 			buy_menu.queue_free()
-	
+	$Label3D.text = PlayerData["login"]
 	switch_weapon(0)
 	#print(current_weapon)
 	
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
-	test_face = $testface.position
 	test_face_c_pos_y = test_face.y - 0.7
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -160,15 +213,15 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_pressed("leaning_right") and not Input.is_action_pressed("leaning_left"):
 		leaning_check = true
 		leaning_chracter("leaning_right", delta)
-		play_leaning_animation("leaning_right")
+		play_leaning_animation("leaning_right") # This func play leaning animation.
 	elif Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
 		leaning_check = true
 		leaning_chracter("leaning_left", delta)
-		play_leaning_animation("leaning_left")
+		play_leaning_animation("leaning_left") # This func play leaning animation.
 	elif not Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
 		leaning_check = false
 		leaning_chracter("default", delta)
-		play_leaning_animation("default")
+		play_leaning_animation("default") # This func play leaning animation.
 	## Character Leaning -----------
 	#endregion
 	
@@ -259,7 +312,7 @@ func _physics_process(delta: float) -> void:
 		is_trying_to_fire = Input.is_action_just_pressed("fire")
 		
 	if is_trying_to_fire:
-		if current_weapon.fire(delta, hud_node, camera, player_status):
+		if current_weapon.fire(delta, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
 		else:
@@ -453,7 +506,6 @@ func character_position(check, delta):
 
 	if check:
 		$Neck.position.y = lerp($Neck.position.y, neck_crouched_position_y, 15.0 * delta)
-		$testface.position.y = lerp($testface.position.y, test_face_c_pos_y, 15.0 * delta)
 		$Taban.scale.y = lerp($Taban.scale.y, 0.7, 15.0 * delta)
 		$ShapeCast3D.position.y = neck_crouched_position_y
 		var test = $CollisionShape3D.shape
@@ -462,7 +514,6 @@ func character_position(check, delta):
 	else:
 		$Neck.position.y = lerp($Neck.position.y, neck_org_position.y, 15.0 * delta)
 		$ShapeCast3D.position.y = neck_org_position.y
-		$testface.position.y = lerp($testface.position.y, test_face.y, 15.0 * delta)
 		$Taban.scale.y = lerp($Taban.scale.y, 1.0, 15.0 * delta)
 		var test = $CollisionShape3D.shape
 		test.height = lerp(test.height, 2.0, 10.0 * delta)
