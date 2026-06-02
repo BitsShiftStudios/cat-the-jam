@@ -286,9 +286,13 @@ shadow_mesh = SubResource("ArrayMesh_pmeq0")
 [node name="m4a4" type="Node3D" unique_id=164708223 node_paths=PackedStringArray("muzzle_flash")]
 script = ExtResource("1_j2eef")
 muzzle_flash = NodePath("MuzzleFlash")
+weapon_damage = 28
+body_damage = 28
+leg_damage = 20
+head_damage = 85
+foot_damage = 15
 gun_fire_speed = 0.1
 weapon_range = 1000.0
-weapon_damage = 25
 is_automatic = true
 total_ammo_ui = 180
 total_ammo_in_magazine_ui = 25

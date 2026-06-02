@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "walk": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/anims/ct/walk_forward.tres",
+"save_to_file/fallback_path": "res://assets/models/ct/anim/walk_forward.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://bhev41rqtsokm",
 "settings/loop_mode": 1,

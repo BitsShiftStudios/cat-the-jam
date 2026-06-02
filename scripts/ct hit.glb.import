@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cahn7vefqmdt2"
-path="res://.godot/imported/ct hit.glb-e171f9d2d4fe23d7ee0fff4879b30102.scn"
+uid="uid://co70eqm1nhmgb"
+path="res://.godot/imported/ct hit.glb-1fe45544a7b7297cc5f28c3451746875.scn"
 
 [deps]
 
-source_file="res://assets/models/ct/anim/ct hit.glb"
-dest_files=["res://.godot/imported/ct hit.glb-e171f9d2d4fe23d7ee0fff4879b30102.scn"]
+source_file="res://scripts/ct hit.glb"
+dest_files=["res://.godot/imported/ct hit.glb-1fe45544a7b7297cc5f28c3451746875.scn"]
 
 [params]
 
@@ -39,4 +39,4 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={}
 gltf/naming_version=2
-gltf/embedded_image_handling=0
+gltf/embedded_image_handling=1

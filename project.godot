@@ -127,6 +127,14 @@ send_message={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="World"
+3d_physics/layer_2="Player"
+3d_physics/layer_3="Enemy"
+3d_physics/layer_4="MyHurtBox"
+3d_physics/layer_5="EnemyHurtBox"
+
 [network]
 
 limits/packet_peer_stream/max_buffer_po2=20
