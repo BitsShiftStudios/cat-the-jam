@@ -57,11 +57,15 @@ func update_client_scoreboard(server_data: Dictionary):
 		score_ui.refresh_display(scoreboard_data)
 		
 func _get_winner() -> String:
+	if scoreboard_data.is_empty():
+		return "No One"
 	var winner_id = -1
 	for id in scoreboard_data.keys():
 		if (winner_id == -1 || 
 			scoreboard_data[id]["kills"] > scoreboard_data[winner_id]["kills"]):
 			winner_id = id
+	if winner_id == -1 or not scoreboard_data.has(winner_id):
+		return "No One"
 	return scoreboard_data[winner_id]["name"]
 
 # Round management

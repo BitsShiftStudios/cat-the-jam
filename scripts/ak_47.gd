@@ -22,7 +22,7 @@ func _process(delta):
 ## Returns 1 or 0
 ## If returns 1, Gun fired
 ## if returns 0, gun was not fired 
-func fire(delta, hud_node, camera, player_status) -> int:
+func fire(delta, camera, player_status) -> int:
 	if fire_timer >= gun_fire_speed and total_ammo_in_magazine > 0:
 		total_ammo_in_magazine -= 1
 		$AudioStreamPlayer3D.play()

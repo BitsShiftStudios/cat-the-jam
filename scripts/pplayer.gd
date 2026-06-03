@@ -4,14 +4,15 @@ extends CharacterBody3D
 
 @export var JUMP_VELOCITY = 4.5
 
-@export var LEANING_POSITION_OFFSET = 0.4
+@export var LEANING_POSITION_OFFSET = 0.2
 @export var LEANING_ROTATION_DEGREES = 6.0
+var leaning_check = false
 
 # SKIN
 @export var equipped_skinpack: String = "default"
 
 # Animation
-@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
+#@onready var anim_player: AnimationPlayer = $"Node3D/ct idle/AnimationPlayer"
 @onready var left_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandIK"
 @onready var right_hand_ik = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandIK"
 @onready var skeleton: Skeleton3D = $"Node3D/ct idle/ct_t_pose/Skeleton3D"
@@ -43,8 +44,6 @@ var current_weapon : base_weapon
 @onready var ak47 = $Neck/Head/WeaponPivot/ak47
 @onready var m4a4 = $Neck/Head/WeaponPivot/m4a4
 
-
-@onready var hud_node = $hud
 var is_trying_to_fire = false
 ## 0 == IDLE
 ## 1 == WALKING
@@ -81,6 +80,24 @@ var wave_rate = 0.0
 
 var mouse_capture = 1
 
+#region HURTBOX_VARIABLE
+@onready var head_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/HeadAttachment/HeadHurtbox"
+@onready var upper_boddy_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/UpperBodyAttachment/BodyHurtbox"
+@onready var lower_boddy_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LowerBodyAttachment/LowerBodyHurtbox"
+@onready var left_arm_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftArmAttachment/LeftArmHurtbox"
+@onready var left_fore_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftForeArmAttachment/LeftForeArmHurtbox"
+@onready var left_hand_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftHandAttachment/LeftHandHurtbox"
+@onready var right_arm_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightArmAttachment/RightArmHurtbox"
+@onready var right_fore_arm_hurtbox = $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightForeArmAttachment/RightForeArmHurtbox"
+@onready var right_hand_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightHandAttachment/RightHandHurtbox"
+@onready var left_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftLegAttachment/LeftLegHurtbox"
+@onready var left_upper_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftUpLegAttachment/LeftUpLegHurtbox"
+@onready var left_foot_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/LeftFootAttachment/LeftFootHurtbox"
+@onready var right_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightLegAttachment/RightLegHurtbox"
+@onready var right_upper_leg_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightUpLegAttachment/RightUpLegHurtbox"
+@onready var right_foot_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightFootAttachment/RightFootHurtbox"
+#endregion
+
 func _enter_tree():
 	var player_id = get_parent().name.to_int()
 	print("Player ID: ", player_id)
@@ -93,38 +110,78 @@ func _enter_tree():
 		set_process_input(false)
 		set_physics_process(false)
 	else:
-		## Kamera default olarak false
+		## Kamera default olarak falsex
 		## Bunu true yapmamız lazım
 		$Neck/Head/CameraShaker/Camera3D.current = true
-	
+		
 func _ready():
+	if not is_node_ready():
+		await ready
+	$"Node3D/ct idle/ct_t_pose/AnimationTree".active = true
 	await get_tree().process_frame 
-
 	if is_multiplayer_authority():
+		collision_layer = 2
+		
+		head_hurtbox.collision_layer = 8
+		upper_boddy_hurtbox.collision_layer = 8 
+		lower_boddy_hurtbox.collision_layer = 8 
+		
+		left_arm_hurtbox.collision_layer = 8 
+		left_fore_hurtbox.collision_layer = 8 
+		left_hand_hurtbox.collision_layer = 8 
+		
+		right_arm_hurtbox.collision_layer = 8 
+		right_hand_hurtbox.collision_layer = 8 
+		right_fore_arm_hurtbox.collision_layer = 8
+		
+		left_leg_hurtbox.collision_layer = 8 
+		left_upper_leg_hurtbox.collision_layer = 8
+		left_foot_hurtbox.collision_layer = 8 
+		
+		right_leg_hurtbox.collision_layer = 8 
+		right_upper_leg_hurtbox.collision_layer = 8
+		right_foot_hurtbox.collision_layer = 8
+		
+		collision_mask = 1 + 4
+		
 		$"Node3D/ct idle".hide()
-	$Label3D.text = PlayerData["login"]
-	
-	# Eğer bu karakter benim kontrolümdeyse (Local Player)
-	if is_multiplayer_authority():
 		$Label3D.hide() # Veya $Label3D.visible = false
-	else:
-		# Bu karakter ağdaki başka biriyse yazıyı açık tut
-		$Label3D.show()
-
-	if is_multiplayer_authority():
-		# BİZİM KARAKTERİMİZ: Bizim menümüz var olsun ama kapalı dursun
 		buy_menu.visible = false
 	else:
-		# DÜŞMAN KARAKTERİ: Kendi ekranımızda düşmanın arayüzünü tamamen yok edelim
+		collision_layer = 4
+		
+		head_hurtbox.collision_layer = 16
+		upper_boddy_hurtbox.collision_layer = 16 
+		lower_boddy_hurtbox.collision_layer = 16
+		
+		left_arm_hurtbox.collision_layer = 16
+		left_fore_hurtbox.collision_layer = 16 
+		left_hand_hurtbox.collision_layer = 16
+		
+		right_arm_hurtbox.collision_layer = 16
+		right_hand_hurtbox.collision_layer = 16 
+		right_fore_arm_hurtbox.collision_layer = 16
+		
+		left_leg_hurtbox.collision_layer = 16
+		left_upper_leg_hurtbox.collision_layer = 16
+		left_foot_hurtbox.collision_layer = 16
+		
+		right_leg_hurtbox.collision_layer = 16
+		right_upper_leg_hurtbox.collision_layer = 16
+		right_foot_hurtbox.collision_layer = 16
+		
+		collision_mask = 1 + 2
+		# Bu karakter ağdaki başka biriyse yazıyı açık tut
+		$Label3D.show()
 		if buy_menu != null:
-			buy_menu.queue_free()
-	
+			buy_menu.visible = false
+			buy_menu.set_process(false)
+	$Label3D.text = PlayerData["login"]
 	switch_weapon(0)
 	#print(current_weapon)
 	
 	neck_org_position = $Neck.position
 	neck_crouched_position_y = neck_org_position.y - 0.7
-	test_face = $testface.position
 	test_face_c_pos_y = test_face.y - 0.7
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -145,7 +202,174 @@ func _ready():
 	if (get_multiplayer_authority() % 2 == 1):
 		equipped_skinpack = "gold"
 	apply_weapon_skin()
+	
+func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+	if !match_controller.match_active:
+		return
+	if PlayerData.is_chatting:
+		return
+	
+	#region LEANING_MECHANIC
+	## Character Leaning -----------
+	if Input.is_action_pressed("leaning_right") and not Input.is_action_pressed("leaning_left"):
+		leaning_check = true
+		leaning_chracter("leaning_right", delta)
+		play_leaning_animation("leaning_right") # This func play leaning animation.
+	elif Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
+		leaning_check = true
+		leaning_chracter("leaning_left", delta)
+		play_leaning_animation("leaning_left") # This func play leaning animation.
+	elif not Input.is_action_pressed("leaning_left") and not Input.is_action_pressed("leaning_right"):
+		leaning_check = false
+		leaning_chracter("default", delta)
+		play_leaning_animation("default") # This func play leaning animation.
+	## Character Leaning -----------
+	#endregion
+	
+	#region ANIMATION_TREE
+	var local_velocity = global_transform.basis.inverse() * velocity
+	var blend_pos = Vector2(local_velocity.x, -local_velocity.z)
+	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
+	animation_tree_node.set("parameters/Movement/blend_position", blend_pos)
+	#endregion ANIMATION_TREE
+
+	#region GUN_MENU
+	if Input.is_action_just_pressed("buy_menu"):
+		toggle_buy_menu()
+	if buy_menu.visible == true:
+		snip_aim = false
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
+		return
+	#endregion
+
+	#region MOVE_PHYSIC
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+	# Handle jump.
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir := Input.get_vector("left", "right", "forward", "back")
+	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+			
+	## Character Control Mechanics
+	#endregion
+
+
+	#region SNIPER_ZOOM
+	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
+		snip_aim = !snip_aim
+	if snip_aim == true:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, 30.0, 15.0 * delta)
+	if snip_aim == false:
+		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
+	#endregion
+	
+	#region SETTINGS_MENU
+	if Input.is_action_just_pressed("puase_game"):
+		if mouse_capture == 1:
+			mouse_capture = 0
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			mouse_capture = 1
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	#endregion
+	
+	#region CHRACTER_CROUCH_CONTROLLER
+	##This block for character_position func.
+	#if True chracter crouch, if is false, character stand
+	if Input.is_action_pressed("crouch"):
+		check = true
+	elif not $ControlUpperHead.is_colliding():
+		check = false
+	character_position(check, delta) #Crouch or Stand
+	#endregion
+	
+	#region CHRACTER_SPEED_CONTROLLER
+	## Chracter Speed - status
+	if Input.is_action_pressed("run") and check == false and (!Input.is_action_pressed("leaning_right") and !Input.is_action_pressed("leaning_left")):
+		SPEED = SPEED_RUN
+	elif check == true or (Input.is_action_pressed("leaning_right") or Input.is_action_pressed("leaning_left")):
+		SPEED = SPEED_CROUCH
+	else:
+		SPEED = SPEED_NORMAL
+	## Chracter Speed - status
+	#endregion
+	
+	
+	#region WEAPON_FIRE
+	##Fire Gun
+	if current_weapon.is_automatic:
+		is_trying_to_fire = Input.is_action_pressed("fire")
+	else:
+		is_trying_to_fire = Input.is_action_just_pressed("fire")
 		
+	if is_trying_to_fire:
+		if current_weapon.fire(delta, camera, player_status):
+			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
+			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
+		else:
+			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.0, 0.1)
+			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.0, 0.1)
+	elif $Neck/Head/CameraShaker/Camera3D.v_offset != 0.0:
+		$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.0, 0.1)
+		$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.0, 0.1)
+	##Fire Gun
+	#endregion
+	
+	
+	#region WEAPON_RELOAD
+	##Reload
+	if Input.is_action_just_pressed("reload"):
+		current_weapon.reload()
+	##Reload
+	#endregion
+		
+	#region PLAYER_CAMERA_SHAKE
+	#Camera Shake
+	var target_wave_rate = 0.0
+	if (!direction):
+		target_wave_rate = 0.01
+		t = t + (delta * 1.0)
+	else:
+		target_wave_rate = 0.05
+		t = t + (delta * Vector2(velocity.x, velocity.z).length())	
+	wave_rate = lerp(wave_rate, target_wave_rate, 10.0 * delta)
+	$Neck/Head/CameraShaker/Camera3D.position.y = wave_rate * sin(2.0 * t)
+	$Neck/Head/CameraShaker/Camera3D.position.x = wave_rate * cos(1.0 * t)
+	#Camera Shake
+	#endregion
+	
+	
+	
+	#print(SPEED)
+	## Character Control Mechanics
+	take_player_status(input_dir)
+	move_and_slide()
+	
+
+func play_leaning_animation(animation_name):
+	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
+	if animation_name == "leaning_left":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.5)
+		animation_tree_node.set("parameters/Leaning/blend_position", -1.0)
+	elif animation_name == "leaning_right":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.5)
+		animation_tree_node.set("parameters/Leaning/blend_position", 1.0)
+	elif animation_name == "default":
+		animation_tree_node.set("parameters/Blend2/blend_amount", 0.0)
+		animation_tree_node.set("parameters/Leaning/blend_position", 0.0)
+
 func apply_weapon_skin() -> void:
 	var ak47_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/ak47/AssaultRIfle_01_Cube_002
 	var m4a4_mesh: MeshInstance3D = $Neck/Head/WeaponPivot/m4a4/AssaultRifle2_1
@@ -163,37 +387,6 @@ func apply_weapon_skin() -> void:
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
 		return
-	if skeleton and spine_bone_id != -1:
-		tilt_torso()
-	if anim_player:
-		process_enemy_animations()
-	
-func tilt_torso() -> void:
-	var target_rotation = Quaternion(Vector3(1, 0, 0), $Neck/Head.rotation_degrees.x / -90.0)
-	skeleton.set_bone_pose_rotation(spine_bone_id, target_rotation)
-
-func process_enemy_animations() -> void:
-	#print("Status: ", player_status)
-	match player_status:
-		0: # idles
-			change_animation("idle")
-		1: ## walk
-			change_animation("mixamo_com_005")
-		#2:
-			#change_animation("player_run/animation")
-		3: ## jump
-			change_animation("jump")
-		4: ## crouch
-			change_animation("player_crouch/animation")
-		5: ## lean left
-			change_animation("ct lean left/lean left")
-		6: ## lean right
-			change_animation("ct lean right /lean right")
-
-func change_animation(target_anim: String) -> void:
-	if anim_player.has_animation(target_anim):
-		if anim_player.current_animation != target_anim:
-			anim_player.play(target_anim, 0.2)
 	
 func add_health(amount: int, attacker_id: int) -> void:
 	if not multiplayer.is_server():
@@ -234,7 +427,6 @@ func trigger_server_respawn() -> void:
 	var new_spawn_pos = get_spawn_point()
 	rpc_id(owner_id, "teleport_client_to_spawn", new_spawn_pos)
 
-
 @rpc("any_peer", "reliable")
 func teleport_client_to_spawn(target_global_position: Vector3) -> void:
 	velocity = Vector3.ZERO
@@ -272,140 +464,6 @@ func update_health_local(new_health_value: int):
 	health = new_health_value
 	game_ui.update_health_value(health)
 	game_ui.update_health_display()
-	
-func _physics_process(delta: float) -> void:
-	if not is_multiplayer_authority():
-		return
-	if !match_controller.match_active:
-		return
-	if PlayerData.is_chatting:
-		return
-
-	if Input.is_action_just_pressed("buy_menu"):
-		toggle_buy_menu()
-	if buy_menu.visible == true:
-		snip_aim = false
-		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
-		return
-
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var input_dir := Input.get_vector("left", "right", "forward", "back")
-	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
-			
-	## Character Control Mechanics
-
-	#print(snip_aim)
-
-	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
-		snip_aim = !snip_aim
-	if snip_aim == true:
-		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, 30.0, 15.0 * delta)
-	if snip_aim == false:
-		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
-		
-	
-	#if Input.is_action_just_pressed("aim"):
-		#if not snip_aim:
-			#if current_weapon.name == "snip":
-				#camera.fov -= 50.0
-			#snip_aim = true
-		#else:
-			#snip_aim = false
-			#camera.fov = def_camera_fov
-	
-	
-	if Input.is_action_just_pressed("puase_game"):
-		if mouse_capture == 1:
-			mouse_capture = 0
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			mouse_capture = 1
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
-	## Character Leaning -----------
-	if Input.is_action_pressed("leaning_right"):
-		leaning_chracter("leaning_right", delta)
-	elif Input.is_action_pressed("leaning_left"):
-		leaning_chracter("leaning_left", delta)
-	else:
-		leaning_chracter("default", delta)
-		#leaning_chracter("default", delta)
-	## Character Leaning -----------
-	
-		
-	##This block for character_position func.
-	#if True chracter crouch, if is false, character stand
-	if Input.is_action_pressed("crouch"):
-		check = true
-	elif not $ControlUpperHead.is_colliding():
-		check = false
-	character_position(check, delta) #Crouch or Stand
-	
-	## Chracter Speed - status
-	if Input.is_action_pressed("run") and check == false and (!Input.is_action_pressed("leaning_right") and !Input.is_action_pressed("leaning_left")):
-		SPEED = SPEED_RUN
-	elif check == true or (Input.is_action_pressed("leaning_right") or Input.is_action_pressed("leaning_left")):
-		SPEED = SPEED_CROUCH
-	else:
-		SPEED = SPEED_NORMAL
-	## Chracter Speed - status
-	
-	##Fire Gun
-	if current_weapon.is_automatic:
-		is_trying_to_fire = Input.is_action_pressed("fire")
-	else:
-		is_trying_to_fire = Input.is_action_just_pressed("fire")
-	
-	
-	
-	if is_trying_to_fire:
-		if current_weapon.fire(delta, hud_node, camera, player_status):
-			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
-			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
-		else:
-			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.0, 0.1)
-			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.0, 0.1)
-	elif $Neck/Head/CameraShaker/Camera3D.v_offset != 0.0:
-		$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.0, 0.1)
-		$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.0, 0.1)
-	##Fire Gun
-	
-	##Reload
-	if Input.is_action_just_pressed("reload"):
-		current_weapon.reload()
-	##Reload
-		
-	#Camera Shake
-	var target_wave_rate = 0.0
-	if (!direction):
-		target_wave_rate = 0.01
-		t = t + (delta * 1.0)
-	else:
-		target_wave_rate = 0.05
-		t = t + (delta * Vector2(velocity.x, velocity.z).length())	
-	wave_rate = lerp(wave_rate, target_wave_rate, 10.0 * delta)
-	$Neck/Head/CameraShaker/Camera3D.position.y = wave_rate * sin(2.0 * t)
-	$Neck/Head/CameraShaker/Camera3D.position.x = wave_rate * cos(1.0 * t)
-	#Camera Shake
-	
-	#print(SPEED)
-	## Character Control Mechanics
-	take_player_status(input_dir)
-	move_and_slide()
-
 
 func switch_weapon(weapon_index: int):
 	var weapon_pivot = $Neck/Head/WeaponPivot
@@ -451,7 +509,6 @@ func character_position(check, delta):
 
 	if check:
 		$Neck.position.y = lerp($Neck.position.y, neck_crouched_position_y, 15.0 * delta)
-		$testface.position.y = lerp($testface.position.y, test_face_c_pos_y, 15.0 * delta)
 		$Taban.scale.y = lerp($Taban.scale.y, 0.7, 15.0 * delta)
 		$ShapeCast3D.position.y = neck_crouched_position_y
 		var test = $CollisionShape3D.shape
@@ -460,7 +517,6 @@ func character_position(check, delta):
 	else:
 		$Neck.position.y = lerp($Neck.position.y, neck_org_position.y, 15.0 * delta)
 		$ShapeCast3D.position.y = neck_org_position.y
-		$testface.position.y = lerp($testface.position.y, test_face.y, 15.0 * delta)
 		$Taban.scale.y = lerp($Taban.scale.y, 1.0, 15.0 * delta)
 		var test = $CollisionShape3D.shape
 		test.height = lerp(test.height, 2.0, 10.0 * delta)

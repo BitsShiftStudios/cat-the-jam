@@ -5,16 +5,35 @@ extends Node
 
 const PORT = 3131
 var peer = WebSocketMultiplayerPeer.new()
-var players = {}
+var connection_timeout_timer: Timer
+
 
 func _ready():
 	$MultiplayerSpawner.spawn_function = _on_player_spawn
-	
+	connection_timeout_timer = Timer.new()
+	connection_timeout_timer.wait_time = 10.0  # 10 saniye timeout
+	connection_timeout_timer.one_shot = true
+	connection_timeout_timer.timeout.connect(_on_connection_timeout)
+	add_child(connection_timeout_timer)
+
 	if OS.get_cmdline_args().has("--server"):
 		get_window().title = "Server"
 		start_server()
 	else:
+		# 1. Sahne değiştirme komutunu (change_scene_to_file) TAMAMEN SİLDİK!
+		# Bunun yerine ekranı her şeyin üstünü örtecek bir CanvasLayer olarak ekliyoruz.
+		var canvas = CanvasLayer.new()
+		canvas.layer = 100 # En üst katman
+		
+		var conn_screen = preload("res://scenes/ConnectionScreen.tscn").instantiate()
+		canvas.add_child(conn_screen)
+		add_child(canvas) # NetworkManager'ın altına güvenle ekledik
+		# 2. Artık silinme tehlikemiz olmadığı için sinyaller null hatası vermeyecek:
 		multiplayer.connected_to_server.connect(_on_connected_to_server)
+		multiplayer.connection_failed.connect(_on_connection_failed)
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+		ConnectionManager.retry_requested.connect(retry_connection)
+		# 3. İstemciyi güvenle başlat
 		start_client()
 
 func _process(_delta):
@@ -32,6 +51,7 @@ func start_server():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func start_client():
+	ConnectionManager.set_state(ConnectionManager.ConnectionState.CONNECTING)
 	var ip = PlayerData.server_ip
 	if ip == "":
 		ip = str(JavaScriptBridge.eval("window.location.hostname"))
@@ -41,12 +61,60 @@ func start_client():
 	var error = peer.create_client(target_url, tls)
 	if error != OK:
 		print("Bağlantı hatası: ", error)
+		ConnectionManager.set_state(
+			ConnectionManager.ConnectionState.CONNECTION_FAILED,
+			"Bağlantı başlatılamadı (Error: " + str(error) + ")")
 		return
 	multiplayer.multiplayer_peer = peer
+	connection_timeout_timer.start()
+
+func retry_connection():
+	"""ConnectionScreen'den retry için"""
+	print("Yeniden bağlanma isteği alındı!")
+	if peer:
+		peer.close()
+	multiplayer.multiplayer_peer = null
+	peer = WebSocketMultiplayerPeer.new()
+	start_client()
 
 func _on_connected_to_server():
 	print("Sunucuya baglandi!")
-	send_player_info.rpc_id(1, PlayerData.login, PlayerData.level, PlayerData.location, PlayerData.color)
+	connection_timeout_timer.stop()
+	ConnectionManager.set_state(ConnectionManager.ConnectionState.CONNECTED)
+	var my_data = {
+		"login": PlayerData.login,
+		"level": PlayerData.level,
+		"location": PlayerData.location,
+		"color": PlayerData.color
+	}
+	send_player_info.rpc_id(1, my_data)
+
+func _on_connection_failed():
+	print("Bağlantı başarısız!")
+	connection_timeout_timer.stop()
+	ConnectionManager.set_state(
+		ConnectionManager.ConnectionState.CONNECTION_FAILED,
+		"Sunucuya ulaşılamadı. Sunucu çalışmıyor olabilir."
+	)
+
+func _on_server_disconnected():
+	print("Sunucu bağlantısı koptu!")
+	ConnectionManager.set_state(
+		ConnectionManager.ConnectionState.SERVER_SHUTDOWN,
+		"Sunucu ile bağlantı kesildi."
+	)
+	var canvas = CanvasLayer.new()
+	canvas.layer = 100 # En üst katman
+	var conn_screen = preload("res://scenes/ConnectionScreen.tscn").instantiate()
+	canvas.add_child(conn_screen)
+	add_child(canvas)
+
+func _on_connection_timeout():
+	print("Bağlantı zaman aşımı!")
+	ConnectionManager.set_state(
+		ConnectionManager.ConnectionState.CONNECTION_FAILED,
+		"Bağlantı zaman aşımına uğradı (10 saniye)."
+	)
 
 func get_spawn_point() -> Vector3:
 	var groups = get_tree().get_nodes_in_group("spawn_containers")
@@ -70,16 +138,15 @@ func _on_player_connected(id: int):
 
 @rpc("authority", "call_local", "reliable")
 func broadcast_system_message(msg_text: String):
-	# Artık kendi içimizde değil, doğrudan Global postacıya bağırıyoruz!
-	SystemMessage.system_message_received.emit(msg_text)
+	PlayersManager.system_message_received.emit(msg_text)
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
 	match_controller.remove_player(id)
-	if players.has(id):
-		var p_name = players[id]["login"]
+	if PlayersManager.has_player(id):
+		var p_name = PlayersManager.get_player_login(id)
 		broadcast_system_message.rpc(p_name + " oyundan ayrıldı.")
-	players.erase(id)
+		PlayersManager.remove_player(id)
 	if has_node(str(id)):
 		get_node(str(id)).queue_free()
 	
@@ -92,17 +159,19 @@ func _on_player_spawn(data: Dictionary) -> Node:
 	return player_instance
 	
 @rpc("any_peer", "call_remote", "reliable")
-func send_player_info(login: String, level: float, location: String, color: String):
+func send_player_info(player_data: Dictionary):
 	if not multiplayer.is_server():
 		return
 	var sender_id = multiplayer.get_remote_sender_id()
-	players[sender_id] = {"login": login, "level": level, "location": location, "color" : color}
-	print("Oyuncu kaydedildi: ", login, " | Level: ", level, " | Location: ", location)
-	match_controller.register_new_player(sender_id, players[sender_id]["login"])
-	receive_player_info.rpc(sender_id, login, level, location, color)
+	PlayersManager.add_player(sender_id, player_data)
+	var login = player_data.get("login", "Unknown")
+	print("Oyuncu kaydedildi: ", login, " | Data: ", player_data)
+	match_controller.register_new_player(sender_id, login)
+
+	receive_player_info.rpc(sender_id, player_data)
 	broadcast_system_message.rpc(login + " oyuna katıldı!")
 
 @rpc("authority", "call_remote", "reliable")
-func receive_player_info(peer_id: int, login: String, level: float, location: String, color: String):
-	players[peer_id] = {"login": login, "level": level, "location": location, "color": color}
-	print("Yeni oyuncu: ", login)
+func receive_player_info(peer_id: int, player_data: Dictionary):
+	PlayersManager.add_player(peer_id, player_data)
+	print("Yeni oyuncu: ", player_data.get("login", "Unknown"))

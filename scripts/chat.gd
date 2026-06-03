@@ -6,7 +6,7 @@ var fade_timer = Timer.new() # 1. Zamanlayıcıyı oluşturuyoruz
 
 func _ready():
 	$HBoxContainer/LineEdit.visible = false
-	SystemMessage.system_message_received.connect(_on_system_message_received)
+	PlayersManager.system_message_received.connect(_on_system_message_received)
 	# 2. Zamanlayıcı ayarları (5 saniye sonra gizler)
 	fade_timer.wait_time = 5.0
 	fade_timer.one_shot = true
