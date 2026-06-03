@@ -1,47 +1,55 @@
 # Kurulum
 
 ## Gereksinimler
-- Python 3
-- openssl
+- **Node.js** (v18 veya üzeri)
+- **openssl**
 
-## Python Bağımlılıkları
+## Bağımlılıkların Kurulması
+Projenin çalışması için gerekli olan Express.js ve diğer paketler `setup.js` betiği tarafından otomatik olarak kurulacaktır. Manuel kurmak isterseniz:
 ```bash
-pip3 install requests websockets --break-system-packages
+npm install express
 ```
 
 ## Build Dosyaları
-`www/` klasörü Godot'tan web export alınarak oluşturulur. (main sahne login.tscn olacak)
-`serverBuild/` klasörü Godot'tan Linux export alınarak oluşturulur.You said: www ve serverBuild klsörü de setup oluştursun varsa oluşturmasın (main sahne main.tscn olacak)
+* **`www/` klasörü:** Godot'tan **Web (HTML5)** export alınarak oluşturulur. 
+    * *Kritik Ayar 1:* Projenin ana sahnesi **`Login.tscn`** olmalıdır.
+    * *Kritik Ayar 2:* Export ayarlarından **Thread Support** seçeneği `Enabled` (Açık) hale getirilmelidir.
+* **`certs/` klasörü:** Sunucunun güvenli (`https://` ve `wss://`) çalışabilmesi için gerekli SSL sertifikalarını barındırır.
+
+> 💡 `www/` ve `certs/` klasörleri eğer dizinde yoksa `node setup.js` komutu çalıştırıldığında otomatik olarak oluşturulur.
 
 ## 42 API Ayarları
-1. https://profile.intra.42.fr/oauth/applications adresine git
-2. Yeni uygulama oluştur
-3. Redirect URI olarak `http://SUNUCU_IP:8080/callback` ekle
-4. `client_id` ve `client_secret` değerlerini al
+1. https://profile.intra.42.fr/oauth/applications adresine git.
+2. Yeni bir uygulama (Application) oluştur.
+3. **Redirect URI** olarak `http://SUNUCU_IP:8080/callback` değerini ekle.
+4. Uygulamayı kaydedip `client_id` ve `client_secret` değerlerini güvenli bir yere not et.
 
-## Sunucu Kurulumu
-1. Repoyu klonla
-2. Sertifika oluştur:
+---
+
+## Sunucu Kurulumu ve Başlatma
+
+### 1. Ortamın Hazırlanması
+Repoyu klonladıktan sonra klasörleri otomatik oluşturmak, bağımlılıkları yüklemek ve SSL sertifikalarını üretmek için kurulum betiğini çalıştırın:
 ```bash
-./setup.sh
+node setup.js
 ```
 
-3. Godot sunucusunu başlat:
-```bash
-cd serverBuild
-./index.x86_64 --server --headless
+### 2. Godot Dedicated Server'ı Başlatma
+Oyun içi ağ trafiğinin şifreli (WSS) pürüzsüz akabilmesi için oluşturulan `certs/` klasörünü sunucu `.exe` dosyanızın yanına koyun. Ardından terminalden konsol destekli sürümü başlatın:
+
+```powershell
+.\Poolday.console.exe --server --headless
 ```
 
-4. Servisleri başlat:
-```bash
-CLIENT_ID="..." \
-CLIENT_SECRET="..." \
-python3 start.py
+### 3. Node.js Web ve OAuth Servisini Başlatma
+42 OAuth giriş mekanizmasının ve web sunucusunun ayağa kalkması için ortam değişkenlerini besleyerek ana sunucu kodunu ateşleyin:
+```powershell
+$env:CLIENT_ID="42_CLIENT_ID_BURAYA"; $env:CLIENT_SECRET="42_CLIENT_SECRET_BURAYA"; node server.js
 ```
 
-5. Tarayıcıda aç:
-https://SUNUCU_IP:9090
-Sertifika uyarısı çıkarsa "Gelişmiş → Yine de devam et" de.
+---
 
 ## Oynamak İçin
-Tarayıcıdan `https://SUNUCU_IP:9090` adresine git ve 42 hesabınla giriş yap.
+1. Tarayıcınızdan `https://SUNUCU_IP:9090` adresine gidin.
+2. Geliştirme aşamasındaki yerel SSL sertifikasından ötürü tarayıcı uyarı verirse **"Gelişmiş → Yine de devam et"** seçeneğine tıklayın.
+3. Açılan ekranda 42 hesabınızla giriş yapın, sunucu sizi otomatik olarak güvenli oyun odasına yönlendirecektir.

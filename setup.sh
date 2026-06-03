@@ -1,29 +1,51 @@
 #!/bin/bash
 
+# 1. Yerel IP Tespit Etme
 SERVER_IP=$(hostname -I | awk '{print $1}')
+if [ -z "$SERVER_IP" ]; then
+    SERVER_IP="127.0.0.1"
+fi
 echo "Sunucu IP: $SERVER_IP"
 
-if [ -f "cert.pem" ] && [ -f "key.pem" ]; then
-    echo "Sertifikalar zaten mevcut."
+# 2. Node.js ve Godot için Klasör Düzeni
+mkdir -p www
+mkdir -p server
+mkdir -p certs
+echo "Klasör yapıları kontrol edildi (www, server, certs)."
+
+# 3. SSL Sertifikalarını Üretme ve Doğru Klasöre Atma
+if [ -f "certs/sunucu.crt" ] && [ -f "certs/sunucu.key" ]; then
+    echo "Sertifikalar zaten certs/ klasöründe mevcut."
 else
-    openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
+    openssl req -x509 -newkey rsa:2048 -keyout certs/sunucu.key -out certs/sunucu.crt \
       -days 365 -nodes \
       -subj "/CN=$SERVER_IP" \
       -addext "subjectAltName=IP:$SERVER_IP"
-    echo "cert.pem ve key.pem oluşturuldu"
+    echo "certs/sunucu.crt ve certs/sunucu.key başarıyla oluşturuldu."
 fi
 
-if [ -d "www" ]; then
-    echo "www klasörü zaten mevcut."
+# Sunucu klasörüne sertifikaların kopyalanması
+cp certs/sunucu.crt server/
+cp certs/sunucu.key server/
+echo "Sertifikalar server/ klasörüne kopyalandı."
+
+if [ -f "server.js" ]; then
+    sed -i "s/SUNUCUIP/$SERVER_IP/g" server.js
+    echo "server.js dosyasına $SERVER_IP adresi başarıyla işlendi."
 else
-    mkdir www
-    echo "www klasörü oluşturuldu"
+    echo "UYARI: server.js dosyası bulunamadı, IP değiştirilemedi."
 fi
 
-if [ -d "serverBuild" ]; then
-    echo "serverBuild klasörü zaten mevcut."
+# 5. Bağımlılıkların (Express.js) Otomatik Kurulması
+if [ ! -f "package.json" ]; then
+    echo "package.json bulunamadı. Node projesi sıfırdan başlatılıyor..."
+    npm init -y
+    npm install express
 else
-    mkdir serverBuild
-    echo "serverBuild klasörü oluşturuldu"
+    echo "package.json mevcut, npm paketleri güncelleniyor..."
+    npm install
 fi
-cp cert.pem key.pem serverBuild/
+
+echo "=========================================="
+echo "🚀 Node.js ve Godot Çevre Kurulumu Tamam!"
+echo "=========================================="
