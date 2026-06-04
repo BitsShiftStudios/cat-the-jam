@@ -12,15 +12,32 @@ bg_color = Color(0, 0.7294118, 0.7372549, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpj6k"]
 bg_color = Color(0, 0.7294118, 0.7372549, 1)
 
-[node name="Login" type="Node2D" unique_id=1604028718]
+[node name="Login" type="Control" unique_id=1260799535]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=604609131]
-custom_minimum_size = Vector2(1900, 1080)
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1327724782]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer" unique_id=604609131]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 2
 texture = ExtResource("1_brlkh")
 expand_mode = 1
 stretch_mode = 6
 
 [node name="Button" type="Button" parent="." unique_id=1039149663]
+layout_mode = 0
 offset_left = 763.0
 offset_top = 642.0
 offset_right = 1163.0
@@ -33,5 +50,11 @@ text = "Log in with 42"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=500684268]
 script = ExtResource("1_1hxp7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1738472360]
+layout_mode = 0
+offset_right = 1896.0
+offset_bottom = 229.0
+alignment = 1
 
 [connection signal="pressed" from="Button" to="HTTPRequest" method="_on_button_pressed"]
