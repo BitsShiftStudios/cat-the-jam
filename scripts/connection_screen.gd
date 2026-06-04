@@ -4,8 +4,8 @@ extends Control
 @onready var spinner = $CenterContainer/VBoxContainer/Spinner
 @onready var error_panel = $ErrorPanel
 @onready var error_label = $ErrorPanel/MarginContainer/VBoxContainer/ErrorLabel
-@onready var retry_button = $ErrorPanel/MarginContainer/VBoxContainer/RetryButton
-@onready var quit_button = $ErrorPanel/MarginContainer/VBoxContainer/QuitButton
+@onready var retry_button = $ErrorPanel/MarginContainer/VBoxContainer/CenterContainer/RetryButton
+
 
 var dots = 0
 var dot_timer = 0.0

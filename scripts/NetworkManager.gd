@@ -42,7 +42,30 @@ func _process(_delta):
 
 func start_server():
 	print("Starting WebSocket Server on port: ", PORT)
-	var error = peer.create_server(PORT)
+	print("Starting WebSocket Dedicated Server on port: ", PORT)
+	var key = CryptoKey.new()
+	var cert = X509Certificate.new()
+	
+	# Varsayılan yollar
+	var key_path = "res://certs/mikail.tail2f421e.ts.net.key"
+	var cert_path = "res://certs/mikail.tail2f421e.ts.net.crt"
+	peer.inbound_buffer_size = 1024 * 1024
+	peer.outbound_buffer_size = 1024 * 1024
+	peer.max_queued_packets = 16384
+	if OS.has_feature("template"):
+		var exe_dir = OS.get_executable_path().get_base_dir()
+		key_path = exe_dir + "/certs/sunucu.key"
+		cert_path = exe_dir + "/certs/sunucu.crt"
+		print("Dış sertifika modu aktif: ", key_path)
+
+	var key_err = key.load(key_path)
+	var cert_err = cert.load(cert_path)
+	if key_err != OK or cert_err != OK:
+		print("KRİTİK HATA: Sertifikalar yüklenemedi! Güvenli sunucu başlatılamıyor.")
+		return
+		
+	var tls = TLSOptions.server(key, cert)
+	var error = peer.create_server(PORT, "*", tls)
 	if error != OK:
 		print("Failed to start server: ", error)
 		return
@@ -52,10 +75,14 @@ func start_server():
 
 func start_client():
 	ConnectionManager.set_state(ConnectionManager.ConnectionState.CONNECTING)
+	peer.inbound_buffer_size = 1024 * 1024
+	peer.outbound_buffer_size = 1024 * 1024
+	peer.max_queued_packets = 16384
+
 	var ip = PlayerData.server_ip
 	if ip == "":
 		ip = str(JavaScriptBridge.eval("window.location.hostname"))
-	var target_url = ("wss://" + ip + ":3132")
+	var target_url = ("wss://" + ip + ":3131")
 	print("Bağlanıyor: ", target_url)
 	var tls = TLSOptions.client_unsafe()
 	var error = peer.create_client(target_url, tls)
