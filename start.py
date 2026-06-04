@@ -1,10 +1,11 @@
 # start.py
 import signal
-import os, sys, requests, asyncio, websockets, ssl, threading
+import os, sys, requests, ssl, threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
 import socket
+import http.server as hs
 
 # --- IP OTOMATİK AL ---
 def get_local_ip():
@@ -17,15 +18,18 @@ def get_local_ip():
 
 SERVER_IP = get_local_ip()
 
+
 # --- AYARLAR ---
 CLIENT_ID     = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI  = f"http://{SERVER_IP}:8080/callback"
 GODOT_URL     = f"https://{SERVER_IP}:9090"
+cert_file = "sunucu.crt"
+key_file = "sunucu.key"
 
 BASE     = os.path.dirname(os.path.abspath(__file__))
-SSL_CERT = os.path.join(BASE, "cert.pem")
-SSL_KEY  = os.path.join(BASE, "key.pem")
+SSL_CERT = os.path.join(BASE, cert_file)
+SSL_KEY  = os.path.join(BASE, key_file)
 
 # --- OAUTH BACKEND ---
 class Handler(BaseHTTPRequestHandler):
@@ -47,17 +51,21 @@ class Handler(BaseHTTPRequestHandler):
             me = requests.get("https://api.intra.42.fr/v2/me", headers={
                 "Authorization": "Bearer " + token
             }).json()
+            
             user_id      = me.get("id")
             login        = me.get("login", "bilinmiyor")
             cursus_users = me.get("cursus_users", [])
             level        = 0.0
+            
             for c in cursus_users:
                 if c.get("cursus_id") == 21:
                     level = c.get("level", 0.0)
                     break
+                    
             level_str = str(level).replace(".", "_")
             location  = me.get("location") or "offline"
-            coalition_color = "FFFFFF" # Varsayılan renk (Koalisyonu yoksa beyaz)
+            coalition_color = "FFFFFF" # Varsayılan renk
+            
             if user_id:
                 coalitions_req = requests.get(f"https://api.intra.42.fr/v2/users/{user_id}/coalitions", headers={
                     "Authorization": "Bearer " + token
@@ -65,8 +73,8 @@ class Handler(BaseHTTPRequestHandler):
                 if coalitions_req.status_code == 200:
                     coalitions_data = coalitions_req.json()
                     if len(coalitions_data) > 0:
-                        # Rengi alıp başındaki '#' işaretini siliyoruz ki URL bozulmasın
                         coalition_color = coalitions_data[0].get("color", "#FFFFFF").replace("#", "")
+                        
             self.send_response(302)
             self.send_header("Location", GODOT_URL + "/?login=" + login + "&level=" + level_str + "&location=" + location + "&color=" + coalition_color + "&serverip=" + SERVER_IP) 
             self.end_headers()
@@ -83,37 +91,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def log_message(self, *args): pass
 
-# --- WSS PROXY ---
-async def proxy(client_ws):
-    try:
-        async with websockets.connect("ws://127.0.0.1:3131") as godot_ws:
-            async def c2g():
-                async for msg in client_ws:
-                    await godot_ws.send(msg)
-            async def g2c():
-                async for msg in godot_ws:
-                    await client_ws.send(msg)
-            await asyncio.gather(c2g(), g2c())
-    except websockets.exceptions.ConnectionClosedOK:
-        pass
-    except websockets.exceptions.ConnectionClosedError:
-        pass
-
-async def start_proxy():
-    ssl_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_ctx.load_cert_chain(SSL_CERT, SSL_KEY)
-    async with websockets.serve(proxy, "0.0.0.0", 3132, ssl=ssl_ctx):
-        print(f"WSS Proxy: wss://{SERVER_IP}:3132 → ws://127.0.0.1:3131")
-        await asyncio.Future()
-
-# --- OYUN SUNUCUSU ---
-import http.server as hs
-
+# --- OYUN WEB SUNUCUSU ---
 class GameHandler(hs.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
         self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
         super().end_headers()
+        
     def log_message(self, *args): pass
 
 def start_game_server():
@@ -139,7 +123,11 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, shutdown)
     signal.signal(signal.SIGTERM, shutdown)
     print(f"Sunucu IP: {SERVER_IP}")
+    
+    # Oyun dosyası sunucusunu arka planda (daemon) başlat
     threading.Thread(target=start_game_server, daemon=True).start()
-    threading.Thread(target=start_backend, daemon=True).start()
+    
     print("Tüm servisler başlatılıyor...")
-    asyncio.run(start_proxy())
+    
+    # Backend sunucusunu ana thread'de başlat ki script kapanmasın
+    start_backend()
