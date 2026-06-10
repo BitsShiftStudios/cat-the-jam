@@ -169,7 +169,7 @@ func _ready():
 		right_leg_hurtbox.collision_layer = 16
 		right_upper_leg_hurtbox.collision_layer = 16
 		right_foot_hurtbox.collision_layer = 16
-		
+
 		collision_mask = 1 + 2
 		# Bu karakter ağdaki başka biriyse yazıyı açık tut
 		$Label3D.show()
@@ -233,6 +233,16 @@ func _physics_process(delta: float) -> void:
 	var blend_pos = Vector2(local_velocity.x, -local_velocity.z)
 	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
 	animation_tree_node.set("parameters/Movement/blend_position", blend_pos)
+	
+	if Input.is_action_just_pressed("ui_accept"):
+		animation_tree_node.set("parameters/Transition/transition_request", "1")
+	elif not is_on_floor() and  animation_tree_node["parameters/Transition/current_state"] == "0":
+		animation_tree_node.set("parameters/Transition/transition_request", "1")
+		animation_tree_node.set("parameters/jump_fall_blend/blend_amount", lerp(animation_tree_node["parameters/jump_fall_blend/blend_amount"], 1.0, 20.0 * delta))
+	elif is_on_floor():
+		animation_tree_node.set("parameters/jump_fall_blend/blend_amount", lerp(animation_tree_node["parameters/jump_fall_blend/blend_amount"], 0.0, 20.0 * delta))
+		animation_tree_node.set("parameters/Transition/transition_request", "0")
+	
 	#endregion ANIMATION_TREE
 
 	#region GUN_MENU
