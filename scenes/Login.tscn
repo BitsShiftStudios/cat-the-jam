@@ -6,6 +6,9 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hxp7"]
 bg_color = Color(0, 0.7294118, 0.7372549, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5ycx"]
+bg_color = Color(0, 0.7294118, 0.7372549, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brlkh"]
 bg_color = Color(0, 0.7294118, 0.7372549, 1)
 
@@ -44,17 +47,12 @@ offset_right = 1163.0
 offset_bottom = 742.0
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_1hxp7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_p5ycx")
 theme_override_styles/hover = SubResource("StyleBoxFlat_brlkh")
 theme_override_styles/focus = SubResource("StyleBoxFlat_gpj6k")
 text = "Log in with 42"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=500684268]
 script = ExtResource("1_1hxp7")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1738472360]
-layout_mode = 0
-offset_right = 1896.0
-offset_bottom = 229.0
-alignment = 1
 
 [connection signal="pressed" from="Button" to="HTTPRequest" method="_on_button_pressed"]

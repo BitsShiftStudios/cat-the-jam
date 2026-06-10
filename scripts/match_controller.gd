@@ -5,6 +5,7 @@ extends Node
 
 @export var end_screen_duration:float = 10.0
 @export var match_active:bool = true
+
 			
 var scoreboard_data: Dictionary = {}
 
@@ -16,7 +17,6 @@ func register_new_player(id: int, username: String):
 		"kills": 0,
 		"deaths": 0
 	}
-	print("Register: ", scoreboard_data[id] )
 	_broadcast_scoreboard()
 	
 #func update_player_name(id: int, name: String):

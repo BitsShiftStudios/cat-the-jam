@@ -55,6 +55,30 @@ func sync_timer(time_left: int) -> void:
 	game_ui.update_timer_value(time_left)
 	game_ui.update_timer_display()
 
+var match_paused: bool = false
+
+func pause_timer() -> void:
+	if not match_started: return
+	match_paused = true
+	set_paused(true)  # Godot Timer'ın built-in pause'u
+	sync_timer.rpc(match_time_left)
+	print("[Timer] Duraklatıldı, kalan: ", match_time_left)
+
+func resume_timer() -> void:
+	if not match_started or not match_paused: return
+	match_paused = false
+	set_paused(false)
+	print("[Timer] Devam ediyor.")
+
+func set_time(seconds: int) -> void:
+	match_time_left = seconds
+	sync_timer.rpc(match_time_left)
+	print("[Timer] Süre ayarlandı: ", seconds)
+	# Eğer timer çalışmıyorsa başlat
+	if not match_started:
+		start_timer()
+		
+
 func start_timer() -> void:
 	match_started = true
 	match_time_left = default_match_time
