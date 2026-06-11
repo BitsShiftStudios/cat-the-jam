@@ -14,19 +14,19 @@ mkdir -p certs
 echo "Klasör yapıları kontrol edildi (www, server, certs)."
 
 # 3. SSL Sertifikalarını Üretme ve Doğru Klasöre Atma
-if [ -f "certs/sunucu.crt" ] && [ -f "certs/sunucu.key" ]; then
+if [ -f "certs/server.crt" ] && [ -f "certs/server.key" ]; then
     echo "Sertifikalar zaten certs/ klasöründe mevcut."
 else
-    openssl req -x509 -newkey rsa:2048 -keyout certs/sunucu.key -out certs/sunucu.crt \
+    openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt \
       -days 365 -nodes \
       -subj "/CN=$SERVER_IP" \
       -addext "subjectAltName=IP:$SERVER_IP"
-    echo "certs/sunucu.crt ve certs/sunucu.key başarıyla oluşturuldu."
+    echo "certs/server.crt ve certs/server.key başarıyla oluşturuldu."
 fi
 
 # Sunucu klasörüne sertifikaların kopyalanması
-cp certs/sunucu.crt server/
-cp certs/sunucu.key server/
+cp certs/server.crt server/
+cp certs/server.key server/
 echo "Sertifikalar server/ klasörüne kopyalandı."
 
 if [ -f "server.js" ]; then
