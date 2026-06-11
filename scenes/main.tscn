@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://var5n05n81tt" path="res://scripts/ServerConsole.gd" id="2_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/maps/PoolDay.tscn" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://0ov30l5lsrqj" path="res://scenes/ServerCamera.gd" id="3_tipki"]
 [ext_resource type="Script" uid="uid://cnb5ojw7xdko5" path="res://scripts/timer.gd" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duqrl1qp4k6im" path="res://scenes/GameUI.tscn" id="5_tbgi4"]
 [ext_resource type="Script" uid="uid://n63h6tkodc4m" path="res://scripts/match_controller.gd" id="6_tefeu"]
@@ -45,6 +46,7 @@ environment = SubResource("Environment_jyhfs")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1588857458]
 transform = Transform3D(1, 0, 0, 0, 0.8137607, 0.5812002, 0, -0.5812002, 0.8137607, 8.90902, 7.500389, 0.9966278)
+script = ExtResource("3_tipki")
 
 [node name="Map" parent="." unique_id=1135779736 instance=ExtResource("3_sugp2")]
 

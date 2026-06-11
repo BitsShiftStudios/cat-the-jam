@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pprrum4c022l"
-path.s3tc="res://.godot/imported/Pool_Day_Pool_Day_material_2.png-1d0e5d3527672f177f64e97d697cb61c.s3tc.ctex"
+uid="uid://dvapn6dtip2vr"
+path.s3tc="res://.godot/imported/Pool_Day_near8.jpg-d3468de6a703c359058077283d4e3383.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "bf89e1ad4c877dbc7e848a47d846615d"
+"md5": "bfcc25c48b94fa2bf376e97f83c77a1a"
 }
 
 [deps]
 
-source_file="res://assets/models/Maps/Pool_Day_Pool_Day_material_2.png"
-dest_files=["res://.godot/imported/Pool_Day_Pool_Day_material_2.png-1d0e5d3527672f177f64e97d697cb61c.s3tc.ctex"]
+source_file="res://assets/models/Maps/PoolDay/Pool_Day_near8.jpg"
+dest_files=["res://.godot/imported/Pool_Day_near8.jpg-d3468de6a703c359058077283d4e3383.s3tc.ctex"]
 
 [params]
 
@@ -40,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=2048
 detect_3d/compress_to=0

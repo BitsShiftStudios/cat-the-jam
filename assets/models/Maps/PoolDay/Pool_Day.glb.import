@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://bqycqdjet6c7y"
-path="res://.godot/imported/Pool_Day.glb-3dc8dcaf535c6a559aba39d8bc737cde.scn"
+path="res://.godot/imported/Pool_Day.glb-5862f0b164a5e1832aa11d8e7f43edf2.scn"
 
 [deps]
 
-source_file="res://assets/models/Maps/Pool_Day.glb"
-dest_files=["res://.godot/imported/Pool_Day.glb-3dc8dcaf535c6a559aba39d8bc737cde.scn"]
+source_file="res://assets/models/Maps/PoolDay/Pool_Day.glb"
+dest_files=["res://.godot/imported/Pool_Day.glb-5862f0b164a5e1832aa11d8e7f43edf2.scn"]
 
 [params]
 

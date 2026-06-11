@@ -59,7 +59,8 @@ func _map_change(parts: Array):
 		print("Haritalar: poolday")
 		return
 	var maps = {
-		"poolday": "res://scenes/maps/PoolDay.tscn"	
+		"poolday": "res://scenes/maps/PoolDay.tscn",
+		"campus": "res://scenes/maps/Campus.tscn"
 		}
 	if not maps.has(parts[1]):
 		print("Bilinmeyen harita: ", parts[1], " | Mevcut: ", ", ".join(maps.keys()))

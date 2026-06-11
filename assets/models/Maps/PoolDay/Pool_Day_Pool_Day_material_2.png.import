@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcjyuiau5htro"
-path.s3tc="res://.godot/imported/Pool_Day_Pool_Party_material_28_auto_x2a.png-9037413a5765df8ab3adebead3128e50.s3tc.ctex"
+uid="uid://pprrum4c022l"
+path.s3tc="res://.godot/imported/Pool_Day_Pool_Day_material_2.png-9022c8e62b802bc581a382137150869e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "14c0d715ebb99d1a7882a6f62129f139"
+"md5": "bf89e1ad4c877dbc7e848a47d846615d"
 }
 
 [deps]
 
-source_file="res://assets/models/Maps/Pool_Day_Pool_Party_material_28_auto_x2a.png"
-dest_files=["res://.godot/imported/Pool_Day_Pool_Party_material_28_auto_x2a.png-9037413a5765df8ab3adebead3128e50.s3tc.ctex"]
+source_file="res://assets/models/Maps/PoolDay/Pool_Day_Pool_Day_material_2.png"
+dest_files=["res://.godot/imported/Pool_Day_Pool_Day_material_2.png-9022c8e62b802bc581a382137150869e.s3tc.ctex"]
 
 [params]
 

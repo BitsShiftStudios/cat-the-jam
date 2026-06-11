@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://02k6isac736i"]
 
-[ext_resource type="Texture2D" uid="uid://pprrum4c022l" path="res://assets/models/Maps/Pool_Day_Pool_Day_material_2.png" id="1_yyirk"]
-[ext_resource type="Texture2D" uid="uid://cti5dadfix0cn" path="res://assets/models/Maps/Pool_Day_far8.jpg" id="2_41ykk"]
-[ext_resource type="Texture2D" uid="uid://dvapn6dtip2vr" path="res://assets/models/Maps/Pool_Day_near8.jpg" id="3_inly4"]
-[ext_resource type="Texture2D" uid="uid://dcjyuiau5htro" path="res://assets/models/Maps/Pool_Day_Pool_Party_material_28_auto_x2a.png" id="4_7ctrk"]
-[ext_resource type="Texture2D" uid="uid://b5aqfjlyhwuhb" path="res://assets/models/Maps/Pool_Day_Pool_Day_material_23a.png" id="5_ii6k2"]
+[ext_resource type="Texture2D" uid="uid://pprrum4c022l" path="res://assets/models/Maps/PoolDay/Pool_Day_Pool_Day_material_2.png" id="1_yyirk"]
+[ext_resource type="Texture2D" uid="uid://cti5dadfix0cn" path="res://assets/models/Maps/PoolDay/Pool_Day_far8.jpg" id="2_41ykk"]
+[ext_resource type="Texture2D" uid="uid://dvapn6dtip2vr" path="res://assets/models/Maps/PoolDay/Pool_Day_near8.jpg" id="3_inly4"]
+[ext_resource type="Texture2D" uid="uid://dcjyuiau5htro" path="res://assets/models/Maps/PoolDay/Pool_Day_Pool_Party_material_28_auto_x2a.png" id="4_7ctrk"]
+[ext_resource type="Texture2D" uid="uid://b5aqfjlyhwuhb" path="res://assets/models/Maps/PoolDay/Pool_Day_Pool_Day_material_23a.png" id="5_ii6k2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r80kq"]
 resource_name = "material_2.001"
