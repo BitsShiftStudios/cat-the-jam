@@ -6,11 +6,11 @@ echo "Sunucu IP: $SERVER_IP"
 if [ -f "certs/sunucu.crt" ] && [ -f "certs/sunucu.key" ]; then
     echo "Sertifikalar zaten certs/ klasöründe mevcut."
 else
-    openssl req -x509 -newkey rsa:2048 -keyout sunucu.key -out sunucu.crt \
+    openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.crt \
       -days 365 -nodes \
       -subj "/CN=$SERVER_IP" \
       -addext "subjectAltName=IP:$SERVER_IP"
-    echo "sunucu.crt ve sunucu.key başarıyla oluşturuldu."
+    echo "server.crt ve server.key başarıyla oluşturuldu."
 fi
 
 
@@ -30,5 +30,5 @@ else
 fi
 
 mkdir serverBuild/certs
-cp sunucu.crt serverBuild/certs
-cp sunucu.key serverBuild/certs
+cp server.crt serverBuild/certs
+cp server.key serverBuild/certs
