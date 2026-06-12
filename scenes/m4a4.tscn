@@ -1,8 +1,7 @@
 [gd_scene format=4 uid="uid://b0esovs5jpbm0"]
 
 [ext_resource type="Script" uid="uid://cls4lb8071xvm" path="res://scripts/m4a4.gd" id="1_j2eef"]
-[ext_resource type="Texture2D" uid="uid://dfqfyk7tn61j0" path="res://assets/decals/WFX_T_MF FrontRear RIFLE1 A8.png" id="2_0gsuj"]
-[ext_resource type="Script" uid="uid://drbl2he4qqtxs" path="res://scripts/muzzle_flash.gd" id="3_poa04"]
+[ext_resource type="PackedScene" uid="uid://1skavyrl72h0" path="res://scenes/muzzle_flash.tscn" id="3_0gsuj"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="4_poa04"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_etg3b"]
@@ -133,17 +132,6 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath("MuzzleFlash:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehbba"]
-transparency = 1
-blend_mode = 1
-shading_mode = 0
-disable_ambient_light = true
-disable_fog = true
-disable_specular_occlusion = true
-vertex_color_use_as_albedo = true
-albedo_color = Color(1.9749014, 1.3184516, 0, 1)
-albedo_texture = ExtResource("2_0gsuj")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flev1"]
 resource_name = "Dark Gray.004"
@@ -286,7 +274,6 @@ shadow_mesh = SubResource("ArrayMesh_pmeq0")
 [node name="m4a4" type="Node3D" unique_id=164708223 node_paths=PackedStringArray("muzzle_flash")]
 script = ExtResource("1_j2eef")
 muzzle_flash = NodePath("MuzzleFlash")
-weapon_damage = 28
 body_damage = 28
 leg_damage = 20
 head_damage = 85
@@ -305,14 +292,6 @@ mesh = SubResource("ArrayMesh_j2eef")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=457312260]
 replication_config = SubResource("SceneReplicationConfig_ejut3")
 
-[node name="MuzzleFlash" type="Sprite3D" parent="." unique_id=695651587]
-transform = Transform3D(-1.7484556e-08, 0, -0.4, 0, 0.4, 0, 0.4, 0, -1.7484556e-08, 2.9735901, 0.67281204, 0.019320218)
-material_override = SubResource("StandardMaterial3D_ehbba")
-modulate = Color(1.123, 1.066, 1.088, 1)
-billboard = 1
-texture = ExtResource("2_0gsuj")
-script = ExtResource("3_poa04")
-
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1953017329]
 stream = ExtResource("4_poa04")
 
@@ -327,3 +306,6 @@ mesh = SubResource("ArrayMesh_ehbba")
 [node name="Reflex_Sight" type="MeshInstance3D" parent="." unique_id=685448660]
 transform = Transform3D(1.1920929e-07, 0, 4, 0, 4, 0, -4, 0, 1.1920929e-07, 0.39893174, 0.81791383, -0.0015438395)
 mesh = SubResource("ArrayMesh_w44s3")
+
+[node name="MuzzleFlash" parent="." unique_id=1576580343 instance=ExtResource("3_0gsuj")]
+transform = Transform3D(-4.371139e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, -4.371139e-09, 2.938413, 0.604623, -5.6743622e-05)

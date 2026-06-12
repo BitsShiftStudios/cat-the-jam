@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://1skavyrl72h0"]
+
+[ext_resource type="Texture2D" uid="uid://c2ovki7o0bvnx" path="res://assets/resources/muzzle_fash.png" id="1_r243d"]
+[ext_resource type="Script" uid="uid://drbl2he4qqtxs" path="res://scripts/muzzle_flash.gd" id="1_ya6gs"]
+[ext_resource type="Texture2D" uid="uid://dk1ygvpdsuw0q" path="res://assets/resources/muzzle_front.png" id="2_ya6gs"]
+
+[node name="MuzzleFlash" type="Node3D" unique_id=1576580343]
+script = ExtResource("1_ya6gs")
+
+[node name="muzzle_flash_vertical" type="Sprite3D" parent="." unique_id=504546178]
+transform = Transform3D(-2.6226834e-08, -0.6, -2.6226834e-08, 0, -2.6226834e-08, 0.6, -0.6, 2.6226834e-08, 1.1464113e-15, 0, 0, -3.5985515)
+texture = ExtResource("1_r243d")
+
+[node name="muzzle_flash_horizontal" type="Sprite3D" parent="." unique_id=730623067]
+transform = Transform3D(-2.6226834e-08, 0, 0.6, 0, 0.6, 0, -0.6, 0, -2.6226834e-08, 0, 0, -3.602649)
+texture = ExtResource("1_r243d")
+
+[node name="muzzle_flash_front" type="Sprite3D" parent="." unique_id=934974619]
+texture = ExtResource("2_ya6gs")

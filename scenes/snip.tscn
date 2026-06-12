@@ -2,20 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://cu6gt5215beju" path="res://assets/models/guns/snip.glb" id="1_brqy3"]
 [ext_resource type="Script" uid="uid://bjbpgwvvrtyhi" path="res://scripts/snip.gd" id="2_7bime"]
-[ext_resource type="Texture2D" uid="uid://dfqfyk7tn61j0" path="res://assets/decals/WFX_T_MF FrontRear RIFLE1 A8.png" id="3_4uww7"]
-[ext_resource type="Script" uid="uid://drbl2he4qqtxs" path="res://scripts/muzzle_flash.gd" id="4_lm7kh"]
+[ext_resource type="PackedScene" uid="uid://1skavyrl72h0" path="res://scenes/muzzle_flash.tscn" id="4_y77v5"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="5_2odde"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mg4xe"]
-transparency = 1
-blend_mode = 1
-shading_mode = 0
-disable_ambient_light = true
-disable_fog = true
-disable_specular_occlusion = true
-vertex_color_use_as_albedo = true
-albedo_color = Color(1.9749014, 1.3184516, 0, 1)
-albedo_texture = ExtResource("3_4uww7")
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4uww7"]
 properties/0/path = NodePath("MuzzleFlash:visible")
@@ -32,7 +20,6 @@ properties/2/replication_mode = 1
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 script = ExtResource("2_7bime")
 muzzle_flash = NodePath("MuzzleFlash")
-weapon_damage = 100
 body_damage = 100
 leg_damage = 90
 head_damage = 150
@@ -44,16 +31,11 @@ total_ammo_in_magazine_ui = 5
 default_bullet_spread_increase_rate = 0.0
 default_max_bullet_spread_rate = 0.0
 
-[node name="MuzzleFlash" type="Sprite3D" parent="." index="3" unique_id=800820764]
-transform = Transform3D(-0.1, 0, 8.742278e-09, 0, 0.1, 0, -8.742278e-09, 0, -0.1, -2.842171e-15, 0.12053237, 0.93878865)
-material_override = SubResource("StandardMaterial3D_mg4xe")
-modulate = Color(1.123, 1.066, 1.088, 1)
-billboard = 1
-texture = ExtResource("3_4uww7")
-script = ExtResource("4_lm7kh")
-
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="4" unique_id=43228814]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="3" unique_id=43228814]
 stream = ExtResource("5_2odde")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="5" unique_id=732308804]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="4" unique_id=732308804]
 replication_config = SubResource("SceneReplicationConfig_4uww7")
+
+[node name="MuzzleFlash" parent="." index="5" unique_id=1576580343 instance=ExtResource("4_y77v5")]
+transform = Transform3D(-0.05, 0, 7.54979e-09, 0, 0.05, 0, -7.54979e-09, 0, -0.05, 8.168747e-08, 0.09980737, 0.9343957)

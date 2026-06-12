@@ -1,7 +1,7 @@
 class_name base_weapon
 extends Node3D
 
-@export var muzzle_flash : Sprite3D
+@export var muzzle_flash : Node3D
 
 @export_category("Gun Damage Options")
 @export var body_damage : int
