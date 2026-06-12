@@ -198,4 +198,5 @@ if __name__ == "__main__":
 	print(f"Sunucu IP: {SERVER_IP}")
 	threading.Thread(target=start_game_server, daemon=True).start()
 	print("Tüm servisler başlatılıyor...")
+	print(f"Oyuna ilk giriş için : https://{SERVER_IP}:3131 adresine gidin. Gelişmiş seçeneğinden izin verin.")
 	start_backend()
