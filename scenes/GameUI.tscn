@@ -27,6 +27,11 @@ font_size = 48
 [sub_resource type="LabelSettings" id="LabelSettings_7ro0d"]
 font_size = 24
 
+[sub_resource type="Theme" id="Theme_4s3j0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rs3te"]
+bg_color = Color(0.13558161, 0.13902944, 0.16166836, 0.39215687)
+
 [node name="GameUI" type="CanvasLayer" unique_id=2105203079]
 script = ExtResource("1_jkspe")
 
@@ -155,10 +160,13 @@ offset_right = -600.0
 offset_bottom = -336.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_4s3j0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rs3te")
 script = ExtResource("2_1twlr")
 
 [node name="RowsContainer" type="VBoxContainer" parent="Control/ScoreboardPanel" unique_id=1988332576]
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="Chat" parent="Control" unique_id=1576507069 instance=ExtResource("3_4s3j0")]
 layout_mode = 1
@@ -171,14 +179,14 @@ offset_bottom = -4.0
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 47.0
-offset_top = 64.0
-offset_right = -36.0
-offset_bottom = -332.0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 1.0
+offset_bottom = -815.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="WaitingLabel" type="Label" parent="WaitingContainer" unique_id=2134408399]
 layout_mode = 2
 theme_override_font_sizes/font_size = 78
-text = "Oyuncular Bekleniyor..."
+text = "WAITING FOR PLAYERS"

@@ -115,6 +115,17 @@ properties/2/path = NodePath("MuzzleFlash:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qvlqd"]
+properties/0/path = NodePath("MuzzleFlash:visible")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("MuzzleFlash:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("MuzzleFlash:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="ak47" type="Node3D" unique_id=684825964 node_paths=PackedStringArray("muzzle_flash")]
 script = ExtResource("1_y6vsc")
 muzzle_flash = NodePath("MuzzleFlash")

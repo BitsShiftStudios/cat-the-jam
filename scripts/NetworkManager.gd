@@ -22,7 +22,7 @@ func _ready():
 	if OS.get_cmdline_args().has("--server"):
 		get_window().title = "Server"
 		start_server()
-	elif OS.is_debug_build():
+	elif OS.is_debug_build() and OS.get_name() != "Web":
 		var test_server = WebSocketMultiplayerPeer.new()
 		var result = test_server.create_server(PORT)
 		test_server.close()
@@ -45,8 +45,6 @@ func _ready():
 		multiplayer.connection_failed.connect(_on_connection_failed)
 		multiplayer.server_disconnected.connect(_on_server_disconnected)
 		ConnectionManager.retry_requested.connect(retry_connection)
-		start_client()
-		
 func _start_as_client(): #local client
 	var canvas = CanvasLayer.new()
 	canvas.layer = 100
@@ -57,7 +55,6 @@ func _start_as_client(): #local client
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	ConnectionManager.retry_requested.connect(retry_connection)
-	start_client()
 
 func start_server():
 	print("Starting WebSocket Server on port: ", PORT)
@@ -136,7 +133,11 @@ func _on_connected_to_server():
 		"login": PlayerData.login,
 		"level": PlayerData.level,
 		"location": PlayerData.location,
-		"color": PlayerData.color
+		"color": PlayerData.color,
+		"campus": PlayerData.campus,
+		"grade": PlayerData.grade,
+		"cover": PlayerData.cover_url,
+		"avatar_url": PlayerData.avatar_url
 	}
 	send_player_info.rpc_id(1, my_data)
 
@@ -212,7 +213,7 @@ func send_player_info(player_data: Dictionary):
 	var sender_id = multiplayer.get_remote_sender_id()
 	PlayersManager.add_player(sender_id, player_data)
 	var login = player_data.get("login", "Unknown")
-	match_controller.register_new_player(sender_id, login)
+	match_controller.register_new_player(sender_id, player_data)
 
 	receive_player_info.rpc(sender_id, player_data)
 	broadcast_system_message.rpc(login + " oyuna katıldı!")
@@ -247,7 +248,6 @@ func _respawn_all_players():
 			continue
 		var new_pos = get_spawn_point()
 		player.teleport_client_to_spawn.rpc_id(id, new_pos)
-		print("[Map] Oyuncu yeniden spawn: ", id)
 
 func _print_tree(node: Node, depth: int):
 	print(" ".repeat(depth * 2), node.name, " (", node.get_class(), ")")

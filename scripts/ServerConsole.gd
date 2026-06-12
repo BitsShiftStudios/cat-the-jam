@@ -5,8 +5,9 @@ var thread: Thread
 @onready var match_timer = $/root/Node/Timer
 
 func _ready():
-	print("server Console")
 	if not multiplayer.is_server():
+		return
+	if OS.get_name() == "Web": 
 		return
 	if not OS.has_feature("template"):
 		return
@@ -26,11 +27,13 @@ func _list_players():
 	print("=== Oyuncular (%d) ===" % PlayersManager.get_player_count())
 	for id in PlayersManager.players:
 		var p = PlayersManager.players[id]
-		print("  [%d] %s | Level: %s | Color: %s" % [
+		print("  [%d] %s | Level: %s | Color: %s | Grade: %s | Campus: %s " % [
 			id,
 			p.get("login", "?"),
 			p.get("level", "?"),
-			p.get("color", "?")
+			p.get("color", "?"),
+			p.get("grade", "?"),
+			p.get("campus", "?")
 		])
 
 func _kick_player(parts: Array):
@@ -60,7 +63,6 @@ func _map_change(parts: Array):
 		return
 	var maps = {
 		"poolday": "res://scenes/maps/PoolDay.tscn",
-		"campus": "res://scenes/maps/Campus.tscn"
 		}
 	if not maps.has(parts[1]):
 		print("Bilinmeyen harita: ", parts[1], " | Mevcut: ", ", ".join(maps.keys()))
@@ -148,7 +150,7 @@ Komutlar:
   players            → oyuncu listesi
   kick <id>          → oyuncu at
   broadcast <msg>    → tüm oyunculara mesaj
-  map <isim>         → harita değiştir (poolday, newmap, rpmap, dust2)
+  map <isim>         → harita değiştir (poolday)
   restart            → maçı yeniden başlat
   end                → maçı sonlandır
   pause              → maçı durdur

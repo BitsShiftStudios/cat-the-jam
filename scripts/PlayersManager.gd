@@ -19,6 +19,9 @@ func add_player(peer_id: int, player_data: Dictionary):
 		"level": float,
 		"location": String,
 		"color": String,
+		"campus": String,
+		"grade": String,
+		"avatarurl": String,
 		# İleride eklenecekler:
 		# "avatar_url": String,
 		# "wallet": String,

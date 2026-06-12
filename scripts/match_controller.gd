@@ -10,15 +10,22 @@ extends Node
 var scoreboard_data: Dictionary = {}
 
 # Scoreboard
-func register_new_player(id: int, username: String):
-	if not multiplayer.is_server(): return
+func register_new_player(id: int, data: Dictionary):
+	if not multiplayer.is_server(): 
+		return
 	scoreboard_data[id] = {
-		"name": username,
+		"name": data.get("login", "Bilinmiyor"),
+		"campus": data.get("campus", "Bilinmiyor"),
+		"avatar": data.get("avatar_url", ""),
+		"grade": data.get("grade", "Bilinmiyor"),
+		"color": data.get("color", "FFFFFF"),
+		"level": data.get("level", "0"),
+		"cover": data.get("cover", ""),
 		"kills": 0,
 		"deaths": 0
 	}
-	_broadcast_scoreboard()
-	
+	_broadcast_scoreboard()	
+
 #func update_player_name(id: int, name: String):
 	#if not multiplayer.is_server(): return
 	#scoreboard_data[id]["name"] = name
