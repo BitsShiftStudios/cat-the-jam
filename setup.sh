@@ -10,6 +10,7 @@ echo "Sunucu IP: $SERVER_IP"
 # 2. Node.js ve Godot için Klasör Düzeni
 mkdir -p www
 mkdir -p server
+mkdir -p server/certs
 mkdir -p certs
 echo "Klasör yapıları kontrol edildi (www, server, certs)."
 
@@ -25,9 +26,9 @@ else
 fi
 
 # Sunucu klasörüne sertifikaların kopyalanması
-cp certs/server.crt server/
-cp certs/server.key server/
-echo "Sertifikalar server/ klasörüne kopyalandı."
+cp certs/server.crt server/certs
+cp certs/server.key server/certs
+echo "Sertifikalar server/certs klasörüne kopyalandı."
 
 if [ -f "server.js" ]; then
     sed -i "s/SUNUCUIP/$SERVER_IP/g" server.js
