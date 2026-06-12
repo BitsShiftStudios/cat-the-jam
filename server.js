@@ -5,7 +5,7 @@ const https = require('https');
 const express = require('express');
 const { randomUUID } = require('crypto');
 
-const SERVER_IP = "mikail.tail2f421e.ts.net";
+const SERVER_IP = "SUNUCUIP";
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
