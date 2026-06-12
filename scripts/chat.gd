@@ -14,7 +14,6 @@ func _ready():
 	add_child(fade_timer)
 	
 func _on_system_message_received(text: String):
-	# Oyuncu mesajı gönderiyormuş gibi doğrudan formatlayıp ekliyoruz
 	var formatted_message = "[b][color=yellow]Sunucu:[/color][/b] " + text
 	chat_history.append(formatted_message)
 	
@@ -53,6 +52,13 @@ func _send():
 	if text == "":
 		return
 	$HBoxContainer/LineEdit.text = ""
+	# Server ise komutu işle
+	if multiplayer.is_server():
+		var console = get_tree().get_root().find_child("Server", true, false)
+		if console:
+			console._handle_command(text)
+		return
+
 	send_message.rpc(PlayerData.login,PlayerData.color, text)
 
 @rpc("any_peer", "call_local", "reliable")

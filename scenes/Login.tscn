@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://du4emamaj0ovc"]
 
 [ext_resource type="Script" uid="uid://cc6vi1kxvfnbu" path="res://scripts/http_request.gd" id="1_1hxp7"]
+[ext_resource type="Texture2D" uid="uid://d1qqnixsbk85d" path="res://assets/ui/ana sayfa.png" id="1_brlkh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hxp7"]
+bg_color = Color(0, 0.7294118, 0.7372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5ycx"]
 bg_color = Color(0, 0.7294118, 0.7372549, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_brlkh"]
@@ -11,15 +15,39 @@ bg_color = Color(0, 0.7294118, 0.7372549, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpj6k"]
 bg_color = Color(0, 0.7294118, 0.7372549, 1)
 
-[node name="Login" type="Node2D" unique_id=1604028718]
+[node name="Login" type="Control" unique_id=1260799535]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1327724782]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer" unique_id=604609131]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 2
+texture = ExtResource("1_brlkh")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Button" type="Button" parent="." unique_id=1039149663]
-offset_left = 700.0
-offset_top = 498.0
-offset_right = 1100.0
-offset_bottom = 598.0
+layout_mode = 0
+offset_left = 763.0
+offset_top = 642.0
+offset_right = 1163.0
+offset_bottom = 742.0
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_1hxp7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_p5ycx")
 theme_override_styles/hover = SubResource("StyleBoxFlat_brlkh")
 theme_override_styles/focus = SubResource("StyleBoxFlat_gpj6k")
 text = "Log in with 42"

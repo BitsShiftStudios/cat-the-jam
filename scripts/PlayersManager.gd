@@ -2,6 +2,7 @@ extends Node
 
 # === ALL PLAYERS DATA ===
 var players: Dictionary = {}
+var current_map = "res://scenes/maps/PoolDay.tscn"
 
 # === SIGNALS ===
 signal player_added(peer_id: int, player_data: Dictionary)
@@ -18,6 +19,9 @@ func add_player(peer_id: int, player_data: Dictionary):
 		"level": float,
 		"location": String,
 		"color": String,
+		"campus": String,
+		"grade": String,
+		"avatarurl": String,
 		# İleride eklenecekler:
 		# "avatar_url": String,
 		# "wallet": String,
@@ -27,14 +31,12 @@ func add_player(peer_id: int, player_data: Dictionary):
 	"""
 	players[peer_id] = player_data.duplicate()
 	player_added.emit(peer_id, players[peer_id])
-	print("[PlayersManager] Player added: ", player_data.get("login", "Unknown"), " (ID: ", peer_id, ")")
 
 func remove_player(peer_id: int):
 	if players.has(peer_id):
 		var login = players[peer_id].get("login", "Unknown")
 		players.erase(peer_id)
 		player_removed.emit(peer_id)
-		print("[PlayersManager] Player removed: ", login, " (ID: ", peer_id, ")")
 
 func update_player(peer_id: int, key: String, value):
 	if players.has(peer_id):

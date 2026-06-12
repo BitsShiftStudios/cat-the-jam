@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://d2dd25ag2mfww"]
 
 [ext_resource type="Script" uid="uid://dwpg1kiwcldwx" path="res://scripts/NetworkManager.gd" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://bulstycgcn6hi" path="res://scenes/pplayer.tscn" id="2_0wfyh"]
-[ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/Map.tscn" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://var5n05n81tt" path="res://scripts/ServerConsole.gd" id="2_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://02k6isac736i" path="res://scenes/maps/PoolDay.tscn" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://0ov30l5lsrqj" path="res://scenes/ServerCamera.gd" id="3_tipki"]
 [ext_resource type="Script" uid="uid://cnb5ojw7xdko5" path="res://scripts/timer.gd" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duqrl1qp4k6im" path="res://scenes/GameUI.tscn" id="5_tbgi4"]
 [ext_resource type="Script" uid="uid://n63h6tkodc4m" path="res://scripts/match_controller.gd" id="6_tefeu"]
@@ -29,7 +30,9 @@ properties/1/replication_mode = 1
 
 [node name="Node" type="Node" unique_id=1621457691]
 script = ExtResource("1_ig7tw")
-player_scene = ExtResource("2_0wfyh")
+
+[node name="Server" type="Node" parent="." unique_id=991904556]
+script = ExtResource("2_o6xl0")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=131513011]
 _spawnable_scenes = PackedStringArray("uid://bulstycgcn6hi")
@@ -42,16 +45,15 @@ transform = Transform3D(1, 0, 0, 0, 0.542896, 0.83979994, 0, -0.83979994, 0.5428
 environment = SubResource("Environment_jyhfs")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1588857458]
-transform = Transform3D(1, 0, 0, 0, 0.81376064, 0.5812001, 0, -0.5812001, 0.81376064, 0, 2.5077765, 8.452658)
+transform = Transform3D(1, 0, 0, 0, 0.8137607, 0.5812002, 0, -0.5812002, 0.8137607, 8.90902, 7.500389, 0.9966278)
+script = ExtResource("3_tipki")
 
 [node name="Map" parent="." unique_id=1135779736 instance=ExtResource("3_sugp2")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
 [node name="GlobalSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=264565791]
 replication_config = SubResource("SceneReplicationConfig_sugp2")
 
 [node name="Timer" type="Timer" parent="." unique_id=345636905]
-autostart = true
 script = ExtResource("4_jyhfs")
 
 [node name="GameUI" parent="." unique_id=2105203079 instance=ExtResource("5_tbgi4")]

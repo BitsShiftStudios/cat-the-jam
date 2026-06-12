@@ -5,7 +5,14 @@ var client_id = "u-s4t2ud-a5639f9346308f15696a5059cab4760d464bd042e004fd521fa9b3
 func _ready():
 	if OS.has_feature("web"):
 		var query = str(JavaScriptBridge.eval("window.location.search"))
-		if "login=" in query:
+		if "session=" in query:  # ← login= değil session=
+			PlayerData.load_from_query()
+			JavaScriptBridge.eval("window.history.replaceState({}, '', '/')")
+			# Session fetch async — hemen sahne değiştirme
+			PlayerData.session_loaded.connect(func():
+				get_tree().change_scene_to_file.call_deferred("res://scenes/main.tscn")
+			, CONNECT_ONE_SHOT)
+		elif "login=" in query:  # eski yöntem fallback
 			PlayerData.load_from_query()
 			JavaScriptBridge.eval("window.history.replaceState({}, '', '/')")
 			get_tree().change_scene_to_file.call_deferred("res://scenes/main.tscn")

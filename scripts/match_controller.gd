@@ -5,20 +5,27 @@ extends Node
 
 @export var end_screen_duration:float = 10.0
 @export var match_active:bool = true
+
 			
 var scoreboard_data: Dictionary = {}
 
 # Scoreboard
-func register_new_player(id: int, username: String):
-	if not multiplayer.is_server(): return
+func register_new_player(id: int, data: Dictionary):
+	if not multiplayer.is_server(): 
+		return
 	scoreboard_data[id] = {
-		"name": username,
+		"name": data.get("login", "Bilinmiyor"),
+		"campus": data.get("campus", "Bilinmiyor"),
+		"avatar": data.get("avatar_url", ""),
+		"grade": data.get("grade", "Bilinmiyor"),
+		"color": data.get("color", "FFFFFF"),
+		"level": data.get("level", "0"),
+		"cover": data.get("cover", ""),
 		"kills": 0,
 		"deaths": 0
 	}
-	print("Register: ", scoreboard_data[id] )
-	_broadcast_scoreboard()
-	
+	_broadcast_scoreboard()	
+
 #func update_player_name(id: int, name: String):
 	#if not multiplayer.is_server(): return
 	#scoreboard_data[id]["name"] = name
@@ -57,11 +64,15 @@ func update_client_scoreboard(server_data: Dictionary):
 		score_ui.refresh_display(scoreboard_data)
 		
 func _get_winner() -> String:
+	if scoreboard_data.is_empty():
+		return "No One"
 	var winner_id = -1
 	for id in scoreboard_data.keys():
 		if (winner_id == -1 || 
 			scoreboard_data[id]["kills"] > scoreboard_data[winner_id]["kills"]):
 			winner_id = id
+	if winner_id == -1 or not scoreboard_data.has(winner_id):
+		return "No One"
 	return scoreboard_data[winner_id]["name"]
 
 # Round management

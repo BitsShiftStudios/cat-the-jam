@@ -4,19 +4,32 @@ extends Control
 @onready var spinner = $CenterContainer/VBoxContainer/Spinner
 @onready var error_panel = $ErrorPanel
 @onready var error_label = $ErrorPanel/MarginContainer/VBoxContainer/ErrorLabel
-@onready var retry_button = $ErrorPanel/MarginContainer/VBoxContainer/RetryButton
-@onready var quit_button = $ErrorPanel/MarginContainer/VBoxContainer/QuitButton
+@onready var retry_button = $ErrorPanel/MarginContainer/VBoxContainer/CenterContainer/RetryButton
+
 
 var dots = 0
 var dot_timer = 0.0
 
 func _ready():
 	error_panel.hide()
-	
-	# Signals
 	ConnectionManager.state_changed.connect(_on_connection_state_changed)
 	_update_ui(ConnectionManager.get_state())
+	if OS.get_name() == "Web":
+		# Session yüklenene kadar bekle, sonra bağlan
+		status_label.text = "Kullanıcı bilgileri alınıyor..."
+		if PlayerData.login == "":
+			PlayerData.session_loaded.connect(_on_session_ready, CONNECT_ONE_SHOT)
+		else:
+			_on_session_ready()  # zaten yüklü
+	else:
+		_on_session_ready()  # editörde direkt geç
 	
+func _on_session_ready():
+	status_label.text = "Sunucuya bağlanılıyor..."
+	# NetworkManager'ı tetikle
+	var nm = get_tree().get_root().get_node_or_null("Node")
+	if nm and nm.has_method("start_client"):
+		nm.start_client()
 
 var spinner_frames = ["|", "/", "-", "\\"]
 var spinner_index = 0
