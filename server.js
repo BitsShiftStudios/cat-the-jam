@@ -12,8 +12,8 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = `http://${SERVER_IP}:8080/callback`;
 const GODOT_URL = `https://${SERVER_IP}:9090`;
 
-const certFile = "sunucu.crt";
-const keyFile = "sunucu.key";
+const certFile = "certs/server.crt";
+const keyFile = "certs/server.key";
 const sslCert = fs.readFileSync(path.join(__dirname, certFile), 'utf8');
 const sslKey = fs.readFileSync(path.join(__dirname, keyFile), 'utf8');
 const credentials = { key: sslKey, cert: sslCert };
@@ -154,4 +154,5 @@ httpsGameServer.listen(9090, '0.0.0.0', () => {
 const httpBackendServer = http.createServer(backendApp);
 httpBackendServer.listen(8080, '0.0.0.0', () => {
 	console.log(`Backend: http://${SERVER_IP}:8080`);
+	console.log(`Oyuna ilk giriş için : https://${SERVER_IP}:3131 adresine gidin. Gelişmiş seçeneğinden izin verin.`);
 });
