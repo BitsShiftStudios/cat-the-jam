@@ -83,21 +83,44 @@ func download_image(url: String, target_rect: TextureRect, cache_dict: Dictionar
 	add_child(http)
 	
 	http.request_completed.connect(func(result, response_code, headers, body):
-		if response_code == 200:
+		# 1. KONTROL: Hem kod 200 olmalı hem de body (veri) boş olmamalı
+		if response_code == 200 and body.size() > 0:
 			var image = Image.new()
-			var err = image.load_jpg_from_buffer(body)
-			if err != OK:
+			var err = FAILED
+			
+			# 2. BAŞLIK (HEADER) OKUMA: Gelen dosya tam olarak ne tür bir dosya?
+			var content_type = ""
+			for h in headers:
+				# Gelen dizide Content-Type bilgisini arıyoruz
+				if h.to_lower().begins_with("content-type:"):
+					content_type = h.to_lower()
+					break
+			
+			# 3. NOKTA ATIŞI İŞLEME: Dosya türüne göre doğru okuyucuyu seç
+			if "image/png" in content_type:
 				err = image.load_png_from_buffer(body)
-			if err != OK:
-				err = image.load_webp_from_buffer(body) # Kapaklar bazen WEBP formatında olabilir
-				
+			elif "image/webp" in content_type:
+				err = image.load_webp_from_buffer(body)
+			elif "image/jpeg" in content_type or "image/jpg" in content_type:
+				err = image.load_jpg_from_buffer(body)
+			else:
+				# Nadiren başlık eksik gelirse diye eski "sırayla dene" mantığı (Yedek Plan)
+				err = image.load_jpg_from_buffer(body)
+				if err != OK: err = image.load_png_from_buffer(body)
+				if err != OK: err = image.load_webp_from_buffer(body)
+
+			# 4. KONTROL: Resim başarıyla okunduysa Texture yap ve kaydet
 			if err == OK:
 				var tex = ImageTexture.create_from_image(image)
 				cache_dict[url] = tex 
 				
 				if is_instance_valid(target_rect):
 					target_rect.texture = tex
-					
+			else:
+				print("Uyarı: İndirilen veri desteklenen bir resim formatı değil. URL: ", url)
+		else:
+			print("Uyarı: Resim indirilemedi. Kod: ", response_code, " URL: ", url)
+			
 		http.queue_free()
 	)
 	http.request(url)

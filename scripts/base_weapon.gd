@@ -28,31 +28,6 @@ var all_body_parts: Array[Array] = [body_parts, leg_parts, head_parts, foot_part
 @export var total_ammo_ui : int
 @export var total_ammo_in_magazine_ui : int
 
-@export_category("Gun Damage Options")
-@export var body_damage : int
-@export var leg_damage : int
-@export var head_damage : int
-@export var foot_damage : int
-
-#region BODY_PART_ARRAY
-
-var body_parts: Array[String] = ["LeftArmHurtbox", "LeftForeArmHurtbox", "LeftHandHurtbox", "RightArmHurtbox", "RightForeArmHurtbox", "RightHandHurtbox", "BodyHurtbox", "LowerBodyHurtbox"]
-var leg_parts: Array[String] = ["LeftUpLegHurtbox", "LeftLegHurtbox", "RightUpLegHurtbox", "RightLegHurtbox"]
-var head_parts: Array[String] = ["HeadHurtbox"]
-var foot_parts: Array[String] = ["RightFootHurtbox", "LeftFootHurtbox"]
-var all_body_parts: Array[Array] = [body_parts, leg_parts, head_parts, foot_parts]
-
-#endregion
-
-@export_category("Gun Options")
-@export var gun_fire_speed : float 
-@export var weapon_range : float
-@export var is_automatic : bool
-
-@export_category("Gun Ammo Settings")
-@export var total_ammo_ui : int
-@export var total_ammo_in_magazine_ui : int
-
 @export_category("Gun Bullet Spread Values")
 @export var default_bullet_spread_rate = 0.0
 @export var default_bullet_spread_increase_rate = 0.5
