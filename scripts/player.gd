@@ -324,7 +324,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		is_trying_to_fire = Input.is_action_just_pressed("fire")
 		
-	if is_trying_to_fire:
+	if is_trying_to_fire and current_weapon.gun_is_reloading != true:
 		if current_weapon.fire(delta, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
