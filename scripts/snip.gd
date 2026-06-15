@@ -6,6 +6,7 @@ extends base_weapon
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
 @onready var game_ui = $/root/Node/GameUI
 
+@onready var gun_is_reloading = true
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 
@@ -39,12 +40,17 @@ func reload():
 	var difference_ammo_magazine = total_ammo_in_magazine_ui - total_ammo_in_magazine
 	var reload_ammo_count = total_ammo - difference_ammo_magazine
 	
+	if gun_is_reloading == true:
+		print("RELOADİNG")
+		$ReloadTimer.start()
+		return
 	if reload_ammo_count >= 0:
 		total_ammo_in_magazine += difference_ammo_magazine
 		total_ammo = reload_ammo_count
 	else:
 		total_ammo_in_magazine += total_ammo
 		total_ammo = 0
+	
 	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
 ## 
@@ -61,3 +67,8 @@ func bullet_spread(player_status):
 		set_bullet_spread(jump_bullet_spread_increase_rate)
 	elif player_status == 4: #Crouch
 		set_bullet_spread(crouch_bullet_spread_increase_rate)
+
+
+func _on_reload_timer_timeout() -> void:
+	gun_is_reloading = false
+	reload()

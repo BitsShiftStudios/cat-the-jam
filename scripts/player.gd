@@ -340,7 +340,8 @@ func _physics_process(delta: float) -> void:
 	
 	#region WEAPON_RELOAD
 	##Reload
-	if Input.is_action_just_pressed("reload"):
+	if Input.is_action_just_pressed("reload") and current_weapon.gun_is_reloading != true:
+		current_weapon.gun_is_reloading = true # Gun Reload Checker
 		current_weapon.reload()
 	##Reload
 	#endregion

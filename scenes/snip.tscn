@@ -39,3 +39,9 @@ replication_config = SubResource("SceneReplicationConfig_4uww7")
 
 [node name="MuzzleFlash" parent="." index="5" unique_id=1576580343 instance=ExtResource("4_y77v5")]
 transform = Transform3D(-0.05, 0, 7.54979e-09, 0, 0.05, 0, -7.54979e-09, 0, -0.05, 8.168747e-08, 0.09980737, 0.9343957)
+
+[node name="ReloadTimer" type="Timer" parent="." index="6" unique_id=834230806]
+wait_time = 1.9499999999999997
+one_shot = true
+
+[connection signal="timeout" from="ReloadTimer" to="." method="_on_reload_timer_timeout"]

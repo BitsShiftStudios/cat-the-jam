@@ -309,3 +309,8 @@ mesh = SubResource("ArrayMesh_w44s3")
 
 [node name="MuzzleFlash" parent="." unique_id=1576580343 instance=ExtResource("3_0gsuj")]
 transform = Transform3D(-4.371139e-09, 0, -0.1, 0, 0.1, 0, 0.1, 0, -4.371139e-09, 2.938413, 0.604623, -5.6743622e-05)
+
+[node name="ReloadTimer" type="Timer" parent="." unique_id=1249501605]
+one_shot = true
+
+[connection signal="timeout" from="ReloadTimer" to="." method="_on_reload_timer_timeout"]
