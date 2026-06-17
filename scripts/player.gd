@@ -451,7 +451,8 @@ func refill_all_weapons():
 	for weapon in weapon_pivot.get_children():
 		if weapon.has_method("bullet_reset"):
 			weapon.bullet_reset()
-			
+	if current_weapon != null:
+		current_weapon.update_hud_ammo_info()
 
 func request_damage_from_player(target_network_id: int, damage: int):
 	rpc_id(1, "damage_request", target_network_id, damage)
