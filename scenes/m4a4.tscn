@@ -271,8 +271,11 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_pmeq0")
 
-[node name="m4a4" type="Node3D" unique_id=164708223 node_paths=PackedStringArray("muzzle_flash")]
+[node name="m4a4" type="Node3D" unique_id=164708223 node_paths=PackedStringArray("timer_node", "muzzle_flash")]
 script = ExtResource("1_j2eef")
+timer_node = NodePath("ReloadTimer")
+timer_wait_time = 1.3
+timer_one_shot = true
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 28
 leg_damage = 20

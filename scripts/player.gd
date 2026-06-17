@@ -484,8 +484,17 @@ func switch_weapon(weapon_index: int):
 		child.visible = false
 	var selected_weapon = weapon_pivot.get_child(weapon_index)
 	selected_weapon.visible = true
+	check_and_abort_reload()
 	current_weapon = selected_weapon
-	current_weapon.reload()
+	current_weapon.update_hud_ammo_info()
+
+func check_and_abort_reload():
+	if current_weapon == null:
+		return
+	if current_weapon.gun_is_reloading == true:
+		current_weapon.abort_reloading()
+	else:
+		return
 
 func toggle_buy_menu():
 	buy_menu.visible = !buy_menu.visible

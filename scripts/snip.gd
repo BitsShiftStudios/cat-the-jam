@@ -6,9 +6,17 @@ extends base_weapon
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
 @onready var game_ui = $/root/Node/GameUI
 
-@onready var gun_is_reloading = true
+@onready var gun_is_reloading = false
+@export_category("Reload time settings")
+@export var timer_node : Timer
+@export var timer_wait_time : float
+@export var timer_one_shot : bool
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
+
+func _ready() -> void:
+	timer_node.one_shot = timer_one_shot
+	timer_node.wait_time = timer_wait_time
 
 func _process(delta):
 	# Sarsıntıyı otomatık olarak move toward ile düzelten fonksiyon
@@ -53,6 +61,11 @@ func reload():
 	
 	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
+func bullet_reset():
+	total_ammo = total_ammo_ui
+	total_ammo_in_magazine = total_ammo_in_magazine_ui
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
+
 ## 
 func bullet_spread(player_status):
 	if player_status == 0: #Idle
@@ -67,6 +80,15 @@ func bullet_spread(player_status):
 		set_bullet_spread(jump_bullet_spread_increase_rate)
 	elif player_status == 4: #Crouch
 		set_bullet_spread(crouch_bullet_spread_increase_rate)
+
+func abort_reloading():
+	print("ABORT RELOAD")
+	timer_node.stop()
+	timer_node.wait_time = timer_wait_time
+	gun_is_reloading = false
+
+func update_hud_ammo_info():
+	game_ui.update_ammo_display(total_ammo_in_magazine, total_ammo)
 
 
 func _on_reload_timer_timeout() -> void:

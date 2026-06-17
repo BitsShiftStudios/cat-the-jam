@@ -115,8 +115,11 @@ properties/2/path = NodePath("MuzzleFlash:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="ak47" type="Node3D" unique_id=684825964 node_paths=PackedStringArray("muzzle_flash")]
+[node name="ak47" type="Node3D" unique_id=684825964 node_paths=PackedStringArray("timer_node", "muzzle_flash")]
 script = ExtResource("1_y6vsc")
+timer_node = NodePath("ReloadTimer")
+timer_wait_time = 1.5
+timer_one_shot = true
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 30
 leg_damage = 21

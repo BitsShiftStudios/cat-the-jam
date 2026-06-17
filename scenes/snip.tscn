@@ -16,9 +16,12 @@ properties/2/path = NodePath("MuzzleFlash:rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="snip" unique_id=1785867025 node_paths=PackedStringArray("muzzle_flash") instance=ExtResource("1_brqy3")]
+[node name="snip" unique_id=1785867025 node_paths=PackedStringArray("timer_node", "muzzle_flash") instance=ExtResource("1_brqy3")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 script = ExtResource("2_7bime")
+timer_node = NodePath("ReloadTimer")
+timer_wait_time = 2.0
+timer_one_shot = true
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 100
 leg_damage = 90
@@ -41,7 +44,7 @@ replication_config = SubResource("SceneReplicationConfig_4uww7")
 transform = Transform3D(-0.05, 0, 7.54979e-09, 0, 0.05, 0, -7.54979e-09, 0, -0.05, 8.168747e-08, 0.09980737, 0.9343957)
 
 [node name="ReloadTimer" type="Timer" parent="." index="6" unique_id=834230806]
-wait_time = 1.9499999999999997
+wait_time = 1.9499999999999995
 one_shot = true
 
 [connection signal="timeout" from="ReloadTimer" to="." method="_on_reload_timer_timeout"]
