@@ -2,19 +2,19 @@ extends VBoxContainer
 
 var max_messages = 15
 var chat_history = []
-var fade_timer = Timer.new() # 1. Zamanlayıcıyı oluşturuyoruz
+var fade_timer = Timer.new()
 
 func _ready():
 	$HBoxContainer/LineEdit.visible = false
 	PlayersManager.system_message_received.connect(_on_system_message_received)
-	# 2. Zamanlayıcı ayarları (5 saniye sonra gizler)
-	fade_timer.wait_time = 5.0
+	# 2. Zamanlayıcı ayarları (15 saniye sonra gizler)
+	fade_timer.wait_time = 15.0
 	fade_timer.one_shot = true
 	fade_timer.timeout.connect(func(): $RichTextLabel.hide()) # Süre bitince yazıları sakla
 	add_child(fade_timer)
 	
 func _on_system_message_received(text: String):
-	var formatted_message = "[b][color=yellow]Sunucu:[/color][/b] " + text
+	var formatted_message = "[color=#f0c419][/color] [b][color=yellow]Sunucu:[/color][/b] " + text
 	chat_history.append(formatted_message)
 	
 	if chat_history.size() > max_messages:
@@ -23,8 +23,7 @@ func _on_system_message_received(text: String):
 	$RichTextLabel.text = ""
 	for msg in chat_history:
 		$RichTextLabel.append_text(msg + "\n")
-		
-	# Chat kutusunu göster (Önceki adımda eklediğin Timer varsa onu da başlatabilirsin)
+
 	$RichTextLabel.show()
 	if fade_timer: fade_timer.start()
 
@@ -35,10 +34,8 @@ func _input(event):
 			$HBoxContainer/LineEdit.grab_focus()
 			PlayerData.is_chatting = true
 			$HBoxContainer/LineEdit.visible = true
-			
-			# 3. Chat açılınca yazıları göster ve süreyi sıfırla
 			$RichTextLabel.show()
-			fade_timer.start() 
+			fade_timer.stop()
 			
 	if event.is_action_pressed("send_message"):
 		if $HBoxContainer/LineEdit.has_focus():
@@ -46,8 +43,17 @@ func _input(event):
 			$HBoxContainer/LineEdit.release_focus()
 			PlayerData.is_chatting = false
 			$HBoxContainer/LineEdit.visible = false
+	if event.is_action_pressed("ui_cancel"):
+		if $HBoxContainer/LineEdit.has_focus():
+			$HBoxContainer/LineEdit.text = ""
+			$HBoxContainer/LineEdit.release_focus()
+			PlayerData.is_chatting = false
+			$HBoxContainer/LineEdit.visible = false
+			fade_timer.start()
+
 
 func _send():
+	fade_timer.start()
 	var text = $HBoxContainer/LineEdit.text.strip_edges()
 	if text == "":
 		return
@@ -63,7 +69,7 @@ func _send():
 
 @rpc("any_peer", "call_local", "reliable")
 func send_message(login: String,color_hex: String , text: String):
-	var formatted_message = "[b][color=#" + color_hex + "]" + login + ":[/color][/b] " + text
+	var formatted_message = "[color=#" + color_hex + "][/color] [b][color=#" + color_hex + "]" + login + ":[/color][/b] " + text
 	chat_history.append(formatted_message)
 	if chat_history.size() > max_messages:
 		chat_history.pop_front()
@@ -72,6 +78,5 @@ func send_message(login: String,color_hex: String , text: String):
 	for msg in chat_history:
 		$RichTextLabel.append_text(msg + "\n")
 		
-	# 4. Yeni mesaj gelince yazıları göster ve süreyi sıfırla
 	$RichTextLabel.show()
 	fade_timer.start()

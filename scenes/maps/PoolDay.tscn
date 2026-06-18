@@ -220,6 +220,7 @@ size = Vector3(3, 0.33, 2.7)
 size = Vector3(3, 0.33, 2.785)
 
 [node name="Pool_Day" type="Node3D" unique_id=1466930895]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 
 [node name="SpawnPoints" type="Node" parent="." unique_id=1994494275 groups=["spawn_containers"]]
 
@@ -230,22 +231,22 @@ transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42
 transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 2.2404594, 0.9149194, -4.675378)
 
 [node name="Marker3D3" type="Marker3D" parent="SpawnPoints" unique_id=1517240076]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 7.845748, 0.9149194, -20.389006)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 7.845748, 0.9149194, -20.96958)
 
 [node name="Marker3D4" type="Marker3D" parent="SpawnPoints" unique_id=249306727]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 11.768472, 0.9149194, -4.7620287)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 11.768472, 1.1346511, -4.7620287)
 
 [node name="Marker3D5" type="Marker3D" parent="SpawnPoints" unique_id=1514156024]
 transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, 5.6065826, 1.67027, -3.6831243)
 
 [node name="Marker3D6" type="Marker3D" parent="SpawnPoints" unique_id=1776659410]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -1.3582214, 2.2108111, -7.9903502)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -1.3582214, 1.8910484, -7.9903502)
 
 [node name="Marker3D7" type="Marker3D" parent="SpawnPoints" unique_id=743346752]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -9.685031, 0.9149194, -6.959492)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -9.38604, 1.1817812, -6.959492)
 
 [node name="Marker3D8" type="Marker3D" parent="SpawnPoints" unique_id=1848105109]
-transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -7.46681, 1.4624503, 2.5500877)
+transform = Transform3D(0.42535284, 0, -0.90502757, 0, 1, 0, 0.90502757, 0, 0.42535284, -7.975197, 1.4624503, 2.837608)
 
 [node name="Lightbar" type="MeshInstance3D" parent="." unique_id=1091223939]
 transform = Transform3D(0.4128405, 0, -0.9108034, 0, 1, 0, 0.9108034, 0, 0.4128405, -0.23367572, -0.0010314956, -6.30585)

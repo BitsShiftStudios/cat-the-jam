@@ -2,6 +2,21 @@
 
 [ext_resource type="Script" uid="uid://3f285g6ww72s" path="res://scripts/chat.gd" id="1_4o336"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4o336"]
+bg_color = Color(0.41822335, 0.43790504, 0.4565437, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paia3"]
+bg_color = Color(0.03824817, 0.03824817, 0.03824817, 0.289)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 10.0
+expand_margin_top = 6.0
+expand_margin_right = 10.0
+expand_margin_bottom = 6.0
+
 [node name="Chat" type="Control" unique_id=1576507069]
 layout_mode = 3
 anchors_preset = 15
@@ -12,30 +27,35 @@ grow_vertical = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1270466421]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=397898832]
-anchors_preset = 15
-anchor_right = 1.0
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=1261613177]
+anchors_preset = 2
+anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 7.0
-offset_top = 565.0
-offset_right = -1213.0
-offset_bottom = -115.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = 12.0
+offset_top = -530.0
+offset_right = 488.0
+offset_bottom = -150.00024
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_4o336")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer" unique_id=397898832]
+layout_mode = 2
 script = ExtResource("1_4o336")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/VBoxContainer" unique_id=689955528]
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=689955528]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 scroll_active = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=201409733]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PanelContainer/VBoxContainer" unique_id=201409733]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=73214278]
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer" unique_id=73214278]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_paia3")
 
-[connection signal="focus_entered" from="CanvasLayer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/VBoxContainer" method="_on_line_edit_focus_entered"]
-[connection signal="focus_exited" from="CanvasLayer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/VBoxContainer" method="_on_line_edit_focus_exited"]
+[connection signal="focus_entered" from="CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/PanelContainer/VBoxContainer" method="_on_line_edit_focus_entered"]
+[connection signal="focus_exited" from="CanvasLayer/PanelContainer/VBoxContainer/HBoxContainer/LineEdit" to="CanvasLayer/PanelContainer/VBoxContainer" method="_on_line_edit_focus_exited"]

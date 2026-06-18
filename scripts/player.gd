@@ -208,7 +208,14 @@ func _physics_process(delta: float) -> void:
 		return
 	if !match_controller.match_active:
 		return
+		
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
 	if PlayerData.is_chatting:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+		move_and_slide()
 		return
 	
 	#region LEANING_MECHANIC
@@ -251,13 +258,13 @@ func _physics_process(delta: float) -> void:
 	if buy_menu.visible == true:
 		snip_aim = false
 		$Neck/Head/CameraShaker/Camera3D.fov = lerp($Neck/Head/CameraShaker/Camera3D.fov, def_camera_fov, 15.0 * delta)
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+		move_and_slide()
 		return
 	#endregion
 
 	#region MOVE_PHYSIC
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
@@ -271,7 +278,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-			
 	## Character Control Mechanics
 	#endregion
 
