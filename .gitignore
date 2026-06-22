@@ -20,18 +20,25 @@ data_*/
 mono_crash.*.json
 
 # =========================
-# Custom Build & Server Folders
+# setup.sh tarafından üretilen klasörler
+# (Bu dosyalar repo'ya girmemeli, setup.sh ile oluşturulur)
 # =========================
 www/
-server/
+server/*
 
 # =========================
-# Node.js & Security
+# Node.js & Güvenlik
 # =========================
 node_modules/
+package.json
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .env
+.env.*
 
-# Sertifikalar (Çok Kritik!)
+# Sertifikalar (Çok Kritik! — Asla commit'leme)
 certs/
 *.pem
 *.key

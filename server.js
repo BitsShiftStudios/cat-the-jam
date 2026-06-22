@@ -5,10 +5,15 @@ const https = require('https');
 const express = require('express');
 const { randomUUID } = require('crypto');
 
-const SERVER_IP = "SUNUCUIP";
+const SERVER_IP = "192.168.1.122";
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
+
+if (!CLIENT_ID || !CLIENT_SECRET) {
+	console.error("HATA: CLIENT_ID veya CLIENT_SECRET environment variable'ı tanımlı değil!");
+	process.exit(1);
+}
 const REDIRECT_URI = `http://${SERVER_IP}:8080/callback`;
 const GODOT_URL = `https://${SERVER_IP}:9090`;
 
@@ -21,7 +26,7 @@ const credentials = { key: sslKey, cert: sslCert };
 // ==========================================
 // 1. OAUTH BACKEND SUNUCUSU (HTTP - 8080)
 // ==========================================
-const backendApp = express();  // ← eksikti
+const backendApp = express();
 const sessions = new Map();
 
 backendApp.get('/session/:token', (req, res) => {
@@ -38,6 +43,14 @@ setInterval(() => {
 			sessions.delete(token);
 	}
 }, 60 * 1000);
+
+	backendApp.get('/login', (req, res) => {
+    const authorizeUrl = `https://api.intra.42.fr/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=public`;
+    console.log("Generat edilen giriş linki:", authorizeUrl);
+    res.redirect(authorizeUrl);
+});
+
+
 
 backendApp.get('/callback', async (req, res) => {
 	const code = req.query.code;
@@ -69,6 +82,7 @@ backendApp.get('/callback', async (req, res) => {
 		const location = me.location || "offline";
 
 		let level = 0.0;
+		let grade = null;
 		const cursus = me.cursus_users.find(c => c.cursus_id === 21);
 		if (cursus)
 		{
@@ -86,11 +100,13 @@ backendApp.get('/callback', async (req, res) => {
 			});
 			if (coalRes.ok) {
 				const coalitionsData = await coalRes.json();
-				if (coalitionsData.length > 0 && coalitionsData[0].color) {
-					coalitionColor = coalitionsData[0].color.replace("#", "");
-				}
-				if (coalitionsData[0].cover_url) {
-               		coalitionCover = coalitionsData[0].cover_url;
+				if (coalitionsData.length > 0) {
+					if (coalitionsData[0].color) {
+						coalitionColor = coalitionsData[0].color.replace("#", "");
+					}
+					if (coalitionsData[0].cover_url) {
+						coalitionCover = coalitionsData[0].cover_url;
+					}
 				}
 			}
 		}
