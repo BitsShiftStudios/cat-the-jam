@@ -457,6 +457,8 @@ func refill_all_weapons():
 	for weapon in weapon_pivot.get_children():
 		if weapon.has_method("bullet_reset"):
 			weapon.bullet_reset()
+		if weapon.has_method("abort_reloading"):
+			weapon.abort_reloading()
 	if current_weapon != null:
 		current_weapon.update_hud_ammo_info()
 
