@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://02k6isac736i"]
 
+[ext_resource type="Script" uid="uid://ckltux8ofvisq" path="res://scenes/maps/pool_day.gd" id="1_1i5uy"]
 [ext_resource type="Texture2D" uid="uid://pprrum4c022l" path="res://assets/models/Maps/PoolDay/Pool_Day_Pool_Day_material_2.png" id="1_yyirk"]
 [ext_resource type="Texture2D" uid="uid://cti5dadfix0cn" path="res://assets/models/Maps/PoolDay/Pool_Day_far8.jpg" id="2_41ykk"]
 [ext_resource type="Texture2D" uid="uid://dvapn6dtip2vr" path="res://assets/models/Maps/PoolDay/Pool_Day_near8.jpg" id="3_inly4"]
@@ -221,6 +222,7 @@ size = Vector3(3, 0.33, 2.785)
 
 [node name="Pool_Day" type="Node3D" unique_id=1466930895]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+script = ExtResource("1_1i5uy")
 
 [node name="SpawnPoints" type="Node" parent="." unique_id=1994494275 groups=["spawn_containers"]]
 

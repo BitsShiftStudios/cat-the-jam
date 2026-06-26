@@ -135,8 +135,12 @@ crouch_bullet_spread_increase_rate = 0.3
 [node name="AssaultRIfle_01_Cube_002" type="MeshInstance3D" parent="." unique_id=650958384]
 mesh = SubResource("ArrayMesh_06q7a")
 
+[node name="Muzzle" type="Marker3D" parent="AssaultRIfle_01_Cube_002" unique_id=1421378601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03796517, -1.9746387)
+
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=768155769]
 stream = ExtResource("4_m7ad5")
+volume_db = -80.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=857847343]
 replication_config = SubResource("SceneReplicationConfig_qvlqd")

@@ -98,6 +98,14 @@ var mouse_capture = 1
 @onready var right_foot_hurtbox =  $"Node3D/ct idle/ct_t_pose/Skeleton3D/RightFootAttachment/RightFootHurtbox"
 #endregion
 
+#region SOUND_SETTINGS
+@export_category("Sound Settings")
+@export var weapon_sound_file: AudioStream = null
+@export var walk_sound_file: AudioStream = null
+var fire_sound
+var walk_sound
+#endregion
+
 func _enter_tree():
 	var player_id = get_parent().name.to_int()
 	print("Player ID: ", player_id)
@@ -146,6 +154,7 @@ func _ready():
 		
 		$"Node3D/ct idle".hide()
 		$Label3D.hide() # Veya $Label3D.visible = false
+		$Neck/Head/CameraShaker/Camera3D.make_current()
 		buy_menu.visible = false
 	else:
 		collision_layer = 4
@@ -202,6 +211,7 @@ func _ready():
 	if (get_multiplayer_authority() % 2 == 1):
 		equipped_skinpack = "gold"
 	apply_weapon_skin()
+	create_audio3d_node() # Create audio nodes 
 	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
@@ -334,6 +344,10 @@ func _physics_process(delta: float) -> void:
 		if current_weapon.fire(delta, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
+			var muzzle_node = current_weapon.get_node("AssaultRIfle_01_Cube_002/Muzzle")
+			var muzzle_glob_pos = muzzle_node.global_position
+			var player_id = get_parent().name
+			rpc("play_fire_sound", muzzle_glob_pos, player_id)
 		else:
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.0, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.0, 0.1)
@@ -504,6 +518,42 @@ func check_and_abort_reload():
 		current_weapon.abort_reloading()
 	else:
 		return
+
+
+
+#region SOUND
+func create_audio3d_node():
+	fire_sound = AudioStreamPlayer3D.new()
+	walk_sound = AudioStreamPlayer3D.new()
+	
+	fire_sound.name = "GunSoundPlayer3D"
+	walk_sound.name = "WalkSoundPlayer3D"
+	
+	fire_sound.stream = weapon_sound_file
+	fire_sound.top_level = true
+	fire_sound.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	fire_sound.doppler_tracking = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED
+	fire_sound.volume_db = 0.0
+	fire_sound.max_polyphony = 3
+	fire_sound.max_distance = 40.0
+	
+	walk_sound.stream = walk_sound_file
+	
+	add_child(fire_sound)
+	add_child(walk_sound)
+
+
+@rpc("any_peer", "call_local", "unreliable", 0)
+func play_fire_sound(muzzle_global_pos: Vector3, player_id):
+	var full_path = "/root/Node/" + player_id + "/Player/GunSoundPlayer3D"
+	var player_audio_node = get_node(full_path)
+	player_audio_node.global_position = muzzle_global_pos
+	player_audio_node.play()
+	print("--- SES TETİKLENDİ ---")
+	print("Sesi Çalan Düğüm: ", player_id)
+#endregion
+
+
 
 func toggle_buy_menu():
 	buy_menu.visible = !buy_menu.visible

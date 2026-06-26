@@ -36,7 +36,7 @@ func _process(delta):
 func fire(delta, camera, player_status) -> int:
 	if fire_timer >= gun_fire_speed and total_ammo_in_magazine > 0:
 		total_ammo_in_magazine -= 1
-		$AudioStreamPlayer3D.play()
+		#$AudioStreamPlayer3D.play()
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0
