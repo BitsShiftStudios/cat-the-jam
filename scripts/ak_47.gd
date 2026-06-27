@@ -5,12 +5,15 @@ extends base_weapon
 @onready var total_ammo = total_ammo_ui
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
 @onready var game_ui = $/root/Node/GameUI
+@onready var muzzle_node = $AssaultRIfle_01_Cube_002/Muzzle
+
 
 @onready var gun_is_reloading = false
 @export_category("Reload time settings")
 @export var timer_node : Timer
 @export var timer_wait_time : float
 @export var timer_one_shot : bool
+@export var weapon_sound_file : AudioStream = null
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 

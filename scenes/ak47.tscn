@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://bgv6jde4xlryv"]
 
 [ext_resource type="Script" uid="uid://c106xedut7hai" path="res://scripts/ak_47.gd" id="1_y6vsc"]
+[ext_resource type="AudioStream" uid="uid://dxik4pvju7skh" path="res://assets/sound/gun_rifle_shot_01.WAV" id="2_qvlqd"]
 [ext_resource type="PackedScene" uid="uid://1skavyrl72h0" path="res://scenes/muzzle_flash.tscn" id="3_8n6wq"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="4_m7ad5"]
 
@@ -120,6 +121,7 @@ script = ExtResource("1_y6vsc")
 timer_node = NodePath("ReloadTimer")
 timer_wait_time = 1.5
 timer_one_shot = true
+weapon_sound_file = ExtResource("2_qvlqd")
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 30
 leg_damage = 21

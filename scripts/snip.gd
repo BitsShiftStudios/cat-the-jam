@@ -5,12 +5,14 @@ extends base_weapon
 @onready var total_ammo = total_ammo_ui
 @onready var total_ammo_in_magazine = total_ammo_in_magazine_ui
 @onready var game_ui = $/root/Node/GameUI
+@onready var muzzle_node = $AWM_Sniper_Rifle/Muzzle
 
 @onready var gun_is_reloading = false
 @export_category("Reload time settings")
 @export var timer_node : Timer
 @export var timer_wait_time : float
 @export var timer_one_shot : bool
+@export var weapon_sound_file : AudioStream = null
 # Diğer mermiyi atana kadar geçecek süreyi hesaplayan değişken.
 var fire_timer = 0.0
 
@@ -34,7 +36,6 @@ func _process(delta):
 func fire(delta, camera, player_status) -> int:
 	if fire_timer >= gun_fire_speed and total_ammo_in_magazine > 0:
 		total_ammo_in_magazine -= 1
-		$AudioStreamPlayer3D.play()
 		bullet_spread(player_status)
 		fire_base_weapon(weapon_range, delta, camera)
 		fire_timer = 0.0

@@ -100,8 +100,8 @@ var mouse_capture = 1
 
 #region SOUND_SETTINGS
 @export_category("Sound Settings")
-@export var weapon_sound_file: AudioStream = null
 @export var walk_sound_file: AudioStream = null
+@export var default_weapon_sound : AudioStream = null
 var fire_sound
 var walk_sound
 #endregion
@@ -186,6 +186,7 @@ func _ready():
 			buy_menu.visible = false
 			buy_menu.set_process(false)
 	$Label3D.text = PlayerData["login"]
+	create_audio3d_node() # Create audio nodes 
 	switch_weapon(0)
 	#print(current_weapon)
 	
@@ -211,7 +212,6 @@ func _ready():
 	if (get_multiplayer_authority() % 2 == 1):
 		equipped_skinpack = "gold"
 	apply_weapon_skin()
-	create_audio3d_node() # Create audio nodes 
 	
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
@@ -344,7 +344,7 @@ func _physics_process(delta: float) -> void:
 		if current_weapon.fire(delta, camera, player_status):
 			$Neck/Head/CameraShaker/Camera3D.v_offset = lerp($Neck/Head/CameraShaker/Camera3D.v_offset, 0.2, 0.1)
 			$Neck/Head/CameraShaker/Camera3D.h_offset = lerp($Neck/Head/CameraShaker/Camera3D.h_offset, 0.1, 0.1)
-			var muzzle_node = current_weapon.get_node("AssaultRIfle_01_Cube_002/Muzzle")
+			var muzzle_node = current_weapon.muzzle_node
 			var muzzle_glob_pos = muzzle_node.global_position
 			var player_id = get_parent().name
 			rpc("play_fire_sound", muzzle_glob_pos, player_id)
@@ -510,6 +510,8 @@ func switch_weapon(weapon_index: int):
 	check_and_abort_reload()
 	current_weapon = selected_weapon
 	current_weapon.update_hud_ammo_info()
+	fire_sound.stream = current_weapon.weapon_sound_file
+	
 
 func check_and_abort_reload():
 	if current_weapon == null:
@@ -529,7 +531,10 @@ func create_audio3d_node():
 	fire_sound.name = "GunSoundPlayer3D"
 	walk_sound.name = "WalkSoundPlayer3D"
 	
-	fire_sound.stream = weapon_sound_file
+	if current_weapon != null:
+		fire_sound.stream = current_weapon.weapon_sound_file
+	else:
+		fire_sound.stream = default_weapon_sound
 	fire_sound.top_level = true
 	fire_sound.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
 	fire_sound.doppler_tracking = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED

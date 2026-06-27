@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://b0esovs5jpbm0"]
 
 [ext_resource type="Script" uid="uid://cls4lb8071xvm" path="res://scripts/m4a4.gd" id="1_j2eef"]
+[ext_resource type="AudioStream" uid="uid://bc465oe7nqajw" path="res://assets/sound/m4a1sound.wav" id="2_poa04"]
 [ext_resource type="PackedScene" uid="uid://1skavyrl72h0" path="res://scenes/muzzle_flash.tscn" id="3_0gsuj"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="4_poa04"]
 
@@ -276,6 +277,7 @@ script = ExtResource("1_j2eef")
 timer_node = NodePath("ReloadTimer")
 timer_wait_time = 1.3
 timer_one_shot = true
+weapon_sound_file = ExtResource("2_poa04")
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 28
 leg_damage = 20
@@ -305,6 +307,9 @@ mesh = SubResource("ArrayMesh_poa04")
 [node name="HK416_Assault_Rifle" type="MeshInstance3D" parent="." unique_id=936808260]
 transform = Transform3D(1.1920929e-07, 0, 4, 0, 4, 0, -4, 0, 1.1920929e-07, 0, 0.1700077, 0)
 mesh = SubResource("ArrayMesh_ehbba")
+
+[node name="Muzzle" type="Node3D" parent="HK416_Assault_Rifle" unique_id=756157526]
+transform = Transform3D(7.4505806e-07, 25, 1.0927847e-06, 0, -1.0927847e-06, 25, 25, -7.4505806e-07, -3.2567522e-14, 2.1686773e-08, 0.10330191, 0.72768736)
 
 [node name="Reflex_Sight" type="MeshInstance3D" parent="." unique_id=685448660]
 transform = Transform3D(1.1920929e-07, 0, 4, 0, 4, 0, -4, 0, 1.1920929e-07, 0.39893174, 0.81791383, -0.0015438395)

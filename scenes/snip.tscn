@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cu6gt5215beju" path="res://assets/models/guns/snip.glb" id="1_brqy3"]
 [ext_resource type="Script" uid="uid://bjbpgwvvrtyhi" path="res://scripts/snip.gd" id="2_7bime"]
+[ext_resource type="AudioStream" uid="uid://b5l4i2w5opkmx" path="res://assets/sound/awp.wav" id="3_4uww7"]
 [ext_resource type="PackedScene" uid="uid://1skavyrl72h0" path="res://scenes/muzzle_flash.tscn" id="4_y77v5"]
 [ext_resource type="AudioStream" uid="uid://csplalfd8uf3b" path="res://assets/sound/microsammy-ak-47-firing-8760last.wav" id="5_2odde"]
 
@@ -22,6 +23,7 @@ script = ExtResource("2_7bime")
 timer_node = NodePath("ReloadTimer")
 timer_wait_time = 2.0
 timer_one_shot = true
+weapon_sound_file = ExtResource("3_4uww7")
 muzzle_flash = NodePath("MuzzleFlash")
 body_damage = 100
 leg_damage = 90
@@ -33,6 +35,9 @@ total_ammo_ui = 20
 total_ammo_in_magazine_ui = 5
 default_bullet_spread_increase_rate = 0.0
 default_max_bullet_spread_rate = 0.0
+
+[node name="Muzzle" type="Node3D" parent="AWM_Sniper_Rifle" parent_id_path=PackedInt32Array(732306276) index="0" unique_id=1316723898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9898776e-08, 0.10340431, 0.9139355)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="3" unique_id=43228814]
 stream = ExtResource("5_2odde")
