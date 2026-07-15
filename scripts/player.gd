@@ -100,8 +100,12 @@ var mouse_capture = 1
 
 #region SOUND_SETTINGS
 @export_category("Sound Settings")
-@export var walk_sound_file: AudioStream = null
+@export var walk_sound_file_1: AudioStream = null
+@export var walk_sound_file_2: AudioStream = null
+@export var walk_sound_file_3: AudioStream = null
 @export var default_weapon_sound : AudioStream = null
+@export var STEP_DISTANCE : float = 0.0
+var distance_traveled = 0.0
 var fire_sound
 var walk_sound
 #endregion
@@ -290,8 +294,12 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 	## Character Control Mechanics
 	#endregion
-
-
+	take_player_status(input_dir)
+	#var rng = RandomNumberGenerator.new()
+	#var number = rng.randi_range(1, 3)
+	#print(number)
+	
+	
 	#region SNIPER_ZOOM
 	if Input.is_action_just_pressed("aim") and current_weapon.name == "snip":
 		snip_aim = !snip_aim
@@ -385,9 +393,8 @@ func _physics_process(delta: float) -> void:
 	
 	#print(SPEED)
 	## Character Control Mechanics
-	take_player_status(input_dir)
 	move_and_slide()
-	
+	calc_move_distance(delta)
 
 func play_leaning_animation(animation_name):
 	var animation_tree_node = $"Node3D/ct idle/ct_t_pose/AnimationTree"
@@ -510,7 +517,6 @@ func switch_weapon(weapon_index: int):
 	check_and_abort_reload()
 	current_weapon = selected_weapon
 	current_weapon.update_hud_ammo_info()
-	fire_sound.stream = current_weapon.weapon_sound_file
 	
 
 func check_and_abort_reload():
@@ -522,6 +528,20 @@ func check_and_abort_reload():
 		return
 
 
+#region MOVE_DISTANCE
+func calc_move_distance(delta): #For Walk Sound
+	var real_vector = Vector3(velocity.x, 0, velocity.z)
+	# .length() fonksiyonu arkadaki o Pisagor formülünü çalıştırıp bize "5" değerini verir:
+	var real_horizontal_speed = real_vector.length()
+
+	if is_on_floor() and real_horizontal_speed > 0.1:
+		distance_traveled += real_horizontal_speed * delta
+		if distance_traveled >= STEP_DISTANCE:
+			var player_id = get_parent().name
+			rpc("play_player_footstep_sounds", player_id)
+			#play_player_footstep_sounds(player_id)
+			distance_traveled = 0.0
+#endregion
 
 #region SOUND
 func create_audio3d_node():
@@ -535,6 +555,7 @@ func create_audio3d_node():
 		fire_sound.stream = current_weapon.weapon_sound_file
 	else:
 		fire_sound.stream = default_weapon_sound
+	
 	fire_sound.top_level = true
 	fire_sound.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
 	fire_sound.doppler_tracking = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED
@@ -542,7 +563,11 @@ func create_audio3d_node():
 	fire_sound.max_polyphony = 3
 	fire_sound.max_distance = 40.0
 	
-	walk_sound.stream = walk_sound_file
+	walk_sound.stream = walk_sound_file_1
+	walk_sound.position.y = 0.5
+	walk_sound.volume_db = 0.0
+	walk_sound.max_distance = 15.0
+	
 	
 	add_child(fire_sound)
 	add_child(walk_sound)
@@ -554,8 +579,38 @@ func play_fire_sound(muzzle_global_pos: Vector3, player_id):
 	var player_audio_node = get_node(full_path)
 	player_audio_node.global_position = muzzle_global_pos
 	player_audio_node.play()
-	print("--- SES TETİKLENDİ ---")
-	print("Sesi Çalan Düğüm: ", player_id)
+	#print(player_audio_node.stream)
+	#print("--- SES TETİKLENDİ ---")
+	#print("Sesi Çalan Düğüm: ", player_id)
+
+@rpc("any_peer", "call_local", "unreliable", 0)
+func change_fire_sound_file(player_id, sound_path):
+	var full_path = "/root/Node/" + player_id + "/Player/GunSoundPlayer3D"
+	var player_audio_node = get_node(full_path)
+	var loaded_sound = load(sound_path)
+	player_audio_node.stream = loaded_sound
+
+func get_random_walk_sound_file() -> AudioStream:
+	var rnd = RandomNumberGenerator.new()
+	var number = rnd.randi_range(1, 3)
+	match number:
+		1:
+			return walk_sound_file_1
+		2:
+			return walk_sound_file_2
+		3:
+			return walk_sound_file_3
+		_:
+			print("ERROR")
+			return walk_sound_file_1
+
+@rpc("any_peer", "call_local", "unreliable", 0)
+func play_player_footstep_sounds(player_id):
+	var full_path = "/root/Node/" + player_id + "/Player/WalkSoundPlayer3D"
+	var player_audio_node = get_node(full_path)
+	player_audio_node.stream = get_random_walk_sound_file()
+	player_audio_node.play()
+	pass
 #endregion
 
 
@@ -674,11 +729,20 @@ func _input(event):
 func _on_m_4a_4_pressed() -> void:
 	switch_weapon(1)
 	toggle_buy_menu()
+	var player_id = get_parent().name
+	var sound_path = current_weapon.weapon_sound_file.resource_path
+	rpc("change_fire_sound_file", player_id, sound_path)
 
 func _on_ak_47_pressed() -> void:
 	switch_weapon(0)
 	toggle_buy_menu()
+	var player_id = get_parent().name
+	var sound_path = current_weapon.weapon_sound_file.resource_path
+	rpc("change_fire_sound_file", player_id, sound_path)
 
 func _on_snip_pressed() -> void:
 	switch_weapon(2)
 	toggle_buy_menu()
+	var player_id = get_parent().name
+	var sound_path = current_weapon.weapon_sound_file.resource_path
+	rpc("change_fire_sound_file", player_id, sound_path)
