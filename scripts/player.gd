@@ -538,7 +538,7 @@ func calc_move_distance(delta): #For Walk Sound
 		distance_traveled += real_horizontal_speed * delta
 		if distance_traveled >= STEP_DISTANCE:
 			var player_id = get_parent().name
-			rpc("play_player_footstep_sounds", player_id)
+			rpc("play_player_footstep_sounds", player_id, player_status)
 			#play_player_footstep_sounds(player_id)
 			distance_traveled = 0.0
 #endregion
@@ -605,12 +605,15 @@ func get_random_walk_sound_file() -> AudioStream:
 			return walk_sound_file_1
 
 @rpc("any_peer", "call_local", "unreliable", 0)
-func play_player_footstep_sounds(player_id):
+func play_player_footstep_sounds(player_id, target_player_id):
 	var full_path = "/root/Node/" + player_id + "/Player/WalkSoundPlayer3D"
 	var player_audio_node = get_node(full_path)
 	player_audio_node.stream = get_random_walk_sound_file()
+	if target_player_id == 4:
+		player_audio_node.volume_db = -25.0
+	else:
+		player_audio_node.volume_db = 0.0
 	player_audio_node.play()
-	pass
 #endregion
 
 
